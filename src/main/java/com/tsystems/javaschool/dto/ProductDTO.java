@@ -10,7 +10,6 @@ public class ProductDTO {
     private String name;
     private String article;
     private String size;
-    private String colour;
-    private String photoLink;
+    private ColourDTO colour;
     private int quantity;
 }

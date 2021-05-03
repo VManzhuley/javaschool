@@ -3,10 +3,8 @@ package com.tsystems.javaschool.entity.product;
 import com.tsystems.javaschool.entity.AbstractTable;
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "category")
@@ -17,4 +15,6 @@ public class Category extends AbstractTable {
     @JoinColumn(name = "category_id")
     private Category categoryParent;
 
+    @OneToMany(mappedBy = "categoryParent", fetch = FetchType.EAGER)
+    private List<Category> categoriesChild;
 }

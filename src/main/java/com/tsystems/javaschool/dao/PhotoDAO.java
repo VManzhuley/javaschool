@@ -1,5 +1,7 @@
 package com.tsystems.javaschool.dao;
 
+import com.tsystems.javaschool.entity.product.Photo;
+
 public interface PhotoDAO {
-    String getPhotoLink (int idProduct);
+    Photo getPhotoLink (int idProduct);
 }

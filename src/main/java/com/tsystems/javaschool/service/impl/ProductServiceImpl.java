@@ -38,8 +38,9 @@ public class ProductServiceImpl implements ProductService {
         productDTO.setId(product.getId());
         productDTO.setQuantity(product.getQuantity());
         productDTO.setSize(product.getSize().getName());
-        productDTO.setColour(colourService.getColour(product.getId()).getName());
-        productDTO.setPhotoLink(photoDAO.getPhotoLink(product.getId()));
+        productDTO.setColour(colourService.getColour(product.getId()));
+
+
 
         productDTO.setArticle(product.getProductAbs().getArticle() + " " +
                 colourService.getColour(product.getId()).getArticle() + " " +

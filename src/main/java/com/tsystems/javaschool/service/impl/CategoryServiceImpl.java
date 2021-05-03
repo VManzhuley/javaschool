@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+
 @Service
 @Transactional
 public class CategoryServiceImpl implements CategoryService {
@@ -21,4 +22,6 @@ public class CategoryServiceImpl implements CategoryService {
     public List<Category> findAll() {
         return categoryDAO.findAll();
     }
+
+
 }

@@ -1,11 +1,16 @@
 package com.tsystems.javaschool.dao.iplm;
 
 import com.tsystems.javaschool.dao.ProductAbsDAO;
-import com.tsystems.javaschool.entity.product.*;
+import com.tsystems.javaschool.entity.product.Category;
+import com.tsystems.javaschool.entity.product.Category_;
+import com.tsystems.javaschool.entity.product.ProductAbs;
+import com.tsystems.javaschool.entity.product.ProductAbs_;
+import lombok.Getter;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -17,47 +22,20 @@ import java.util.List;
 public class ProductAbsDAOImpl implements ProductAbsDAO {
     private final EntityManagerFactory entityManagerFactory;
     private int pageSize=6;
+    @Getter
+    private int totalPages;
+
+    @PersistenceContext
+    EntityManager entityManager;
+
 
     public ProductAbsDAOImpl(EntityManagerFactory entityManagerFactory) {
         this.entityManagerFactory = entityManagerFactory;
     }
 
-
-    @Override
-    public List<ProductAbs> allProductAbs() {
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        return entityManager.createQuery("select p from ProductAbs p").getResultList();
-    }
-
     @Override
     public ProductAbs getProductAbs(int id) {
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
         return entityManager.find(ProductAbs.class, id);
-    }
-
-    @Override
-    public List<Size> allSizes(int idProductAbs) {
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        TypedQuery<Size> query = entityManager.createQuery("select s from Size s join Product p " +
-                "on s=p.size where p.productAbs.id=?1 group by s.name", Size.class);
-
-        return query.setParameter(1, idProductAbs).getResultList();
-    }
-
-    @Override
-    public List<Product> allProducts(int idProductAbs) {
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        TypedQuery<Product> query = entityManager.createQuery("select p from Product p where p.productAbs.id=?1",
-                Product.class);
-        return query.setParameter(1, idProductAbs).getResultList();
-    }
-
-    @Override
-    public List<ProductAbs> allProductsByCategory(int idCategory) {
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        TypedQuery<ProductAbs> query = entityManager.createQuery("select p from ProductAbs p " +
-                "where p.category.id=?1", ProductAbs.class);
-        return query.setParameter(1, idCategory).getResultList();
     }
 
     @Override
@@ -74,10 +52,15 @@ public class ProductAbsDAOImpl implements ProductAbsDAO {
         CriteriaQuery<ProductAbs> select = criteriaQuery.select(productAbsRoot);
 
 
+
+
+
+
         criteriaQuery.orderBy(criteriaBuilder.asc(productAbsRoot.get(sort)));
 
 
         TypedQuery<ProductAbs> typedQuery = entityManager.createQuery(select);
+        totalPages=typedQuery.getResultList().size()/pageSize+1;
         typedQuery.setFirstResult((page - 1)*pageSize);
         typedQuery.setMaxResults(pageSize);
 

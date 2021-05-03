@@ -15,6 +15,7 @@ C:\Users\Василий\Desktop\проект\givova\src\main\java\com\tsystems\j
 C:\Users\Василий\Desktop\проект\givova\src\main\java\com\tsystems\javaschool\service\impl\ProductServiceImpl.java
 C:\Users\Василий\Desktop\проект\givova\src\main\java\com\tsystems\javaschool\entity\product\Description.java
 C:\Users\Василий\Desktop\проект\givova\src\main\java\com\tsystems\javaschool\dao\iplm\ProductAbsDAOImpl.java
+C:\Users\Василий\Desktop\проект\givova\src\main\java\com\tsystems\javaschool\service\impl\CategoryServiceImpl.java
 C:\Users\Василий\Desktop\проект\givova\src\main\java\com\tsystems\javaschool\baeldung\IProductDAOBaeldung.java
 C:\Users\Василий\Desktop\проект\givova\src\main\java\com\tsystems\javaschool\entity\product\Size.java
 C:\Users\Василий\Desktop\проект\givova\src\main\java\com\tsystems\javaschool\baeldung\ProductDAOBaeldung.java
@@ -22,18 +23,16 @@ C:\Users\Василий\Desktop\проект\givova\src\main\java\com\tsystems\j
 C:\Users\Василий\Desktop\проект\givova\src\main\java\com\tsystems\javaschool\entity\product\Photo.java
 C:\Users\Василий\Desktop\проект\givova\src\main\java\com\tsystems\javaschool\entity\product\ProductAbs.java
 C:\Users\Василий\Desktop\проект\givova\src\main\java\com\tsystems\javaschool\dao\PhotoDAO.java
-C:\Users\Василий\Desktop\проект\givova\src\main\java\com\tsystems\javaschool\model\ProductAbsInfo.java
-C:\Users\Василий\Desktop\проект\givova\src\main\java\com\tsystems\javaschool\model\Product.java
 C:\Users\Василий\Desktop\проект\givova\src\main\java\com\tsystems\javaschool\dao\iplm\CategoryDAOImpl.java
 C:\Users\Василий\Desktop\проект\givova\src\main\java\com\tsystems\javaschool\dao\iplm\ProductDAOImpl.java
 C:\Users\Василий\Desktop\проект\givova\src\main\java\com\tsystems\javaschool\service\ColourService.java
+C:\Users\Василий\Desktop\проект\givova\src\main\java\com\tsystems\javaschool\service\CategoryService.java
 C:\Users\Василий\Desktop\проект\givova\src\main\java\com\tsystems\javaschool\service\ProductAbsService.java
 C:\Users\Василий\Desktop\проект\givova\src\main\java\com\tsystems\javaschool\dto\ProductAbsDTO.java
 C:\Users\Василий\Desktop\проект\givova\src\main\java\com\tsystems\javaschool\service\impl\ProductAbsServiceImpl.java
 C:\Users\Василий\Desktop\проект\givova\src\main\java\com\tsystems\javaschool\baeldung\SearchCriteria.java
 C:\Users\Василий\Desktop\проект\givova\src\main\java\com\tsystems\javaschool\baeldung\ProductSearchQueryCriteriaConsumer.java
 C:\Users\Василий\Desktop\проект\givova\src\main\java\com\tsystems\javaschool\dao\ColourDAO.java
-C:\Users\Василий\Desktop\проект\givova\src\main\java\com\tsystems\javaschool\model\ProductColour.java
 C:\Users\Василий\Desktop\проект\givova\src\main\java\com\tsystems\javaschool\entity\product\Product.java
 C:\Users\Василий\Desktop\проект\givova\src\main\java\com\tsystems\javaschool\entity\AbstractTable.java
 C:\Users\Василий\Desktop\проект\givova\src\main\java\com\tsystems\javaschool\entity\product\Category.java

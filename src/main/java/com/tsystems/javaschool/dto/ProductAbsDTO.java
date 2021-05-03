@@ -13,7 +13,7 @@ public class ProductAbsDTO {
     private String photoLink;
     private int price;
     private String composition;
-    private Set<String> colours;
+    private Set<ColourDTO> colours;
     private Set<String> sizes;
-    private Set<String> photoLinks;
+
 }

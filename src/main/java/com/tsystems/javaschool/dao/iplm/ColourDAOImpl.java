@@ -6,11 +6,15 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceContext;
 
 @Repository
 public class ColourDAOImpl implements ColourDAO {
 
     private final EntityManagerFactory entityManagerFactory;
+
+    @PersistenceContext
+    EntityManager entityManager;
 
     public ColourDAOImpl(EntityManagerFactory entityManagerFactory) {
         this.entityManagerFactory = entityManagerFactory;
@@ -18,7 +22,6 @@ public class ColourDAOImpl implements ColourDAO {
 
     @Override
     public Colour getColour(int id) {
-        EntityManager entityManager =entityManagerFactory.createEntityManager();
         return entityManager.find(Colour.class,id);
     }
 
