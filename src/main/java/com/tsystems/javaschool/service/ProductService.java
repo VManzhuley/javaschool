@@ -10,4 +10,6 @@ public interface ProductService {
     List<ProductDTO> allProducts(int idProductAbs);
 
     ProductDTO mapToProductDTO(Product product);
+
+    ProductDTO getProductByProductABSColourMainColourSecSize(int idProductAbs, int idColourMain, int idColourSec, String size);
 }

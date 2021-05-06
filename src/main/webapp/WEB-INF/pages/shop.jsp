@@ -10,6 +10,7 @@
 <body>
 
 <div class="container">
+    <jsp:include page="header.jsp" />
     <div class="row">
         <div class="col-md-3">
             <jsp:include page="sidebar.jsp"/>
@@ -45,7 +46,7 @@
                     <div class="col">
                         <div class="card h-100">
                             <img src="/assets/img/product${productAbs.photoLink}" class="rounded mx-auto d-block"
-                                 style="width: 18rem;">
+                                 style="width: 18rem;" alt="${productAbs.name}">
                             <div class="card-body">
                                 <c:url value="/product" var="url">
                                      <c:param name="id" value="${productAbs.id}"/>

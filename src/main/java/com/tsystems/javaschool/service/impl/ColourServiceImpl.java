@@ -33,7 +33,7 @@ public class ColourServiceImpl implements ColourService {
             colourDTO.setName(photo.getColourMain().getName() + "/" + photo.getColourSec().getName());
             colourDTO.setArticle(String.format("%02d",photo.getColourMain().getId())+
                     String.format("%02d",photo.getColourSec().getId()));
-            colourDTO.setIdColourSec(photo.getColourMain().getId());
+            colourDTO.setIdColourSec(photo.getColourSec().getId());
         } else {
             colourDTO.setName(photo.getColourMain().getName());
             colourDTO.setArticle(String.format("%04d",photo.getColourMain().getId()));

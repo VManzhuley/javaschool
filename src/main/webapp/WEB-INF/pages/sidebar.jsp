@@ -8,11 +8,11 @@
                     <li class="mb-1">
                         <button class="btn btn-toggle align-items-center rounded collapsed"
                                 data-bs-toggle="collapse"
-                                data-bs-target="#${category.name}-collapse" aria-expanded="false">
+                                data-bs-target="#${fn:replace(category.name," ","")}-collapse" aria-expanded="false">
                                 ${category.name}
                         </button>
 
-                        <div class="collapse" id="${category.name}-collapse">
+                        <div class="collapse" id="${fn:replace(category.name," ","")}-collapse">
                             <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                                 <c:forEach var="categoryChild" items="${category.categoriesChild}">
                                     <li>

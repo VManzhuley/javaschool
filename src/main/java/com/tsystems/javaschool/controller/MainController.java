@@ -1,74 +1,109 @@
 package com.tsystems.javaschool.controller;
 
-import com.tsystems.javaschool.baeldung.IProductDAOBaeldung;
-import com.tsystems.javaschool.dao.PhotoDAO;
-import com.tsystems.javaschool.dao.ProductAbsDAO;
+import com.tsystems.javaschool.dto.CartDTO;
 import com.tsystems.javaschool.dto.ProductAbsDTO;
+import com.tsystems.javaschool.dto.ProductDTO;
 import com.tsystems.javaschool.entity.product.Category;
+import com.tsystems.javaschool.service.CartService;
 import com.tsystems.javaschool.service.CategoryService;
 import com.tsystems.javaschool.service.ProductAbsService;
 import com.tsystems.javaschool.service.ProductService;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Controller
+@SessionAttributes("cart")
 public class MainController {
 
     private final ProductAbsService productAbsService;
-    private final ProductAbsDAO productAbsDAO;
-    private final IProductDAOBaeldung iProductDAOBaeldung;
     private final CategoryService categoryService;
-    private final PhotoDAO photoDAO;
+    private final CartService cartService;
     private final ProductService productService;
 
-    public MainController(ProductAbsService productAbsService, ProductAbsDAO productAbsDAO, IProductDAOBaeldung iProductDAOBaeldung, CategoryService categoryService, PhotoDAO photoDAO, ProductService productService) {
-        this.productAbsService = productAbsService;
-        this.productAbsDAO = productAbsDAO;
 
-        this.iProductDAOBaeldung = iProductDAOBaeldung;
+    public MainController(ProductAbsService productAbsService, CategoryService categoryService, CartService cartService, ProductService productService) {
+        this.productAbsService = productAbsService;
         this.categoryService = categoryService;
-        this.photoDAO = photoDAO;
+        this.cartService = cartService;
         this.productService = productService;
     }
+
+    @ModelAttribute("cart")
+    public CartDTO cartDTO() {
+        return new CartDTO();
+    }
+
 
     @RequestMapping(value = "/")
     public ModelAndView mainPage() {
         List<Category> categoryList = categoryService.findAll();
         ModelAndView modelAndView = new ModelAndView();
+
+
         modelAndView.setViewName("index");
         modelAndView.addObject("categoryList", categoryList);
 
-        return modelAndView;
-    }
-
-    @RequestMapping(value = "product", method = RequestMethod.GET)
-    public ModelAndView product(@RequestParam int id) {
-        ProductAbsDTO productAbs = productAbsService.getProductAbsDTO(id);
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("product");
-        modelAndView.addObject("productAbs", productAbs);
 
         return modelAndView;
     }
 
-    @RequestMapping(value = "shop", method = RequestMethod.GET)
-    public ModelAndView shop(@RequestParam int category, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "id") String sort){
+    @GetMapping(value = "/shop")
+    public ModelAndView shop(@RequestParam int category, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "id") String sort) {
         List<Category> categoryList = categoryService.findAll();
-        List<ProductAbsDTO> productAbsList = productAbsService.allProductsByCategoryWithFSP(category,page,sort);
-        int totalPages=productAbsService.getTotalPages();
-        ModelAndView modelAndView=new ModelAndView();
+        List<ProductAbsDTO> productAbsList = productAbsService.allProductsByCategoryWithFSP(category, page, sort);
+        int totalPages = productAbsService.getTotalPages();
+        ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("shop");
         modelAndView.addObject("categoryList", categoryList);
         modelAndView.addObject("totalPages", totalPages);
         modelAndView.addObject("productAbsList", productAbsList);
 
+
         return modelAndView;
     }
+
+
+    @PostMapping(value = "product")
+    public ModelAndView addToCart(@ModelAttribute("cart") CartDTO cart, @RequestParam int id, HttpServletRequest request) {
+        ProductAbsDTO productAbs = productAbsService.getProductAbsDTO(id);
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("product");
+        modelAndView.addObject("productAbs", productAbs);
+
+        if (!(request.getParameter("colourMain").isEmpty() || request.getParameter("size").isEmpty() || request.getParameter("quantity").isEmpty())) {
+            ProductDTO productDTO = productService.getProductByProductABSColourMainColourSecSize(
+                    Integer.parseInt(request.getParameter("idProductAbs")),
+                    Integer.parseInt(request.getParameter("colourMain")),
+                    Integer.parseInt(request.getParameter("colourSec")),
+                    request.getParameter("size"));
+
+            cart.addCartItem(productDTO, Integer.parseInt(request.getParameter("quantity")));
+
+            modelAndView.addObject("cart", cart);
+        }
+
+        return modelAndView;
+    }
+
+    @GetMapping(value = "/product")
+    public ModelAndView product(@RequestParam int id) {
+        ProductAbsDTO productAbs = productAbsService.getProductAbsDTO(id);
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("product");
+
+
+        modelAndView.addObject("productAbs", productAbs);
+
+        return modelAndView;
+    }
+
+
+
+
 
 
 
