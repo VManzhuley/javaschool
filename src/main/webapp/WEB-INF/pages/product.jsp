@@ -17,6 +17,7 @@
     }
 
     .carousel-item .img-thumbnail {
+        border: none;
         width: 25%;
         cursor: pointer;
         float: left;
@@ -34,7 +35,7 @@
 </style>
 <div class="container">
     <jsp:include page="header.jsp"/>
-    <section class="bg-light">
+    <section class="bg-white">
         <div class="container pb-5">
             <div class="row">
                 <div class="col-lg-5 mt-5">
@@ -106,7 +107,7 @@
                             <h1 class="h2">${productAbs.name}</h1>
                             <p class="h5 py-1">${productAbs.article}</p>
                             <p class="h3 py-2">${productAbs.price} rubles</p>
-                            <p class="h5 py-1">${productAbs.composition}</p>
+                            <p class="h5 py-1 mb-5">${productAbs.composition}</p>
 
 
                             <form method="post" >
@@ -157,9 +158,9 @@
                                                 <c:forEach var="size" items="${productAbs.sizes}">
                                                     <li>
                                                         <button class="dropdown-item" type="button"
-                                                                onclick="document.getElementById('size').setAttribute('value','${size}');
-                                                                        document.getElementById('sizes').textContent='${size}';
-                                                                        ">${size}</button>
+                                                                onclick="document.getElementById('size').setAttribute('value','${size.name}');
+                                                                        document.getElementById('sizes').textContent='${size.name}';
+                                                                        ">${size.name}</button>
                                                     </li>
                                                 </c:forEach>
                                             </ul>
@@ -170,10 +171,12 @@
 
 
                                 </div>
-                                <div class="mb-5">
-                                    <input name="quantity" value="1" type="number" min="1"/>
+                                <div class="form-floating col-3 mb-5">
+
+                                    <input class="form-control" id="quantity" name="quantity" value="1" type="number" min="1"/>
+                                    <label for="quantity">Input quantity</label>
                                 </div>
-                                <div class="col d-grid">
+                                <div class="d-grid">
                                     <button type="submit" class="btn btn-primary btn-lg" >Add To
                                         Cart
                                     </button>

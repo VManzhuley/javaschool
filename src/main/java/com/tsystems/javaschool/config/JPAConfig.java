@@ -22,11 +22,11 @@ import java.util.Properties;
 @EnableTransactionManagement
 @PropertySource(value = "classpath:dp.properties")
 @ComponentScan(basePackages = "com.tsystems.javaschool")
-public class PersistenceJPAConfig {
+public class JPAConfig {
     private final Environment environment;
 
     @Autowired
-    public PersistenceJPAConfig(Environment environment) {
+    public JPAConfig(Environment environment) {
         this.environment = environment;
     }
 

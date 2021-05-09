@@ -16,8 +16,11 @@
     </ul>
 
     <div class="col-md-3 text-end">
-        <button type="button" class="btn btn-outline-primary">Login</button>
-        <button type="button" class="btn btn-primary me-2">Sign-up</button>
+
+        <button type="button" class="btn btn-outline-primary">Registration</button>
+        <a href="/login" class="btn btn-primary me-2">
+            <span>Login</span>
+        </a>
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
             Cart
         </button>
@@ -36,7 +39,7 @@
             <div class="modal-body">
                 <c:if test="${not empty cart.cartItems}">
                     <c:forEach var="cartItem" items="${cart.cartItems}">
-                        <div class="card mb-3">
+                        <div class="card mb-3 card-link">
                             <div class="row g-0">
                                 <div class="col-md-4 d-flex align-items-center">
                                     <img src="../assets/img/product${cartItem.product.colour.photoLink}" alt="..."
@@ -44,18 +47,21 @@
                                 </div>
                                 <div class="col-md-8">
                                     <div class="card-body">
-                                        <h3 class="card-title">${cartItem.product.productAbs.name}</h3>
+                                        <c:url value="/product" var="url">
+                                            <c:param name="id" value="${cartItem.product.productAbs.id}"/>
+                                        </c:url>
+                                        <h3 class="card-title"><a href="${url}">${cartItem.product.productAbs.name}</a></h3>
                                         <p class="h6"><small class="text-muted">${cartItem.product.article}</small></p>
                                         <p class="h6">
-                                            <small>Colour: ${cartItem.product.colour.name}<br>Size: ${cartItem.product.size}<br>Qta: ${cartItem.quantity}
+                                            <small>Colour: ${cartItem.product.colour.name}<br>Size: ${cartItem.product.size.name}<br>Qty: ${cartItem.quantity}
                                             </small></p>
-                                        <p class="h4"> ${cartItem.amount} rubles</p>
+                                        <p class="h4"> ${cartItem.amount} RUB</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </c:forEach>
-                    <p class="h2">Total amount: ${cart.amountTotal} rubles</p>
+                    <p class="h2">Total amount: ${cart.amountTotal} RUB</p>
                 </c:if>
                 <c:if test="${empty cart.cartItems}">
                     <h3 class="card-title">It's empty here</h3>
@@ -64,7 +70,11 @@
             <div class="modal-footer">
                 <c:if test="${not empty cart.cartItems}">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Back to shopping!</button>
-                    <button type="button" class="btn btn-primary">Order these products!</button>
+
+                    <a href="/cart" class="btn btn-primary">
+                        <span>Order these products!</span>
+                    </a>
+
                 </c:if>
                 <c:if test="${empty cart.cartItems}">
                     <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Let's try to buy something!

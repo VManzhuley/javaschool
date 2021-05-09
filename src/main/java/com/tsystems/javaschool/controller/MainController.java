@@ -1,13 +1,9 @@
 package com.tsystems.javaschool.controller;
 
-import com.tsystems.javaschool.dto.CartDTO;
-import com.tsystems.javaschool.dto.ProductAbsDTO;
-import com.tsystems.javaschool.dto.ProductDTO;
+import com.tsystems.javaschool.dao.ClientDAO;
+import com.tsystems.javaschool.dto.*;
 import com.tsystems.javaschool.entity.product.Category;
-import com.tsystems.javaschool.service.CartService;
-import com.tsystems.javaschool.service.CategoryService;
-import com.tsystems.javaschool.service.ProductAbsService;
-import com.tsystems.javaschool.service.ProductService;
+import com.tsystems.javaschool.service.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -21,15 +17,20 @@ public class MainController {
 
     private final ProductAbsService productAbsService;
     private final CategoryService categoryService;
-    private final CartService cartService;
+    private final ClientDAO clientDAO;
     private final ProductService productService;
+    private final OrderService orderService;
+    private final ClientService clientService;
 
 
-    public MainController(ProductAbsService productAbsService, CategoryService categoryService, CartService cartService, ProductService productService) {
+    public MainController(ProductAbsService productAbsService, CategoryService categoryService, ClientDAO clientDAO, ProductService productService, OrderService orderService, ClientService clientService) {
         this.productAbsService = productAbsService;
         this.categoryService = categoryService;
-        this.cartService = cartService;
+        this.clientDAO = clientDAO;
+
         this.productService = productService;
+        this.orderService = orderService;
+        this.clientService = clientService;
     }
 
     @ModelAttribute("cart")
@@ -99,6 +100,61 @@ public class MainController {
         modelAndView.addObject("productAbs", productAbs);
 
         return modelAndView;
+    }
+
+    @GetMapping("/cart")
+    public ModelAndView cart() {
+        return new ModelAndView();
+    }
+
+    @PostMapping("/cart")
+    public ModelAndView updateCartItem(@ModelAttribute("cart") CartDTO cart, HttpServletRequest request) {
+
+        cart.updateCartItem(Integer.parseInt(request.getParameter("idProduct")), Integer.parseInt(request.getParameter("quantity")));
+
+        return new ModelAndView();
+    }
+
+    @RequestMapping("/deleteCartItem")
+    public ModelAndView deleteCartItem(@ModelAttribute("cart") CartDTO cart, @RequestParam int id) {
+        ModelAndView modelAndView = new ModelAndView();
+        if (cart.findItemByIdProduct(id) != null) {
+            cart.deleteCartItem(id);
+        }
+        modelAndView.setViewName("redirect:/cart");
+        return modelAndView;
+    }
+
+    @GetMapping("/order")
+    public ModelAndView order(@ModelAttribute("client") ClientDTO client, @ModelAttribute("order") OrderDTO order) {
+        return new ModelAndView();
+    }
+
+
+    @PostMapping("/order")
+    public ModelAndView orderConfirm(@ModelAttribute("cart") CartDTO cart, @ModelAttribute("client") ClientDTO client, @ModelAttribute("order") OrderDTO order) {
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("client", client);
+        modelAndView.addObject("order", order);
+        clientService.add(client);
+        orderService.addOrder(cart, client, order);
+
+
+        modelAndView.setViewName("redirect:/orderFinish");
+        return modelAndView;
+    }
+
+    @GetMapping("/orderFinish")
+    public ModelAndView orderFinish() {
+
+        return new ModelAndView();
+    }
+
+
+    @GetMapping("/login")
+    public ModelAndView login() {
+        return new ModelAndView();
     }
 
 

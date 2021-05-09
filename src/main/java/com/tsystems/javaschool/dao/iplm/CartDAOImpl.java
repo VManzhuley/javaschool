@@ -22,4 +22,12 @@ public class CartDAOImpl implements CartDAO {
         return query.setParameter("id", id).getResultList();
 
     }
+
+    @Override
+    public void addList(List<Cart> cartList) {
+        for (Cart cart:cartList
+             ) {
+            entityManager.persist(cart);
+        }
+    }
 }

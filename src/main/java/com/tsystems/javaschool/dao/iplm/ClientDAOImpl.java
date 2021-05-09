@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
 @Repository
 public class ClientDAOImpl implements ClientDAO {
@@ -16,5 +17,16 @@ public class ClientDAOImpl implements ClientDAO {
     @Override
     public Client findById(int id) {
         return entityManager.find(Client.class,id);
+    }
+
+    @Override
+    public Client findByMail(String email) {
+        TypedQuery<Client> query = entityManager.createQuery("select c from Client c where c.email=:mail", Client.class);
+        return query.setParameter("mail",email).getSingleResult();
+    }
+
+    @Override
+    public void add(Client client) {
+        entityManager.persist(client);
     }
 }

@@ -1,74 +1,134 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-  <link href="../assets/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-<div class="container">
-  <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
-    <a href="/" class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none">
-      <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
-    </a>
-
-    <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
-      <li><a href="#" class="nav-link px-2 link-secondary">Home</a></li>
-      <li><a href="#" class="nav-link px-2 link-dark">Delivery Terms </a></li>
-      <li><a href="#" class="nav-link px-2 link-dark">Payment methods</a></li>
-      <li><a href="#" class="nav-link px-2 link-dark">FAQs</a></li>
-      <li><a href="#" class="nav-link px-2 link-dark">Contacts</a></li>
-    </ul>
-
-    <div class="col-md-3 text-end">
-      <button type="button" class="btn btn-outline-primary me-2">Login</button>
-      <button type="button" class="btn btn-primary">Sign-up</button>
-      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-        Cart
-      </button>
-    </div>
-  </header>
-</div>
-
-<!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-scrollable">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Your cart</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <div class="card mb-3" >
-          <div class="row g-0">
-            <div class="col-md-4 d-flex align-items-center">
-              <img src="../assets/img/product/soccer/gaiters/calcio/c001_0001.jpg" alt="..." class="img-fluid">
-            </div>
-            <div class="col-md-8">
-              <div class="card-body">
-                <h3 class="card-title">Calza Calcio</h3>
-                <p class="h6"><small class="text-muted">C001 0001 SENYOR</small></p>
-                <p class="h6"><small>Colour: Orange<br>Size: Senyor<br>Qta: 10</small></p>
-                <p class="h4"> 50 rubles </p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <p class="h2">Total amount: 345340 rubles</p>
-
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Back to shopping!</button>
-        <button type="button" class="btn btn-primary">Order these products!</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-
-<script src="../assets/js/popper.min.js"></script>
+<link href="../assets/css/bootstrap.min.css" rel="stylesheet">
 <script src="../assets/js/bootstrap.min.js"></script>
 
+<body>
+<div class="container">
+
+
+    <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+        <a href="/" class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none">
+            <svg class="bi me-2" width="40" height="32">
+                <use xlink:href="#bootstrap"></use>
+            </svg>
+        </a>
+
+        <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+            <li><a href="/" class="nav-link px-2 link-secondary">Home</a></li>
+            <li><a href="#" class="nav-link px-2 link-dark">Delivery Terms </a></li>
+            <li><a href="#" class="nav-link px-2 link-dark">Payment methods</a></li>
+            <li><a href="#" class="nav-link px-2 link-dark">FAQs</a></li>
+            <li><a href="#" class="nav-link px-2 link-dark">Contacts</a></li>
+        </ul>
+
+        <div class="col-md-3 text-end">
+
+            <button type="button" class="btn btn-outline-primary">Registration</button>
+            <a href="/login" class="btn btn-primary me-2">
+                <span>Login</span>
+            </a>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                Cart
+            </button>
+        </div>
+    </header>
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Your cart</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+
+                    <div class="card mb-3 card-link">
+                        <div class="row g-0">
+                            <div class="col-md-4 d-flex align-items-center">
+                                <img src="../assets/img/product\soccer\gaiters\calcio\c001_0019.jpg" alt="..."
+                                     class="img-fluid">
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+
+                                    <h3 class="card-title"><a href="/product?id=6">CALZA CALCIO</a></h3>
+                                    <p class="h6"><small class="text-muted">C001 0019 SENIOR</small></p>
+                                    <p class="h6">
+                                        <small>Colour: Fluo Yellow<br>Size: SENIOR<br>Qta: 6
+                                        </small></p>
+                                    <p class="h4"> 2280 rubles</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card mb-3 card-link">
+                        <div class="row g-0">
+                            <div class="col-md-4 d-flex align-items-center">
+                                <img src="../assets/img/product\soccer\gaiters\calcio\c001_0027.jpg" alt="..."
+                                     class="img-fluid">
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+
+                                    <h3 class="card-title"><a href="/product?id=6">CALZA CALCIO</a></h3>
+                                    <p class="h6"><small class="text-muted">C001 0027 SENIOR</small></p>
+                                    <p class="h6">
+                                        <small>Colour: Light Grey<br>Size: SENIOR<br>Qta: 4
+                                        </small></p>
+                                    <p class="h4"> 1520 rubles</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card mb-3 card-link">
+                        <div class="row g-0">
+                            <div class="col-md-4 d-flex align-items-center">
+                                <img src="../assets/img/product\soccer\kit\campo\kitc53_0204.jpg" alt="..."
+                                     class="img-fluid">
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+
+                                    <h3 class="card-title"><a href="/product?id=1">KIT CAMPO</a></h3>
+                                    <p class="h6"><small class="text-muted">KITC53 0204 L</small></p>
+                                    <p class="h6">
+                                        <small>Colour: Royal/Navy Blue<br>Size: L<br>Qta: 1
+                                        </small></p>
+                                    <p class="h4"> 1840 rubles</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="h2">Total amount: 5640 rubles</p>
+
+
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Back to shopping!</button>
+
+                    <a href="/cart" class="btn btn-primary">
+                        <span>Order these products!</span>
+                    </a>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+<div class="text-center">
+    <p class="h3">Thank you!</p>
+    <p class="h4">Your order number is 10</p>
+    <p class="h5">Our managers are fighting for your order and will contact you by mail shortly.</p>
+</div>
+
+</div>
+
+
 </body>
-</html>

@@ -5,7 +5,7 @@ import com.tsystems.javaschool.entity.product.Product;
 import java.util.List;
 
 public interface ProductDAO {
-    Product getProduct(int id);
+    Product getById(int id);
     List<Product> allProducts(int idProductAbs);
     Product getProductByProductABSColourMainColourSecSize(int idProductAbs, int idColourMain, int idColourSec, String size);
 

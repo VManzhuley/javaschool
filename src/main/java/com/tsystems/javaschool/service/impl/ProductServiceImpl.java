@@ -1,11 +1,11 @@
 package com.tsystems.javaschool.service.impl;
 
-import com.tsystems.javaschool.dao.PhotoDAO;
 import com.tsystems.javaschool.dao.ProductDAO;
 import com.tsystems.javaschool.dto.ProductDTO;
 import com.tsystems.javaschool.entity.product.Product;
 import com.tsystems.javaschool.service.ColourService;
 import com.tsystems.javaschool.service.ProductService;
+import com.tsystems.javaschool.service.SizeService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,12 +17,13 @@ import java.util.stream.Collectors;
 public class ProductServiceImpl implements ProductService {
     private final ProductDAO productDAO;
     private final ColourService colourService;
-    private final PhotoDAO photoDAO;
+    private final SizeService sizeService;
 
-    public ProductServiceImpl(ProductDAO productDAO, ColourService colourService, PhotoDAO photoDAO) {
+
+    public ProductServiceImpl(ProductDAO productDAO, ColourService colourService, SizeService sizeService) {
         this.productDAO = productDAO;
         this.colourService = colourService;
-        this.photoDAO = photoDAO;
+        this.sizeService = sizeService;
     }
 
     @Override
@@ -37,22 +38,32 @@ public class ProductServiceImpl implements ProductService {
         ProductDTO productDTO = new ProductDTO();
         productDTO.setId(product.getId());
 
-        productDTO.setSize(product.getSize().getName());
+        productDTO.setSize(sizeService.getSize(product.getId()));
         productDTO.setColour(colourService.getColour(product.getId()));
 
 
         productDTO.setArticle(product.getProductAbs().getArticle() + " " +
                 colourService.getColour(product.getId()).getArticle() + " " +
-                productDTO.getSize());
+                productDTO.getSize().getName());
 
         productDTO.setName(product.getProductAbs().getName() + ", " +
                 product.getProductAbs().getDescription().getName() + ", " +
                 productDTO.getColour().getName() + ", " +
-                productDTO.getSize());
+                productDTO.getSize().getName());
         productDTO.setProductAbs(product.getProductAbs());
         productDTO.setPrice(product.getProductAbs().getPrice());
 
         return productDTO;
+    }
+
+    @Override
+    public Product mapToProduct(ProductDTO productDTO) {
+        Product product = new Product();
+        product.setId(productDTO.getId());
+        
+
+
+        return product;
     }
 
     @Override

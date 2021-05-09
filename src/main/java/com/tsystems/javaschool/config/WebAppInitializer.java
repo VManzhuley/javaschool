@@ -5,7 +5,9 @@ import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatche
 public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
     @Override
     protected Class<?>[] getRootConfigClasses() {
-        return new Class[]{PersistenceJPAConfig.class};
+
+
+        return new Class[]{JPAConfig.class};
     }
 
     @Override

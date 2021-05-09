@@ -1,20 +1,19 @@
 package com.tsystems.javaschool.dto;
 
-import com.tsystems.javaschool.entity.Client;
+
 import lombok.Data;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
+
 @Data
 public class CartDTO {
 
-    private Client client;
+    private ClientDTO client;
     private List<CartItemDTO> cartItems = new ArrayList<>();
 
-    private CartItemDTO findItemByIdProduct(int idProduct) {
+    public CartItemDTO findItemByIdProduct(int idProduct) {
         for (CartItemDTO item : this.cartItems
         ) {
             if (item.getProduct().getId() == idProduct) return item;
@@ -33,8 +32,28 @@ public class CartDTO {
         } else {
             item.setQuantity(item.getQuantity() + quantity);
         }
-
     }
+
+    public void deleteCartItem(int idProduct) {
+        CartItemDTO item = this.findItemByIdProduct(idProduct);
+
+        if (item != null) {
+            this.cartItems.remove(item);
+        }
+    }
+
+    public void updateCartItem(int idProduct, int quantity) {
+        CartItemDTO item = this.findItemByIdProduct(idProduct);
+
+        if (item !=null){
+            if (quantity<=0){
+                this.cartItems.remove(item);
+            } else {
+                item.setQuantity(quantity);
+            }
+        }
+    }
+
 
     public int getAmountTotal() {
         int total = 0;
@@ -43,5 +62,10 @@ public class CartDTO {
         }
         return total;
     }
+
+    public void deleteAll(){
+        cartItems = new ArrayList<>();
+    }
+
 
 }

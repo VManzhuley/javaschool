@@ -11,5 +11,7 @@ public interface ProductService {
 
     ProductDTO mapToProductDTO(Product product);
 
+    Product mapToProduct(ProductDTO productDTO);
+
     ProductDTO getProductByProductABSColourMainColourSecSize(int idProductAbs, int idColourMain, int idColourSec, String size);
 }

@@ -10,7 +10,7 @@
 <body>
 
 <div class="container">
-    <jsp:include page="header.jsp" />
+    <jsp:include page="header.jsp"/>
     <div class="row">
         <div class="col-md-3">
             <jsp:include page="sidebar.jsp"/>
@@ -49,10 +49,9 @@
                                  style="width: 18rem;" alt="${productAbs.name}">
                             <div class="card-body">
                                 <c:url value="/product" var="url">
-                                     <c:param name="id" value="${productAbs.id}"/>
+                                    <c:param name="id" value="${productAbs.id}"/>
                                 </c:url>
-                                <h5 class="card-title"><a href="${url}">${productAbs.name}</a>
-                                </h5>
+                                <h5 class="card-title"><a href="${url}">${productAbs.name}</a></h5>
                                 <ul class="list-group list-group-flush">
                                     <li class="list-group-item">${productAbs.article}</li>
                                     <li class="list-group-item">${productAbs.price}</li>

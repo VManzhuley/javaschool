@@ -14,6 +14,7 @@ public class ProductAbsDTO {
     private int price;
     private String composition;
     private Set<ColourDTO> colours;
-    private Set<String> sizes;
+
+    private Set<SizeDTO> sizes;
 
 }
