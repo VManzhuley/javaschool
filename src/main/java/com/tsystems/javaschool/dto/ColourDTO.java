@@ -9,6 +9,8 @@ public class ColourDTO {
     private int idColourMain;
     private int idColourSec;
     private String photoLink;
+    private String colourMain;
+    private String colourSec;
 
 }
 

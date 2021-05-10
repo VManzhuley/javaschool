@@ -1,6 +1,5 @@
 package com.tsystems.javaschool.controller;
 
-import com.tsystems.javaschool.dao.ClientDAO;
 import com.tsystems.javaschool.dto.*;
 import com.tsystems.javaschool.entity.product.Category;
 import com.tsystems.javaschool.service.*;
@@ -17,17 +16,13 @@ public class MainController {
 
     private final ProductAbsService productAbsService;
     private final CategoryService categoryService;
-    private final ClientDAO clientDAO;
     private final ProductService productService;
     private final OrderService orderService;
     private final ClientService clientService;
 
-
-    public MainController(ProductAbsService productAbsService, CategoryService categoryService, ClientDAO clientDAO, ProductService productService, OrderService orderService, ClientService clientService) {
+    public MainController(ProductAbsService productAbsService, CategoryService categoryService, ProductService productService, OrderService orderService, ClientService clientService) {
         this.productAbsService = productAbsService;
         this.categoryService = categoryService;
-        this.clientDAO = clientDAO;
-
         this.productService = productService;
         this.orderService = orderService;
         this.clientService = clientService;
@@ -68,7 +63,7 @@ public class MainController {
     }
 
 
-    @PostMapping(value = "product")
+    @PostMapping(value = "/product")
     public ModelAndView addToCart(@ModelAttribute("cart") CartDTO cart, @RequestParam int id, HttpServletRequest request) {
         ProductAbsDTO productAbs = productAbsService.getProductAbsDTO(id);
         ModelAndView modelAndView = new ModelAndView();
@@ -94,8 +89,8 @@ public class MainController {
     public ModelAndView product(@RequestParam int id) {
         ProductAbsDTO productAbs = productAbsService.getProductAbsDTO(id);
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("product");
 
+        modelAndView.setViewName("product");
 
         modelAndView.addObject("productAbs", productAbs);
 
@@ -137,18 +132,22 @@ public class MainController {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("client", client);
         modelAndView.addObject("order", order);
+
         clientService.add(client);
-        orderService.addOrder(cart, client, order);
+        int id = orderService.addOrder(cart, client, order);
+        String url = "redirect:/orderFinish?id="+id;
 
+        modelAndView.setViewName(url);
 
-        modelAndView.setViewName("redirect:/orderFinish");
         return modelAndView;
     }
 
     @GetMapping("/orderFinish")
-    public ModelAndView orderFinish() {
+    public ModelAndView orderFinish(@RequestParam int id) {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("id",id);
 
-        return new ModelAndView();
+        return modelAndView;
     }
 
 

@@ -30,7 +30,7 @@ public class ClientServiceImpl implements ClientService {
     public void add(ClientDTO clientDTO) {
         Client client = new Client();
 
-        if (!clientDTO.addressIsEmpty()){
+        if (!clientDTO.addressIsEmpty()) {
             Address address = new Address();
             address.setZip(clientDTO.getZip());
             address.setCountry(clientDTO.getCountry());
@@ -48,13 +48,12 @@ public class ClientServiceImpl implements ClientService {
         client.setLastname(clientDTO.getLastname());
         client.setEmail(clientDTO.getEmail());
         client.setPhone(clientDTO.getPhone());
-        Role role=new Role();
+
+        Role role = new Role();
         role.setId(1);
         client.setRole(role);
 
         clientDAO.add(client);
-
-
 
     }
 
@@ -66,6 +65,7 @@ public class ClientServiceImpl implements ClientService {
         clientDTO.setLastname(client.getLastname());
         clientDTO.setEmail(client.getEmail());
         clientDTO.setPhone(client.getPhone());
+
         if (client.getAddress() != null) {
             clientDTO.setZip(client.getAddress().getZip());
             clientDTO.setCountry(client.getAddress().getCountry());

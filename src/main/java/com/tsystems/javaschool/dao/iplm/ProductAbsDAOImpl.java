@@ -21,7 +21,7 @@ import java.util.List;
 @Repository
 public class ProductAbsDAOImpl implements ProductAbsDAO {
     private final EntityManagerFactory entityManagerFactory;
-    private int pageSize=6;
+    private final int pageSize=6;
     @Getter
     private int totalPages;
 
@@ -52,15 +52,11 @@ public class ProductAbsDAOImpl implements ProductAbsDAO {
         CriteriaQuery<ProductAbs> select = criteriaQuery.select(productAbsRoot);
 
 
-
-
-
-
         criteriaQuery.orderBy(criteriaBuilder.asc(productAbsRoot.get(sort)));
 
 
         TypedQuery<ProductAbs> typedQuery = entityManager.createQuery(select);
-        totalPages=typedQuery.getResultList().size()/pageSize+1;
+        totalPages=(typedQuery.getResultList().size()+pageSize-1)/pageSize;
         typedQuery.setFirstResult((page - 1)*pageSize);
         typedQuery.setMaxResults(pageSize);
 

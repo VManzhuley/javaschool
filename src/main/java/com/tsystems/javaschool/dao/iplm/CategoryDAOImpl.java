@@ -20,4 +20,6 @@ public class CategoryDAOImpl implements CategoryDAO {
     public List<Category> findAll() {
         return entityManager.createQuery("select c from Category c").getResultList();
     }
+
+
 }

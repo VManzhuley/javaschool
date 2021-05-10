@@ -12,5 +12,6 @@ public class ProductDTO {
     private SizeDTO size;
     private ColourDTO colour;
     private int price;
+    private int quantity;
 
 }

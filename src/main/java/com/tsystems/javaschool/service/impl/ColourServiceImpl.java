@@ -1,7 +1,6 @@
 package com.tsystems.javaschool.service.impl;
 
 import com.tsystems.javaschool.dao.PhotoDAO;
-import com.tsystems.javaschool.dao.ProductDAO;
 import com.tsystems.javaschool.dto.ColourDTO;
 import com.tsystems.javaschool.entity.product.Photo;
 import com.tsystems.javaschool.service.ColourService;
@@ -12,19 +11,17 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class ColourServiceImpl implements ColourService {
-    private final ProductDAO productDAO;
+
     private final PhotoDAO photoDAO;
 
-    public ColourServiceImpl(ProductDAO productDAO, PhotoDAO photoDAO) {
-        this.productDAO = productDAO;
+    public ColourServiceImpl(PhotoDAO photoDAO) {
         this.photoDAO = photoDAO;
-
     }
 
     @Override
-    public ColourDTO getColour(int idProduct) {
+    public ColourDTO getColourByIdProduct(int id) {
         ColourDTO colourDTO = new ColourDTO();
-        Photo photo = photoDAO.getPhotoLink(idProduct);
+        Photo photo = photoDAO.getPhotoLink(id);
 
         colourDTO.setIdColourMain(photo.getColourMain().getId());
         colourDTO.setPhotoLink(photo.getPhotoLink());

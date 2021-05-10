@@ -158,9 +158,9 @@
                                                 <c:forEach var="size" items="${productAbs.sizes}">
                                                     <li>
                                                         <button class="dropdown-item" type="button"
-                                                                onclick="document.getElementById('size').setAttribute('value','${size.name}');
-                                                                        document.getElementById('sizes').textContent='${size.name}';
-                                                                        ">${size.name}</button>
+                                                                onclick="document.getElementById('size').setAttribute('value','${size.size}');
+                                                                        document.getElementById('sizes').textContent='${size.size}';
+                                                                        ">${size.size}</button>
                                                     </li>
                                                 </c:forEach>
                                             </ul>

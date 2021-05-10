@@ -19,10 +19,12 @@ public class SizeServiceImpl implements SizeService {
     @Override
     public SizeDTO getSize(int idProduct) {
         SizeDTO sizeDTO=new SizeDTO();
+
         WeightVolume weightVolume=weightVolumeDAO.getWVByIdProduct(idProduct);
-        sizeDTO.setName(weightVolume.getSize().getName());
+        sizeDTO.setSize(weightVolume.getSize().getName());
         sizeDTO.setVolume(weightVolume.getVolume());
         sizeDTO.setWeight(weightVolume.getWeight());
+
         return sizeDTO;
     }
 }

@@ -204,9 +204,7 @@
                     <hr class="my-4">
                 </div>
 
-                <button type="submit" class="w-100 btn btn-primary btn-lg">Add To
-                    Cart
-                </button>
+                <button type="submit" class="w-100 btn btn-primary btn-lg">Confirm order</button>
             </form>
         </div>
     </div>

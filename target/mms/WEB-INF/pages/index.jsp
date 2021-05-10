@@ -19,6 +19,7 @@
 
     <jsp:include page="header.jsp"/>
     <jsp:include page="sidebar.jsp"/>
+
 </div>
 <script src="/assets/js/bootstrap.min.js"></script>
 </body>

@@ -31,7 +31,7 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public CartDTO findByClient(int id) {
-        CartDTO cartDTO=new CartDTO();
+        CartDTO cartDTO = new CartDTO();
         cartDTO.setClient(clientService.findById(id));
         List<CartItemDTO> list = new ArrayList<>();
         for (Cart cart : cartDAO.findByClient(id)) {
@@ -53,10 +53,10 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public List<Cart> mapToCart(CartDTO cartDTO) {
-        List<Cart> cartList=new ArrayList<>();
-        for (CartItemDTO cartItem: cartDTO.getCartItems()
-             ) {
-            Cart cart=new Cart();
+        List<Cart> cartList = new ArrayList<>();
+        for (CartItemDTO cartItem : cartDTO.getCartItems())
+        {
+            Cart cart = new Cart();
             //TODO
             cart.setClient(null);
             cart.setProduct(productDAO.getById(cartItem.getProduct().getId()));

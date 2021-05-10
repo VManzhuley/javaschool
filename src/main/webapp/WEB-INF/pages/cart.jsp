@@ -24,9 +24,9 @@
         <tr>
             <th scope="col"></th>
             <th scope="col">Product</th>
-            <th scope="col">Price</th>
+            <th scope="col">Price, RUB</th>
             <th scope="col">Quantity</th>
-            <th scope="col">Total</th>
+            <th scope="col">Total, RUB</th>
             <th scope="col">Action</th>
         </tr>
         </thead>
@@ -38,7 +38,7 @@
                     <td rowspan="2"><img src="../assets/img/product${cartItem.product.colour.photoLink}" alt="..."
                                          style="width: 10rem;"></td>
                     <td rowspan="2">${cartItem.product.name}</td>
-                    <td rowspan="2">${cartItem.product.price} RUB</td>
+                    <td rowspan="2">${cartItem.product.price}</td>
                     <td rowspan="2">
 
 
@@ -47,7 +47,7 @@
 
 
                     </td>
-                    <td rowspan="2">${cartItem.amount} rubles</td>
+                    <td rowspan="2">${cartItem.amount}</td>
                     <td> <button type="submit" class="btn btn-success">Update</button></td>
 
                 </tr>

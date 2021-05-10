@@ -1,31 +1,24 @@
-<link href="../assets/css/bootstrap.min.css" rel="stylesheet">
-<script src="../assets/js/bootstrap.min.js"></script>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
+<%--
+  Created by IntelliJ IDEA.
+  User: GIVOVA
+  Date: 10.05.2021
+  Time: 1:16
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+<head>
+    <title>Title</title>
+    <link href="/assets/css/bootstrap.min.css" rel="stylesheet">
+</head>
 <body>
 <div class="container">
 
 
-    <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
-        <a href="/" class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none">
-            <svg class="bi me-2" width="40" height="32">
-                <use xlink:href="#bootstrap"></use>
-            </svg>
-        </a>
-
-        <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
-            <li><a href="/admin/products" class="nav-link px-2 link-secondary">Products</a></li>
-            <li><a href="/admin/orders" class="nav-link px-2 link-dark">Orders</a></li>
-            <li><a href="/admin/statistic" class="nav-link px-2 link-dark">Statistic</a></li>
-        </ul>
-
-        <div class="col-md-3 text-end">
-            <a href="/logout" class="btn btn-primary me-2">
-                <span>Logout</span>
-            </a>
-        </div>
-    </header>
-
+    <jsp:include page="headerAdmin.jsp"/>
     <form method="post">
         <div class="row g-3">
 
@@ -123,42 +116,33 @@
                     <c:forEach var="colourP" items="${productAbs.colours}">
 
                         <div class="col-md-6">
-                            <select class="form-select" disabled>
-                                <c:forEach var="colours" items="${colours}">
-                                    <option ${colourP.idColourMain == colours.id ? yes : no}>${colours.name}</option>
-                                </c:forEach>
-                            </select>
+                            <input type="text" class="form-control" value="${colourP.colourMain}" disabled>
                         </div>
 
 
                         <div class="col-md-6">
-                            <select class="form-select" disabled>
-                                <option>---</option>
-                                <c:forEach var="colours" items="${colours}">
-                                    <option ${colourP.idColourSec == colours.id ? yes : no}>${colours.name}</option>
-                                </c:forEach>
-                            </select>
+                            <input type="text" class="form-control" value="${colourP.colourSec}" disabled>
                         </div>
 
                     </c:forEach>
 
 
                     <div class="col-md-6">
-                        <spring:bind path="colour.idColourMain">
+                        <spring:bind path="colour.colourMain">
                             <select class="form-select" name="${status.expression}">
-                                <option value="0">---</option>
+                                <option value="">---</option>
                                 <c:forEach var="colours" items="${colours}">
-                                    <option value="${colours.id}">${colours.name}</option>
+                                    <option value="${colours.name}">${colours.name}</option>
                                 </c:forEach>
                             </select>
                         </spring:bind>
                     </div>
                     <div class="col-md-6">
-                        <spring:bind path="colour.idColourSec">
+                        <spring:bind path="colour.colourSec">
                             <select class="form-select" name="${status.expression}">
-                                <option value="0">---</option>
+                                <option value="">---</option>
                                 <c:forEach var="colours" items="${colours}">
-                                    <option value="${colours.id}">${colours.name}</option>
+                                    <option value="${colours.name}">${colours.name}</option>
                                 </c:forEach>
                             </select>
                         </spring:bind>
@@ -174,23 +158,18 @@
                         <label class="form-label">Size</label>
                     </div>
 
-                    <c:forEach var="sizeP" items="${productAbs.sizes}" varStatus="i">
+                    <c:forEach var="sizeP" items="${productAbs.sizes}">
                         <div class="col-md-12">
-                            <select class="form-select" disabled>
-                                <option value="0">---</option>
-                                <c:forEach var="size" items="${sizes}">
-                                    <option ${sizeP.idSize == size.id ? yes : no}>${size.name}</option>
-                                </c:forEach>
-                            </select>
+                            <input type="text" class="form-control" value="${sizeP.size}" disabled>
                         </div>
                     </c:forEach>
 
-                    <spring:bind path="size.idSize">
+                    <spring:bind path="size.size">
                         <div class="col-md-12">
                             <select class="form-select" name="${status.expression}">
-                                <option value="0">---</option>
+                                <option value="">---</option>
                                 <c:forEach var="size" items="${sizes}">
-                                    <option value="${size.id}">${size.name}</option>
+                                    <option value="${size.name}">${size.name}</option>
                                 </c:forEach>
                             </select>
                         </div>
@@ -204,67 +183,68 @@
         </div>
     </form>
     <hr class="my-4">
+<form method="post">
     <table class="table align-middle text-center">
         <thead>
         <tr>
-            <th scope="col"></th>
-            <th scope="col">Product</th>
-            <th scope="col">Price, RUB</th>
-            <th scope="col">Quantity</th>
-            <th scope="col">Total, RUB</th>
+            <th scope="col">Colour</th>
+            <c:forEach var="sizeTable" items="${productAbs.sizes}" varStatus="i">
+                <th scope="col">${sizeTable.size}</th>
+                <c:set var="ss" value="${i.index}"/>
+            </c:forEach>
             <th scope="col">PhotoLink</th>
         </tr>
         </thead>
         <tbody>
 
+        <c:forEach var="colourTable" items="${productAbs.colours}" varStatus="i">
+            <tr>
+                <th>${colourTable.colourMain}<br>${colourTable.colourSec}</th>
 
 
-                <tr>
-                    <th>RED<br>WHITE</th>
-                    <td><input class="form-control form-control-plaintext text-center" type="number" min="0" value="0"></td>
-                    <td><input class="form-control form-control-plaintext text-center" type="number" min="0" value="0"></td>
-                    <td><input class="form-control form-control-plaintext text-center" type="number" min="0" value="0"></td>
-                    <td><input class="form-control form-control-plaintext text-center" type="number" min="0" value="0"></td>
-                    <td ><div class="input-group mb-1">
 
-                            <input type="text" class="form-control" value="${productAbs.photoLink}"
-                                   name="${status.expression}">
-                            <button class="btn btn-outline-primary" type="button">Choose</button>
 
+                <c:forEach var="sizeTable" items="${productAbs.sizes}" varStatus="j">
+                    <spring:bind path="productAbs.products[${i.index*(ss+1)+j.index}].quantity">
+                    <td><input class="form-control form-control-plaintext text-center" type="number" min="0" value="0" name="${status.expression}">
+                    </td>
+                    </spring:bind>
+                </c:forEach>
+
+                <td>
+                    <div class="input-group mb-1">
+                        <input type="text" class="form-control">
+                        <button class="btn btn-outline-primary" type="button">Choose</button>
                     </div>
-                        <img src="/assets/img/product${productAbs.photoLink}" class="rounded mx-auto d-block"
-                             style="width: 5rem;" alt="${productAbs.name}"></td>
-                </tr>
-
-
-
-
+                    <img src="/assets/img/product" class="rounded mx-auto d-block"
+                         style="width: 5rem;" alt="...">
+                </td>
+            </tr>
+        </c:forEach>
         </tbody>
         <tfoot>
 
         <tr>
             <th>Weight</th>
-            <td><input class="form-control form-control-plaintext text-center" type="number" min="0" value="0"></td>
-            <td><input class="form-control form-control-plaintext text-center" type="number" min="0" value="0"></td>
-            <td><input class="form-control form-control-plaintext text-center" type="number" min="0" value="0"></td>
-            <td><input class="form-control form-control-plaintext text-center" type="number" min="0" value="0"></td>
+            <c:forEach var="sizeTable" items="${productAbs.sizes}">
+                <td><input class="form-control form-control-plaintext text-center" type="number" min="0" value="0"></td>
+            </c:forEach>
+
         </tr>
         <tr>
             <th>Volume</th>
-            <td><input class="form-control form-control-plaintext text-center" type="number" min="0" value="0"></td>
-            <td><input class="form-control form-control-plaintext text-center" type="number" min="0" value="0"></td>
-            <td><input class="form-control form-control-plaintext text-center" type="number" min="0" value="0"></td>
-            <td><input class="form-control form-control-plaintext text-center" type="number" min="0" value="0"></td>
+            <c:forEach var="sizeTable" items="${productAbs.sizes}">
+                <td><input class="form-control form-control-plaintext text-center" type="number" min="0" value="0"></td>
+            </c:forEach>
         </tr>
         </tfoot>
 
     </table>
-
+<input type="submit">
+</form>
 
 </div>
 
-
-
-
-
+<script src="/assets/js/bootstrap.min.js"></script>
 </body>
+</html>

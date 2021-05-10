@@ -53,7 +53,7 @@
                                         <h3 class="card-title"><a href="${url}">${cartItem.product.productAbs.name}</a></h3>
                                         <p class="h6"><small class="text-muted">${cartItem.product.article}</small></p>
                                         <p class="h6">
-                                            <small>Colour: ${cartItem.product.colour.name}<br>Size: ${cartItem.product.size.name}<br>Qty: ${cartItem.quantity}
+                                            <small>Colour: ${cartItem.product.colour.name}<br>Size: ${cartItem.product.size.size}<br>Qty: ${cartItem.quantity}
                                             </small></p>
                                         <p class="h4"> ${cartItem.amount} RUB</p>
                                     </div>

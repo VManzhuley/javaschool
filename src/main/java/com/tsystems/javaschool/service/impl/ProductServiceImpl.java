@@ -39,19 +39,21 @@ public class ProductServiceImpl implements ProductService {
         productDTO.setId(product.getId());
 
         productDTO.setSize(sizeService.getSize(product.getId()));
-        productDTO.setColour(colourService.getColour(product.getId()));
+        productDTO.setColour(colourService.getColourByIdProduct(product.getId()));
+
+        productDTO.setArticle(String.join(" ", product.getProductAbs().getArticle(),
+                colourService.getColourByIdProduct(product.getId()).getArticle(),
+                productDTO.getSize().getSize()));
 
 
-        productDTO.setArticle(product.getProductAbs().getArticle() + " " +
-                colourService.getColour(product.getId()).getArticle() + " " +
-                productDTO.getSize().getName());
+        productDTO.setName(String.join(", ", product.getProductAbs().getName(),
+                product.getProductAbs().getDescription().getName(),
+                productDTO.getColour().getName(),
+                productDTO.getSize().getSize()));
 
-        productDTO.setName(product.getProductAbs().getName() + ", " +
-                product.getProductAbs().getDescription().getName() + ", " +
-                productDTO.getColour().getName() + ", " +
-                productDTO.getSize().getName());
         productDTO.setProductAbs(product.getProductAbs());
         productDTO.setPrice(product.getProductAbs().getPrice());
+        productDTO.setQuantity(product.getQuantity());
 
         return productDTO;
     }
@@ -60,7 +62,6 @@ public class ProductServiceImpl implements ProductService {
     public Product mapToProduct(ProductDTO productDTO) {
         Product product = new Product();
         product.setId(productDTO.getId());
-        
 
 
         return product;
