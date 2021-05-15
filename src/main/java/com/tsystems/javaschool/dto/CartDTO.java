@@ -10,8 +10,9 @@ import java.util.List;
 @Data
 public class CartDTO {
 
-    private ClientDTO client;
+    private String userName;
     private List<CartItemDTO> cartItems = new ArrayList<>();
+    private boolean isMissQuantity;
 
     public CartItemDTO findItemByIdProduct(int idProduct) {
         for (CartItemDTO item : this.cartItems
@@ -21,37 +22,12 @@ public class CartDTO {
         return null;
     }
 
-    public void addCartItem(ProductDTO product, int quantity) {
-        CartItemDTO item = this.findItemByIdProduct(product.getId());
-
-        if (item == null) {
-            item = new CartItemDTO();
-            item.setProduct(product);
-            item.setQuantity(quantity);
-            this.cartItems.add(item);
-        } else {
-            item.setQuantity(item.getQuantity() + quantity);
-        }
+    public void addCartItem(CartItemDTO cartItemDTO) {
+        this.cartItems.add(cartItemDTO);
     }
 
-    public void deleteCartItem(int idProduct) {
-        CartItemDTO item = this.findItemByIdProduct(idProduct);
-
-        if (item != null) {
-            this.cartItems.remove(item);
-        }
-    }
-
-    public void updateCartItem(int idProduct, int quantity) {
-        CartItemDTO item = this.findItemByIdProduct(idProduct);
-
-        if (item !=null){
-            if (quantity<=0){
-                this.cartItems.remove(item);
-            } else {
-                item.setQuantity(quantity);
-            }
-        }
+    public void removeCartItem(CartItemDTO cartItemDTO) {
+        this.cartItems.remove(cartItemDTO);
     }
 
 
@@ -63,9 +39,18 @@ public class CartDTO {
         return total;
     }
 
-    public void deleteAll(){
+    public void removeAll() {
         cartItems = new ArrayList<>();
+        userName = null;
     }
 
-
+    public boolean getIsMissQuantity() {
+        for (CartItemDTO item : this.cartItems
+        ) {
+            if (item.getMissQuantity() > 0) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

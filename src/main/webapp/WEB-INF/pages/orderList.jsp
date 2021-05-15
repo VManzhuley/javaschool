@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%--
   Created by IntelliJ IDEA.
   User: GIVOVA
@@ -15,13 +16,15 @@
 <body>
 <div class="container">
 
-    <jsp:include page="headerAdmin.jsp"/>
+    <jsp:include page="header.jsp"/>
     <table class="table">
         <thead>
-        <tr >
+        <tr>
             <th scope="col">#</th>
             <th scope="col">Date</th>
-            <th scope="col">Client</th>
+            <sec:authorize access="hasRole('ADMIN')">
+                <th scope="col">Client</th>
+            </sec:authorize>
             <th scope="col">Total Amount</th>
             <th scope="col">Status</th>
             <th scope="col">View order</th>
@@ -30,16 +33,16 @@
         <tbody>
         <c:forEach var="order" items="${orderList}">
             <c:choose>
-                <c:when test="${order.status=='Waiting for payment'}">
+                <c:when test="${order.status.title=='Waiting for payment'}">
                     <c:set var="var" value="table-warning"/>
                 </c:when>
-                <c:when test="${order.status=='Transferred to TC'}">
+                <c:when test="${order.status.title=='Transferred to TC'}">
                     <c:set var="var" value="table-info"/>
                 </c:when>
-                <c:when test="${order.status=='Completed'}">
+                <c:when test="${order.status.title=='Completed'}">
                     <c:set var="var" value="table-success"/>
                 </c:when>
-                <c:when test="${order.status=='Canceled'}">
+                <c:when test="${order.status.title=='Canceled'}">
                     <c:set var="var" value="table-danger"/>
                 </c:when>
                 <c:otherwise>
@@ -49,10 +52,18 @@
             <tr class="${var}">
                 <th scope="row">${order.id}</th>
                 <td>${order.date}</td>
-                <td>${order.client.lastname} ${order.client.name}</td>
+                <sec:authorize access="hasRole('ADMIN')">
+                    <td>${order.client.lastname} ${order.client.name}</td>
+                </sec:authorize>
                 <td>${order.amountTotal}</td>
-                <td>${order.status}</td>
-                <c:url value="/admin/order" var="url">
+                <td>${order.status.title}</td>
+                <sec:authorize access="hasRole('USER')">
+                    <c:set var="urlsec" value="/user/order"/>
+                </sec:authorize>
+                <sec:authorize access="hasRole('ADMIN')">
+                    <c:set var="urlsec" value="/admin/order"/>
+                </sec:authorize>
+                <c:url value="${urlsec}" var="url">
                     <c:param name="id" value="${order.id}"/>
                 </c:url>
                 <td><a href="${url}" class="btn btn-outline-primary">Go</a></td>
@@ -68,14 +79,14 @@
                 <c:set value="disabled" var="disabled"/>
                 <c:set value="" var="active"/>
 
-                <c:url value="/admin/orders" var="url">
+                <c:url value="${urlsec}s" var="url">
                     <c:param name="page" value="1"/>
                 </c:url>
                 <li class="page-item ${page == 1 ? disabled : active}">
                     <a class="page-link" href="${url}"><<<</a>
                 </li>
 
-                <c:url value="/admin/orders" var="url">
+                <c:url value="${urlsec}s" var="url">
                     <c:param name="page" value="${page - 1}"/>
                 </c:url>
                 <li class="page-item ${page == 1 ? disabled : active}">
@@ -105,28 +116,29 @@
                 </c:if>
 
                 <c:forEach begin="${begin}" end="${end}" step="1" varStatus="i">
-                    <c:url value="/admin/orders" var="url">
+                    <c:url value="${urlsec}s" var="url">
                         <c:param name="page" value="${i.index}"/>
                     </c:url>
                     <c:set value="active" var="current"/>
                     <c:set value="" var="perspective"/>
-                    <li class="page-item ${page == i.index ? current : perspective}"><a class="page-link" href="${url}">${i.index}</a></li>
+                    <li class="page-item ${page == i.index ? current : perspective}"><a class="page-link"
+                                                                                        href="${url}">${i.index}</a>
+                    </li>
                 </c:forEach>
 
-                <c:url value="/admin/orders" var="url">
+                <c:url value="${urlsec}s" var="url">
                     <c:param name="page" value="${page + 1}"/>
                 </c:url>
                 <li class="page-item ${page == totalPages ? disabled : active}">
                     <a class="page-link" href="${url}">></a>
                 </li>
 
-                <c:url value="/admin/orders" var="url">
+                <c:url value="${urlsec}s" var="url">
                     <c:param name="page" value="${totalPages}"/>
                 </c:url>
                 <li class="page-item ${page == totalPages ? disabled : active}">
                     <a class="page-link" href="${url}">>>></a>
                 </li>
-
 
 
             </c:if>

@@ -6,7 +6,9 @@ import com.tsystems.javaschool.dto.ClientDTO;
 import com.tsystems.javaschool.entity.Address;
 import com.tsystems.javaschool.entity.Client;
 import com.tsystems.javaschool.entity.Role;
+import com.tsystems.javaschool.error.WrongParameterException;
 import com.tsystems.javaschool.service.ClientService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,10 +17,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class ClientServiceImpl implements ClientService {
     private final ClientDAO clientDAO;
     private final AddressDAO addressDAO;
+    private final PasswordEncoder passwordEncoder;
 
-    public ClientServiceImpl(ClientDAO clientDAO, AddressDAO addressDAO) {
+    public ClientServiceImpl(ClientDAO clientDAO, AddressDAO addressDAO, PasswordEncoder passwordEncoder) {
         this.clientDAO = clientDAO;
         this.addressDAO = addressDAO;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -27,21 +31,17 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public void add(ClientDTO clientDTO) {
+    public ClientDTO findByUserName(String userName) {
+        return mapToClientDTO(clientDAO.findByUserName(userName));
+    }
+
+    @Override
+    public Client add(ClientDTO clientDTO) {
+
         Client client = new Client();
 
         if (!clientDTO.addressIsEmpty()) {
-            Address address = new Address();
-            address.setZip(clientDTO.getZip());
-            address.setCountry(clientDTO.getCountry());
-            address.setCity(clientDTO.getCity());
-            address.setStreet(clientDTO.getStreet());
-            address.setBuilding(clientDTO.getBuilding());
-            address.setApartment(clientDTO.getApartment());
-
-            addressDAO.add(address);
-
-            client.setAddress(address);
+            client.setAddress(addAddress(clientDTO));
         }
 
         client.setName(clientDTO.getName());
@@ -49,11 +49,10 @@ public class ClientServiceImpl implements ClientService {
         client.setEmail(clientDTO.getEmail());
         client.setPhone(clientDTO.getPhone());
 
-        Role role = new Role();
-        role.setId(1);
-        client.setRole(role);
 
         clientDAO.add(client);
+
+        return client;
 
     }
 
@@ -65,6 +64,8 @@ public class ClientServiceImpl implements ClientService {
         clientDTO.setLastname(client.getLastname());
         clientDTO.setEmail(client.getEmail());
         clientDTO.setPhone(client.getPhone());
+        clientDTO.setPassword("");
+        clientDTO.setMatchingPassword("");
 
         if (client.getAddress() != null) {
             clientDTO.setZip(client.getAddress().getZip());
@@ -74,6 +75,51 @@ public class ClientServiceImpl implements ClientService {
             clientDTO.setBuilding(client.getAddress().getBuilding());
             clientDTO.setApartment(client.getAddress().getApartment());
         }
+
         return clientDTO;
     }
+
+    @Override
+    public Client registerNewClient(ClientDTO clientDTO) {
+        if (emailExist(clientDTO.getEmail())) {
+            throw new WrongParameterException("There is an account with that email address: " + clientDTO.getEmail());
+        }
+
+        Client client = new Client();
+
+        client.setAddress(addAddress(clientDTO));
+
+        client.setUserName(clientDTO.getEmail());
+        client.setName(clientDTO.getName());
+        client.setLastname(clientDTO.getLastname());
+        client.setEmail(clientDTO.getEmail());
+        client.setPhone(clientDTO.getPhone());
+        client.setPassword(passwordEncoder.encode(clientDTO.getPassword()));
+        client.setRole(Role.USER);
+
+        clientDAO.add(client);
+
+        return client;
+    }
+
+    @Override
+    public boolean emailExist(String email) {
+        return clientDAO.findByUserName(email) != null;
+    }
+
+    @Override
+    public Address addAddress(ClientDTO clientDTO) {
+
+        Address address = new Address();
+        address.setZip(clientDTO.getZip());
+        address.setCountry(clientDTO.getCountry());
+        address.setCity(clientDTO.getCity());
+        address.setStreet(clientDTO.getStreet());
+        address.setBuilding(clientDTO.getBuilding());
+        address.setApartment(clientDTO.getApartment());
+        addressDAO.add(address);
+
+        return address;
+    }
+
 }

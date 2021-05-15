@@ -39,5 +39,10 @@ public class ProductDAOImpl implements ProductDAO {
         return query.getSingleResult();
     }
 
+    @Override
+    public void update(Product product) {
+        entityManager.merge(product);
+    }
+
 
 }

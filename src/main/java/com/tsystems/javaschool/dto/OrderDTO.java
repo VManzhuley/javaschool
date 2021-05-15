@@ -1,5 +1,8 @@
 package com.tsystems.javaschool.dto;
 
+import com.tsystems.javaschool.entity.PaymentType;
+import com.tsystems.javaschool.entity.ShippingType;
+import com.tsystems.javaschool.entity.Status;
 import lombok.Data;
 
 import java.util.List;
@@ -10,19 +13,10 @@ public class OrderDTO {
     private int id;
     private ClientDTO client;
     private String date;
-    private String payment;
-    private String shipping;
-    private String status;
+    private PaymentType payment;
+    private ShippingType shipping;
+    private Status status;
     private long amountTotal;
     private List<ProductOrderedDTO> productOrderedList;
-}
-enum Status{
-
-}
-enum Shipping{
-
-}
-enum Payment{
-
 }
 

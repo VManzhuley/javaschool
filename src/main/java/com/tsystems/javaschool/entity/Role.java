@@ -1,10 +1,13 @@
 package com.tsystems.javaschool.entity;
 
-import lombok.Data;
+import org.springframework.security.core.GrantedAuthority;
 
-import javax.persistence.Entity;
+public enum Role implements GrantedAuthority {
+    USER,
+    ADMIN;
 
-@Entity
-@Data
-public class Role extends AbstractTable {
+    @Override
+    public String getAuthority() {
+        return name();
+    }
 }

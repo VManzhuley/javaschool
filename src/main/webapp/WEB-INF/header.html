@@ -1,12 +1,12 @@
 <link href="../assets/css/bootstrap.min.css" rel="stylesheet">
 <script src="../assets/js/bootstrap.min.js"></script>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 
 <body>
 <div class="container">
 
 
-    <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+    <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 border-bottom">
         <a href="/" class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none">
             <svg class="bi me-2" width="40" height="32">
                 <use xlink:href="#bootstrap"></use>
@@ -14,257 +14,128 @@
         </a>
 
         <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
-            <li><a href="/admin/products" class="nav-link px-2 link-secondary">Products</a></li>
-            <li><a href="/admin/orders" class="nav-link px-2 link-dark">Orders</a></li>
-            <li><a href="/admin/statistic" class="nav-link px-2 link-dark">Statistic</a></li>
+            <li><a href="/" class="nav-link px-2 link-secondary">Home</a></li>
+            <li><a href="#" class="nav-link px-2 link-dark">Delivery Terms </a></li>
+            <li><a href="#" class="nav-link px-2 link-dark">Payment methods</a></li>
+            <li><a href="#" class="nav-link px-2 link-dark">FAQs</a></li>
+            <li><a href="#" class="nav-link px-2 link-dark">Contacts</a></li>
         </ul>
 
         <div class="col-md-3 text-end">
-            <a href="/logout" class="btn btn-primary me-2">
-                <span>Logout</span>
+
+            <button type="button" class="btn btn-outline-primary">Registration</button>
+            <a href="/login" class="btn btn-primary me-2">
+                <span>Login</span>
             </a>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                Cart
+            </button>
         </div>
     </header>
+    <div class="border-bottom mb-3"></div>
 
-    <form method="post">
-        <div class="row g-3">
+    <div class="row g-1 justify-content-center">
+        <div class="col-md-6">
+            <div class="row g-3">
 
-            <div class="col-md-4 col-lg-3">
-                <div class="row g-1">
-                    <h4 class="mb-3">Photo</h4>
-                    <label class="form-label">Photo Link</label>
-                    <div class="input-group mb-3">
-                        <spring:bind path="productAbs.photoLink">
-                            <input type="text" class="form-control" value="${productAbs.photoLink}"
-                                   name="${status.expression}">
-                            <button class="btn btn-outline-primary" type="button">Choose</button>
-                        </spring:bind>
-                    </div>
-                    <img src="/assets/img/product${productAbs.photoLink}" class="rounded mx-auto d-block"
-                         style="width: 17rem;" alt="${productAbs.name}">
-                </div>
-            </div>
-            <div class="col-md-4 col-lg-4">
-                <div class="row g-1">
-                    <h4 class="mb-3">Product details</h4>
-                    <div class="col-md-6">
-                        <label class="form-label">Article</label>
-                        <spring:bind path="productAbs.article">
-                            <input type="text" class="form-control" name="${status.expression}"
-                                   value="${productAbs.article}">
-                        </spring:bind>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Price</label>
-                        <spring:bind path="productAbs.price">
-                            <input type="text" class="form-control" name="${status.expression}"
-                                   value="${productAbs.price}">
-                        </spring:bind>
-                    </div>
-                    <div class="col-md-12">
-                        <label class="form-label">Name</label>
-                        <spring:bind path="productAbs.name">
-                            <input type="text" class="form-control" name="${status.expression}"
-                                   value="${productAbs.name}">
-                        </spring:bind>
-                    </div>
-                    <c:set value="selected" var="yes"/>
-                    <c:set value="" var="no"/>
-                    <div class="col-md-12">
-                        <label class="form-label">Category</label>
-                        <spring:bind path="productAbs.idCategory">
-                            <select class="form-select" name="${status.expression}">
-                                <c:forEach var="category" items="${categories}">
-                                    <option ${productAbs.idCategory == category.idCategory ? yes : no}
-                                            value="${category.idCategory}">${category.name}</option>
-                                </c:forEach>
-                            </select>
-                        </spring:bind>
-                    </div>
-                    <div class="col-md-12">
-                        <label class="form-label">Description</label>
-
-                        <spring:bind path="productAbs.idDescription">
-                            <select class="form-select" name="${status.expression}">
-                                <c:forEach var="description" items="${descriptions}">
-                                    <option ${productAbs.idDescription == description.id ? yes : no}
-                                            value="${description.id}">${description.name}</option>
-                                </c:forEach>
-                            </select>
-                        </spring:bind>
-                    </div>
-                    <div class="col-md-12">
-                        <label class="form-label">Composition</label>
-
-                        <spring:bind path="productAbs.idComposition">
-                            <select class="form-select" name="${status.expression}">
-                                <c:forEach var="compositions" items="${compositions}">
-                                    <option ${productAbs.idComposition == compositions.id ? yes : no}
-                                            value="${compositions.id}">${compositions.name}</option>
-                                </c:forEach>
-                            </select>
-                        </spring:bind>
-                    </div>
-
-
-                </div>
-            </div>
-            <div class="col-md-4 col-lg-3">
-
-                <div class="row g-1">
-                    <h4 class="mb-3">Colour details</h4>
-                    <div class="col-md-6">
-                        <label class="form-label">Colour Main</label>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Colour Secondary</label>
-                    </div>
-
-                    <c:forEach var="colourP" items="${productAbs.colours}">
-
-                        <div class="col-md-6">
-                            <select class="form-select" disabled>
-                                <c:forEach var="colours" items="${colours}">
-                                    <option ${colourP.idColourMain == colours.id ? yes : no}>${colours.name}</option>
-                                </c:forEach>
-                            </select>
-                        </div>
-
-
-                        <div class="col-md-6">
-                            <select class="form-select" disabled>
-                                <option>---</option>
-                                <c:forEach var="colours" items="${colours}">
-                                    <option ${colourP.idColourSec == colours.id ? yes : no}>${colours.name}</option>
-                                </c:forEach>
-                            </select>
-                        </div>
-
-                    </c:forEach>
-
-
-                    <div class="col-md-6">
-                        <spring:bind path="colour.idColourMain">
-                            <select class="form-select" name="${status.expression}">
-                                <option value="0">---</option>
-                                <c:forEach var="colours" items="${colours}">
-                                    <option value="${colours.id}">${colours.name}</option>
-                                </c:forEach>
-                            </select>
-                        </spring:bind>
-                    </div>
-                    <div class="col-md-6">
-                        <spring:bind path="colour.idColourSec">
-                            <select class="form-select" name="${status.expression}">
-                                <option value="0">---</option>
-                                <c:forEach var="colours" items="${colours}">
-                                    <option value="${colours.id}">${colours.name}</option>
-                                </c:forEach>
-                            </select>
-                        </spring:bind>
-                    </div>
-                    <button type="submit" class="w-100 btn btn-primary btn-sm">Add colour</button>
-                </div>
-
-            </div>
-            <div class="col-md-4 col-lg-2">
-                <div class="row g-1">
-                    <h4 class="mb-3">Size details</h4>
-                    <div class="col-md-6">
-                        <label class="form-label">Size</label>
-                    </div>
-
-                    <c:forEach var="sizeP" items="${productAbs.sizes}" varStatus="i">
+                <div class="col-md-4 col-lg-6">
+                    <div class="row g-1">
+                        <h4 class="mb-0">Details</h4>
+                        <small class="text-muted">required</small>
                         <div class="col-md-12">
-                            <select class="form-select" disabled>
-                                <option value="0">---</option>
-                                <c:forEach var="size" items="${sizes}">
-                                    <option ${sizeP.idSize == size.id ? yes : no}>${size.name}</option>
-                                </c:forEach>
-                            </select>
-                        </div>
-                    </c:forEach>
+                            <label class="form-label">Name</label>
 
-                    <spring:bind path="size.idSize">
+                            <input type="text" class="form-control">
+
+                        </div>
                         <div class="col-md-12">
-                            <select class="form-select" name="${status.expression}">
-                                <option value="0">---</option>
-                                <c:forEach var="size" items="${sizes}">
-                                    <option value="${size.id}">${size.name}</option>
-                                </c:forEach>
-                            </select>
-                        </div>
-                    </spring:bind>
+                            <label class="form-label">Lastname</label>
 
-                    <button type="submit" class="w-100 btn btn-primary btn-sm">Add size</button>
+                            <input type="text" class="form-control">
+
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Phone</label>
+                            <div class="input-group has-validation">
+                                <span class="input-group-text">+7</span>
+                                <input type="text" class="form-control">
+                            </div>
+
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Email</label>
+                            <div class="input-group has-validation">
+                                <span class="input-group-text">@</span>
+                                <input type="text" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Password</label>
+
+                            <input type="password" class="form-control">
+
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Repeat password</label>
+
+                            <input type="password" class="form-control">
+
+                        </div>
+
+                    </div>
                 </div>
 
-            </div>
+                <div class="col-md-4 col-lg-6">
+                    <div class="row g-1">
+                        <h4 class="mb-0">Address</h4>
+                        <small class="text-muted">optional</small>
+                        <div class="col-md-12">
+                            <label class="form-label">Zip</label>
 
+                            <input type="text" class="form-control">
+
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Country</label>
+
+                            <input type="text" class="form-control">
+
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">City</label>
+
+                            <input type="text" class="form-control">
+
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Street</label>
+
+                            <input type="text" class="form-control">
+
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Building</label>
+
+                            <input type="text" class="form-control">
+
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Apartment</label>
+
+                            <input type="text" class="form-control">
+
+                        </div>
+                    </div>
+
+                </div>
+                <hr class="my-4">
+
+            </div>
+            <button type="submit" class="w-100 btn btn-primary">Confirm</button>
         </div>
-    </form>
-    <hr class="my-4">
-    <table class="table align-middle text-center">
-        <thead>
-        <tr>
-            <th scope="col"></th>
-            <th scope="col">Product</th>
-            <th scope="col">Price, RUB</th>
-            <th scope="col">Quantity</th>
-            <th scope="col">Total, RUB</th>
-            <th scope="col">PhotoLink</th>
-        </tr>
-        </thead>
-        <tbody>
-
-
-
-                <tr>
-                    <th>RED<br>WHITE</th>
-                    <td><input class="form-control form-control-plaintext text-center" type="number" min="0" value="0"></td>
-                    <td><input class="form-control form-control-plaintext text-center" type="number" min="0" value="0"></td>
-                    <td><input class="form-control form-control-plaintext text-center" type="number" min="0" value="0"></td>
-                    <td><input class="form-control form-control-plaintext text-center" type="number" min="0" value="0"></td>
-                    <td ><div class="input-group mb-1">
-
-                            <input type="text" class="form-control" value="${productAbs.photoLink}"
-                                   name="${status.expression}">
-                            <button class="btn btn-outline-primary" type="button">Choose</button>
-
-                    </div>
-                        <img src="/assets/img/product${productAbs.photoLink}" class="rounded mx-auto d-block"
-                             style="width: 5rem;" alt="${productAbs.name}"></td>
-                </tr>
-
-
-
-
-        </tbody>
-        <tfoot>
-
-        <tr>
-            <th>Weight</th>
-            <td><input class="form-control form-control-plaintext text-center" type="number" min="0" value="0"></td>
-            <td><input class="form-control form-control-plaintext text-center" type="number" min="0" value="0"></td>
-            <td><input class="form-control form-control-plaintext text-center" type="number" min="0" value="0"></td>
-            <td><input class="form-control form-control-plaintext text-center" type="number" min="0" value="0"></td>
-        </tr>
-        <tr>
-            <th>Volume</th>
-            <td><input class="form-control form-control-plaintext text-center" type="number" min="0" value="0"></td>
-            <td><input class="form-control form-control-plaintext text-center" type="number" min="0" value="0"></td>
-            <td><input class="form-control form-control-plaintext text-center" type="number" min="0" value="0"></td>
-            <td><input class="form-control form-control-plaintext text-center" type="number" min="0" value="0"></td>
-        </tr>
-        </tfoot>
-
-    </table>
-
+    </div>
 
 </div>
-
-
-
 
 
 </body>

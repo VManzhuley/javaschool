@@ -52,55 +52,78 @@
         </div>
         <div class="col-md-7 col-lg-8">
 
-            <form class="needs-validation" method="post">
+            <form method="post">
                 <div class="row g-3">
                     <h4 class="mb-3">Contact details</h4>
                     <div class="col-sm-6">
                         <label for="firstName" class="form-label">First name</label>
                         <spring:bind path="client.name">
-                            <input type="text" class="form-control" id="firstName" name="${status.expression}" required>
+                            <input type="text" class="form-control" id="firstName" name="${status.expression}"
+                                   value="${client.name}">
                         </spring:bind>
-                        <div class="invalid-feedback">
-                            Valid first name is required.
-                        </div>
+                        <spring:hasBindErrors name="client">
+                            <c:forEach var="error" items="${errors.getFieldErrors('name')}">
+                                <div class="row">
+                                    <small class="text-danger"><spring:message message="${error}"/></small>
+                                </div>
+                            </c:forEach>
+                        </spring:hasBindErrors>
                     </div>
 
                     <div class="col-sm-6">
                         <label for="lastName" class="form-label">Last name</label>
                         <spring:bind path="client.lastname">
-                            <input type="text" class="form-control" id="lastName" name="${status.expression}" required>
+                            <input type="text" class="form-control" id="lastName" name="${status.expression}"
+                                   value="${client.lastname}">
                         </spring:bind>
-                        <div class="invalid-feedback">
-                            Valid last name is required.
-                        </div>
+                        <spring:hasBindErrors name="client">
+                            <c:forEach var="error" items="${errors.getFieldErrors('lastname')}">
+                                <div class="row">
+                                    <small class="text-danger"><spring:message message="${error}"/></small>
+                                </div>
+                            </c:forEach>
+                        </spring:hasBindErrors>
                     </div>
 
                     <div class="col-md-6">
                         <label for="email" class="form-label">Email</label>
-                        <div class="input-group has-validation">
+                        <div class="input-group">
                             <span class="input-group-text">@</span>
                             <spring:bind path="client.email">
                                 <input type="email" class="form-control" id="email" name="${status.expression}"
-                                       placeholder="you@example.com">
+                                       value="${client.email}" placeholder="dsfsd@sdfsdf">
                             </spring:bind>
-                            <div class="invalid-feedback">
-                                Please enter a valid email address.
-                            </div>
                         </div>
+                        <spring:hasBindErrors name="client">
+                            <c:forEach var="error" items="${errors.getFieldErrors('email')}">
+                                <div class="row">
+                                    <small class="text-danger"><spring:message message="${error}"/></small>
+                                </div>
+                            </c:forEach>
+                        </spring:hasBindErrors>
+                        <c:if test="${not empty message}">
+                            <div class="row">
+                                <small class="text-danger">${message}</small>
+                            </div>
+                        </c:if>
                     </div>
 
                     <div class="col-md-6">
                         <label for="phone" class="form-label">Phone</label>
-                        <div class="input-group has-validation">
+                        <div class="input-group">
                             <span class="input-group-text">+7</span>
                             <spring:bind path="client.phone">
                                 <input type="tel" class="form-control" id="phone" name="${status.expression}"
-                                       placeholder="912 345 67 89">
+                                       value="${client.phone}" placeholder="912 345 67 89">
                             </spring:bind>
-                            <div class="invalid-feedback">
-                                Please enter a valid phone.
-                            </div>
                         </div>
+                        <spring:hasBindErrors name="client">
+                            <c:forEach var="error" items="${errors.getFieldErrors('phone')}">
+                                <div class="row">
+                                    <small class="text-danger"><spring:message message="${error}"/></small>
+                                </div>
+                            </c:forEach>
+                        </spring:hasBindErrors>
                     </div>
 
                     <hr class="my-4">
@@ -109,12 +132,12 @@
                         <label for="payment" class="form-label">Payment method</label>
                         <spring:bind path="order.payment">
                             <select class="form-select" id="payment" required name="${status.expression}"
-                                    onchange="if (this.selectedIndex===3){document.getElementById('DAnother').setAttribute('disabled', 'disabled');}
-                                            else {document.getElementById('DAnother').removeAttribute('disabled');}">
-                                <option disabled>Choose...</option>
-                                <option id="PBank" value="Bank Transfer">Bank Transfer</option>
-                                <option id="PCard" value="Credit Cards">Credit Cards</option>
-                                <option id="PCash" value="Cash upon receipt">Cash upon receipt</option>
+                                    onchange="if (this.value==='CASH'){document.getElementById('ANOTHER').setAttribute('disabled', 'disabled');}
+                                            else {document.getElementById('ANOTHER').removeAttribute('disabled');}">
+
+                                <c:forEach var="payment" items="${paymentType}">
+                                    <option value="${payment}" id="${payment}" ${order.payment == payment ? 'selected' : ''}>${payment.title}</option>
+                                </c:forEach>
                             </select>
                         </spring:bind>
                     </div>
@@ -122,81 +145,74 @@
                         <label for="delivery" class="form-label">Delivery terms</label>
                         <spring:bind path="order.shipping">
                             <select class="form-select" id="delivery" required name="${status.expression}"
-                                    onchange="if (this.selectedIndex===3){document.getElementById('PCash').setAttribute('disabled', 'disabled');}
-                                            else {document.getElementById('PCash').removeAttribute('disabled');}
-                                            if (this.selectedIndex===1){document.getElementById('Shipping').setAttribute('style', 'display: none');}
+                                    onchange="if (this.value==='ANOTHER'){document.getElementById('CASH').setAttribute('disabled', 'disabled');}
+                                            else {document.getElementById('CASH').removeAttribute('disabled');}
+                                            if (this.value==='SELF'){document.getElementById('Shipping').setAttribute('style', 'display: none');}
                                             else{document.getElementById('Shipping').removeAttribute('style');}">
-                                <option disabled>Choose...</option>
-                                <option id="DSelf" value="Self pick-up">Self pick-up</option>
-                                <option id="DSPb" value="In St. Petersburg">In St. Petersburg</option>
-                                <option id="DAnother" value="To another city">To another city</option>
+
+                                <c:forEach var="shipping" items="${shippingType}">
+                                    <option value="${shipping}" id="${shipping}" ${order.shipping == shipping ? 'selected' : ''}>${shipping.title}</option>
+                                </c:forEach>
                             </select>
                         </spring:bind>
                     </div>
+                    <spring:bind path="client.password">
+                        <input type="tel" hidden name="${status.expression}">
+                    </spring:bind>
+                    <spring:bind path="client.matchingPassword">
+                        <input type="tel" hidden name="${status.expression}">
+                    </spring:bind>
 
-
-                    <div class="row g-3" id="Shipping" style="display: none">
+                    <div class="row g-3" id="Shipping" style="display: ${order.shipping.name() == 'SELF' ? 'none' : ''}">
                         <hr class="my-4">
                         <h4 class="mb-3">Shipping address</h4>
 
                         <div class="col-md-3">
                             <label for="zip" class="form-label">Zip</label>
                             <spring:bind path="client.zip">
-                                <input type="text" class="form-control" id="zip" name="${status.expression}">
+                                <input type="text" class="form-control" id="zip" name="${status.expression}"
+                                       value="${client.zip}">
                             </spring:bind>
-                            <div class="invalid-feedback">
-                                Please enter a valid zip code.
-                            </div>
                         </div>
 
                         <div class="col-md-4">
                             <label for="country" class="form-label">Country</label>
                             <spring:bind path="client.country">
-                                <input type="text" class="form-control" id="country" name="${status.expression}">
+                                <input type="text" class="form-control" id="country" name="${status.expression}"
+                                       value="${client.country}">
                             </spring:bind>
-                            <div class="invalid-feedback">
-                                Please enter a valid country.
-                            </div>
                         </div>
 
                         <div class="col-md-5">
                             <label for="city" class="form-label">City</label>
                             <spring:bind path="client.city">
-                                <input type="text" class="form-control" id="city" name="${status.expression}">
+                                <input type="text" class="form-control" id="city" name="${status.expression}"
+                                       value="${client.city}">
                             </spring:bind>
-                            <div class="invalid-feedback">
-                                Please enter a valid city.
-                            </div>
                         </div>
                         <div class="col-md-6">
                             <label for="street" class="form-label">Street</label>
                             <spring:bind path="client.street">
-                                <input type="text" class="form-control" id="street" name="${status.expression}">
+                                <input type="text" class="form-control" id="street" name="${status.expression}"
+                                       value="${client.street}">
                             </spring:bind>
-                            <div class="invalid-feedback">
-                                Please enter a valid street.
-                            </div>
                         </div>
 
 
                         <div class="col-md-3">
                             <label for="building" class="form-label">Building</label>
                             <spring:bind path="client.building">
-                                <input type="text" class="form-control" id="building" name="${status.expression}">
+                                <input type="text" class="form-control" id="building" name="${status.expression}"
+                                       value="${client.building}">
                             </spring:bind>
-                            <div class="invalid-feedback">
-                                Please enter a valid building.
-                            </div>
                         </div>
 
                         <div class="col-md-3">
                             <label for="apartment" class="form-label">Apartment</label>
                             <spring:bind path="client.apartment">
-                                <input type="text" class="form-control" id="apartment" name="${status.expression}">
+                                <input type="text" class="form-control" id="apartment" name="${status.expression}"
+                                       value="${client.apartment}">
                             </spring:bind>
-                            <div class="invalid-feedback">
-                                Please enter a valid apartment.
-                            </div>
                         </div>
 
 

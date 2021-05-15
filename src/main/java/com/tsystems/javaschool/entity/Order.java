@@ -14,17 +14,26 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
+
     @ManyToOne
     @JoinColumn(name="client_id")
     private Client client;
+
     @Column(name = "date")
     private String date;
+
     @Column(name="payment")
-    private String payment;
+    @Enumerated(EnumType.STRING)
+    private PaymentType payment;
+
     @Column(name="shipping")
-    private String shipping;
+    @Enumerated(EnumType.STRING)
+    private ShippingType shipping;
+
     @Column(name="status")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
     @OneToMany(mappedBy = "order", fetch = FetchType.EAGER)
     private List<ProductOrdered> productOrderedList;
 }

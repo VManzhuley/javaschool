@@ -18,7 +18,7 @@
 <div class="container">
 
 
-    <jsp:include page="headerAdmin.jsp"/>
+    <jsp:include page="header.jsp"/>
     <form method="post">
         <div class="row g-3">
 
@@ -33,7 +33,11 @@
                             <button class="btn btn-outline-primary" type="button">Choose</button>
                         </spring:bind>
                     </div>
-                    <img src="/assets/img/product${productAbs.photoLink}" class="rounded mx-auto d-block"
+                    <c:set value="${productAbs.photoLink}" var="productFoto"/>
+                    <c:if test="${productAbs.photoLink.length()<1}">
+                        <c:set value="/product-foto.png" var="productFoto"/>
+                    </c:if>
+                    <img src="/assets/img/product${productFoto}" class="rounded mx-auto d-block"
                          style="width: 17rem;" alt="${productAbs.name}">
                 </div>
             </div>
@@ -42,17 +46,34 @@
                     <h4 class="mb-3">Product details</h4>
                     <div class="col-md-6">
                         <label class="form-label">Article</label>
+
                         <spring:bind path="productAbs.article">
                             <input type="text" class="form-control" name="${status.expression}"
                                    value="${productAbs.article}">
                         </spring:bind>
+                        <spring:hasBindErrors name="productAbs">
+                            <c:forEach var="error" items="${errors.getFieldErrors('article')}">
+                                <div class="row">
+                                    <small class="text-danger"><spring:message message="${error}"/></small>
+                                </div>
+                            </c:forEach>
+                        </spring:hasBindErrors>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Price</label>
                         <spring:bind path="productAbs.price">
-                            <input type="text" class="form-control" name="${status.expression}"
+                            <input type="number" class="form-control" name="${status.expression}"
                                    value="${productAbs.price}">
                         </spring:bind>
+                        <spring:hasBindErrors name="productAbs">
+                            <c:forEach var="error" items="${errors.getFieldErrors('price')}">
+                                <div class="row">
+                                    <small class="text-danger"><spring:message message="${error}"/></small>
+                                </div>
+                            </c:forEach>
+                        </spring:hasBindErrors>
+
+
                     </div>
                     <div class="col-md-12">
                         <label class="form-label">Name</label>
@@ -60,7 +81,15 @@
                             <input type="text" class="form-control" name="${status.expression}"
                                    value="${productAbs.name}">
                         </spring:bind>
+                        <spring:hasBindErrors name="productAbs">
+                            <c:forEach var="error" items="${errors.getFieldErrors('name')}">
+                                <div class="row">
+                                    <small class="text-danger"><spring:message message="${error}"/></small>
+                                </div>
+                            </c:forEach>
+                        </spring:hasBindErrors>
                     </div>
+
                     <c:set value="selected" var="yes"/>
                     <c:set value="" var="no"/>
                     <div class="col-md-12">
@@ -147,6 +176,13 @@
                             </select>
                         </spring:bind>
                     </div>
+                    <spring:hasBindErrors name="productAbs">
+                        <c:forEach var="error" items="${errors.getFieldErrors('colours')}">
+                            <div class="row">
+                                <small class="text-danger"><spring:message message="${error}"/></small>
+                            </div>
+                        </c:forEach>
+                    </spring:hasBindErrors>
                     <button type="submit" class="w-100 btn btn-primary btn-sm">Add colour</button>
                 </div>
 
@@ -174,6 +210,13 @@
                             </select>
                         </div>
                     </spring:bind>
+                    <spring:hasBindErrors name="productAbs">
+                        <c:forEach var="error" items="${errors.getFieldErrors('sizes')}">
+                            <div class="row">
+                                <small class="text-danger"><spring:message message="${error}"/></small>
+                            </div>
+                        </c:forEach>
+                    </spring:hasBindErrors>
 
                     <button type="submit" class="w-100 btn btn-primary btn-sm">Add size</button>
                 </div>
@@ -183,65 +226,66 @@
         </div>
     </form>
     <hr class="my-4">
-<form method="post">
-    <table class="table align-middle text-center">
-        <thead>
-        <tr>
-            <th scope="col">Colour</th>
-            <c:forEach var="sizeTable" items="${productAbs.sizes}" varStatus="i">
-                <th scope="col">${sizeTable.size}</th>
-                <c:set var="ss" value="${i.index}"/>
-            </c:forEach>
-            <th scope="col">PhotoLink</th>
-        </tr>
-        </thead>
-        <tbody>
-
-        <c:forEach var="colourTable" items="${productAbs.colours}" varStatus="i">
+    <form method="post">
+        <table class="table align-middle text-center">
+            <thead>
             <tr>
-                <th>${colourTable.colourMain}<br>${colourTable.colourSec}</th>
+                <th scope="col">Colour</th>
+                <c:forEach var="sizeTable" items="${productAbs.sizes}" varStatus="i">
+                    <th scope="col">${sizeTable.size}</th>
+                    <c:set var="ss" value="${i.index}"/>
+                </c:forEach>
+                <th scope="col">PhotoLink</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            <c:forEach var="colourTable" items="${productAbs.colours}" varStatus="i">
+                <tr>
+                    <th>${colourTable.colourMain}<br>${colourTable.colourSec}</th>
 
 
+                    <c:forEach var="sizeTable" items="${productAbs.sizes}" varStatus="j">
+                        <spring:bind path="productAbs.products[${i.index*(ss+1)+j.index}].quantity">
+                            <td><input class="form-control form-control-plaintext text-center" type="number" min="0"
+                                       value="0" name="${status.expression}">
+                            </td>
+                        </spring:bind>
+                    </c:forEach>
 
-
-                <c:forEach var="sizeTable" items="${productAbs.sizes}" varStatus="j">
-                    <spring:bind path="productAbs.products[${i.index*(ss+1)+j.index}].quantity">
-                    <td><input class="form-control form-control-plaintext text-center" type="number" min="0" value="0" name="${status.expression}">
+                    <td>
+                        <div class="input-group mb-1">
+                            <input type="text" class="form-control">
+                            <button class="btn btn-outline-primary" type="button">Choose</button>
+                        </div>
+                        <img src="/assets/img/product" class="rounded mx-auto d-block"
+                             style="width: 5rem;" alt="...">
                     </td>
-                    </spring:bind>
+                </tr>
+            </c:forEach>
+            </tbody>
+            <tfoot>
+
+            <tr>
+                <th>Weight</th>
+                <c:forEach var="sizeTable" items="${productAbs.sizes}">
+                    <td><input class="form-control form-control-plaintext text-center" type="number" min="0" value="0">
+                    </td>
                 </c:forEach>
 
-                <td>
-                    <div class="input-group mb-1">
-                        <input type="text" class="form-control">
-                        <button class="btn btn-outline-primary" type="button">Choose</button>
-                    </div>
-                    <img src="/assets/img/product" class="rounded mx-auto d-block"
-                         style="width: 5rem;" alt="...">
-                </td>
             </tr>
-        </c:forEach>
-        </tbody>
-        <tfoot>
+            <tr>
+                <th>Volume</th>
+                <c:forEach var="sizeTable" items="${productAbs.sizes}">
+                    <td><input class="form-control form-control-plaintext text-center" type="number" min="0" value="0">
+                    </td>
+                </c:forEach>
+            </tr>
+            </tfoot>
 
-        <tr>
-            <th>Weight</th>
-            <c:forEach var="sizeTable" items="${productAbs.sizes}">
-                <td><input class="form-control form-control-plaintext text-center" type="number" min="0" value="0"></td>
-            </c:forEach>
-
-        </tr>
-        <tr>
-            <th>Volume</th>
-            <c:forEach var="sizeTable" items="${productAbs.sizes}">
-                <td><input class="form-control form-control-plaintext text-center" type="number" min="0" value="0"></td>
-            </c:forEach>
-        </tr>
-        </tfoot>
-
-    </table>
-<input type="submit">
-</form>
+        </table>
+        <input type="submit">
+    </form>
 
 </div>
 

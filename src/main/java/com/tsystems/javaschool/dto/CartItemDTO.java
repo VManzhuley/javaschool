@@ -6,6 +6,7 @@ import lombok.Data;
 public class CartItemDTO {
     private ProductDTO product;
     private int quantity;
+    private int missQuantity;
 
     public int getAmount(){
         return this.product.getPrice()*this.quantity;

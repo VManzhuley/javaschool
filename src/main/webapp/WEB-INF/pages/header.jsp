@@ -1,6 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+<header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 border-bottom">
     <a href="/" class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none">
         <svg class="bi me-2" width="40" height="32">
             <use xlink:href="#bootstrap"></use>
@@ -16,16 +17,47 @@
     </ul>
 
     <div class="col-md-3 text-end">
+        <sec:authorize access="!isAuthenticated()">
+            <a href="/registration" class="btn btn-outline-primary"><span>Registration</span>
+            </a>
+            <a href="/login" class="btn btn-primary me-2">
+                <span>Login</span>
+            </a>
+        </sec:authorize>
 
-        <button type="button" class="btn btn-outline-primary">Registration</button>
-        <a href="/login" class="btn btn-primary me-2">
-            <span>Login</span>
-        </a>
+        <sec:authorize access="isAuthenticated()">
+
+            <a href="/logout" class="btn btn-outline-primary me-2">
+                <span>Logout</span>
+            </a>
+        </sec:authorize>
+
+
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
             Cart
         </button>
     </div>
 </header>
+<sec:authorize access="hasRole('ADMIN')">
+    <div class="container d-flex flex-wrap justify-content-center bg-light">
+        <ul class="nav nav">
+            <li><a href="/admin/orders" class="nav-link px-2 link-dark">Orders</a></li>
+            <li><a href="/admin/statistic" class="nav-link px-2 link-dark">Statistic</a></li>
+            <li><a href="/admin/productAdd" class="nav-link px-2 link-secondary">Add product</a></li>
+        </ul>
+    </div>
+</sec:authorize>
+
+<sec:authorize access="hasRole('USER')">
+    <div class="container d-flex flex-wrap justify-content-center bg-light">
+        <ul class="nav nav">
+            <li><a href="/user/account" class="nav-link px-2 link-dark">Account</a></li>
+            <li><a href="/user/orders" class="nav-link px-2 link-dark">Orders</a></li>
+        </ul>
+    </div>
+</sec:authorize>
+
+<div class="border-bottom mb-3"></div>
 
 
 <!-- Modal -->
@@ -50,7 +82,8 @@
                                         <c:url value="/product" var="url">
                                             <c:param name="id" value="${cartItem.product.productAbs.id}"/>
                                         </c:url>
-                                        <h3 class="card-title"><a href="${url}">${cartItem.product.productAbs.name}</a></h3>
+                                        <h3 class="card-title"><a href="${url}">${cartItem.product.productAbs.name}</a>
+                                        </h3>
                                         <p class="h6"><small class="text-muted">${cartItem.product.article}</small></p>
                                         <p class="h6">
                                             <small>Colour: ${cartItem.product.colour.name}<br>Size: ${cartItem.product.size.size}<br>Qty: ${cartItem.quantity}

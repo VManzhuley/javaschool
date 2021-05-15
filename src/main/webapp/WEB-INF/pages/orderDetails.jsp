@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%--
   Created by IntelliJ IDEA.
   User: GIVOVA
@@ -16,7 +17,7 @@
 
 
 <div class="container">
-    <jsp:include page="headerAdmin.jsp"/>
+    <jsp:include page="header.jsp"/>
 
     <div class="row g-3">
         <div class="col-md-4 col-lg-4">
@@ -32,38 +33,54 @@
                 </div>
                 <div class="col-sm-12">
                     <label class="form-label">Payment</label>
-                    <input type="text" class="form-control" value="${order.payment}" disabled>
+                    <input type="text" class="form-control" value="${order.payment.title}" disabled>
                 </div>
                 <div class="col-sm-12">
                     <label class="form-label">Delivery terms</label>
-                    <input type="text" class="form-control" value="${order.shipping}" disabled>
+                    <input type="text" class="form-control" value="${order.shipping.title}" disabled>
                 </div>
 
-                <label class="form-label">Status</label>
-
-                <form method="post">
-                    <div class="row g-1">
-                        <div class="col-sm-8">
-
-                            <c:set value="selected" var="yes"/>
-                            <c:set value="" var="no"/>
-                            <select class="form-select" id="delivery" name="status">
-                                <option value="New" ${order.status == 'New' ? yes : no}>New</option>
-                                <option value="Waiting for payment" ${order.status == 'Waiting for payment' ? yes : no}>
-                                    Waiting for payment
-                                </option>
-                                <option value="Transferred to TC" ${order.status == 'Transferred to TC' ? yes : no}>
-                                    Transferred to TC
-                                </option>
-                                <option value="Completed" ${order.status == 'Completed' ? yes : no}>Completed</option>
-                                <option value="Canceled" ${order.status == 'Canceled' ? yes : no}>Canceled</option>
-                            </select>
+                <sec:authorize access="hasRole('ADMIN')">
+                    <form method="post">
+                        <div class="row g-1">
+                            <label class="form-label">Status</label>
+                            <div class="col-sm-8">
+                                <select class="form-select" id="delivery" name="statusType">
+                                    <c:forEach items="${status}" var="status">
+                                        <option value="${status}" ${order.status == status ? 'selected' : ''}>${status.title}</option>
+                                    </c:forEach>
+                                </select>
+                            </div>
+                            <div class="col-sm-4">
+                                <button type="submit" class="form-control btn btn-outline-primary">Update</button>
+                            </div>
                         </div>
-                        <div class="col-sm-4">
-                            <button type="submit" class="form-control btn btn-outline-primary">Update</button>
+                    </form>
+                </sec:authorize>
+                <sec:authorize access="hasRole('USER')">
+
+                    <label class="form-label">Status</label>
+                    <div class="col-sm-6">
+
+                        <c:url value="/user/orderCancel" var="urlCancel">
+                            <c:param name="id" value="${order.id}"/>
+                        </c:url>
+                        <a href="${urlCancel}"
+                           class="form-control btn btn-outline-primary ${order.status.name()=='COMPLETED' ? 'disabled' : ''}
+                                                                        ${order.status.name()=='CANCELED' ? 'disabled' : ''}">
+                            Cancel
+                        </a>
+                    </div>
+                    <div class="col-sm-6">
+                        <c:url value="/user/repeatOrder" var="urlRepeat">
+                            <c:param name="id" value="${order.id}"/>
+                        </c:url>
+                        <a href="${urlRepeat}" class="form-control btn btn-outline-primary">Repeat order</a>
+                        <div class="row">
+                            <small class="text-primary text-center">Your cart will be emptied</small>
                         </div>
                     </div>
-                </form>
+                </sec:authorize>
 
             </div>
         </div>
@@ -133,7 +150,9 @@
                 <th scope="col">Product</th>
                 <th scope="col">Price, RUB</th>
                 <th scope="col">Quantity</th>
-                <th scope="col">In Stock</th>
+                <sec:authorize access="hasRole('ADMIN')">
+                    <th scope="col">In Stock</th>
+                </sec:authorize>
                 <th scope="col">Total, RUB</th>
             </tr>
             </thead>
@@ -145,7 +164,9 @@
                     <td>${product.product.name}</td>
                     <td>${product.price}</td>
                     <td>${product.quantity}</td>
-                    <td>${product.product.quantity}</td>
+                    <sec:authorize access="hasRole('ADMIN')">
+                        <td>${product.product.quantity}</td>
+                    </sec:authorize>
                     <td>${product.amount}</td>
                 </tr>
             </c:forEach>

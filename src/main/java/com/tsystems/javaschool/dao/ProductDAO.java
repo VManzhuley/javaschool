@@ -9,4 +9,6 @@ public interface ProductDAO {
     List<Product> allProducts(int idProductAbs);
     Product getProductByProductABSColourMainColourSecSize(int idProductAbs, int idColourMain, int idColourSec, String size);
 
+    void update(Product product);
+
 }

@@ -18,15 +18,17 @@ public class ClientDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Client client = clientDAO.findByMail(email);
+    public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
+        Client client = clientDAO.findByUserName(userName);
+
         if (client == null) {
-            throw new UsernameNotFoundException("Unknown user: " + email);
+            throw new UsernameNotFoundException("Unknown user: " + userName);
         }
+
         UserDetails user = User.builder()
-                .username(client.getEmail())
+                .username(client.getUserName())
                 .password(client.getPassword())
-                .roles(client.getRole().getName())
+                .roles(client.getRole().name())
                 .build();
 
         return user;

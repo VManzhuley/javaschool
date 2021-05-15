@@ -15,19 +15,42 @@ public class CartDAOImpl implements CartDAO {
     EntityManager entityManager;
 
     @Override
-    public List<Cart> findByClient(int id) {
-        TypedQuery<Cart> query = entityManager.createQuery("select c from Cart c where c.client.id=:id",
+    public List<Cart> findByClient(String userName) {
+        TypedQuery<Cart> query = entityManager.createQuery("select c from Cart c where c.client.userName=:userName",
                 Cart.class);
 
-        return query.setParameter("id", id).getResultList();
+        return query.setParameter("userName", userName).getResultList();
 
     }
 
     @Override
-    public void addList(List<Cart> cartList) {
-        for (Cart cart:cartList
-             ) {
-            entityManager.persist(cart);
-        }
+    public void add(Cart cart) {
+        entityManager.persist(cart);
     }
+
+    @Override
+    public Cart getByClientAndProduct(String userName, int idProduct) {
+        TypedQuery<Cart> query = entityManager.createQuery("select c from Cart c where c.client.userName=:userName and c.product.id=:id",
+                Cart.class);
+        return query.setParameter("userName", userName)
+                .setParameter("id", idProduct)
+                .getSingleResult();
+    }
+
+    @Override
+    public void update(Cart cart) {
+        entityManager.merge(cart);
+    }
+
+    @Override
+    public void remove(Cart cart) {
+        entityManager.remove(cart);
+    }
+
+    @Override
+    public void removeAll(int idClient) {
+        entityManager.createQuery("delete from Cart c where c.client.id=:id").setParameter("id", idClient).executeUpdate();
+    }
+
+
 }

@@ -4,14 +4,21 @@ import com.tsystems.javaschool.dao.ClientDAO;
 import com.tsystems.javaschool.dao.OrderDAO;
 import com.tsystems.javaschool.dao.ProductDAO;
 import com.tsystems.javaschool.dto.*;
+import com.tsystems.javaschool.entity.Client;
 import com.tsystems.javaschool.entity.Order;
 import com.tsystems.javaschool.entity.ProductOrdered;
+import com.tsystems.javaschool.entity.Status;
+import com.tsystems.javaschool.entity.product.Product;
+import com.tsystems.javaschool.error.BusinessLogicException;
+import com.tsystems.javaschool.error.WrongParameterException;
+import com.tsystems.javaschool.service.CartService;
 import com.tsystems.javaschool.service.ClientService;
 import com.tsystems.javaschool.service.OrderService;
 import com.tsystems.javaschool.service.ProductService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Principal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -26,25 +33,55 @@ public class OrderServiceImpl implements OrderService {
     private final ClientDAO clientDAO;
     private final ClientService clientService;
     private final ProductService productService;
+    private final CartService cartService;
 
-    public OrderServiceImpl(OrderDAO orderDAO, ProductDAO productDAO, ClientDAO clientDAO, ClientService clientService, ProductService productService) {
+    public OrderServiceImpl(OrderDAO orderDAO, ProductDAO productDAO, ClientDAO clientDAO, ClientService clientService, ProductService productService, CartService cartService) {
         this.orderDAO = orderDAO;
         this.productDAO = productDAO;
         this.clientDAO = clientDAO;
         this.clientService = clientService;
         this.productService = productService;
+        this.cartService = cartService;
     }
 
     @Override
-    public int addOrder(CartDTO cart, ClientDTO client, OrderDTO orderDTO) {
+    public int addOrder(CartDTO cart, ClientDTO clientDTO, OrderDTO orderDTO, Principal principal) {
+        cartService.checkAvailability(cart);
+        if (cart.getIsMissQuantity()) throw new BusinessLogicException();
+
+        for (CartItemDTO item : cart.getCartItems()
+        ) {
+            Product product = productDAO.getById(item.getProduct().getId());
+            product.setQuantity(product.getQuantity() - item.getQuantity());
+            productDAO.update(product);
+        }
+
+        Client client;
+        if (principal != null) {
+            ClientDTO clientPrincipal = clientService.findByUserName(principal.getName());
+            if (clientPrincipal.equals(clientDTO)) {
+                client = clientDAO.findByUserName(principal.getName());
+            } else {
+                if (clientService.emailExist(clientDTO.getEmail()) & !clientPrincipal.getEmail().equals(clientDTO.getEmail()))
+                    throw new WrongParameterException("There is an account with that email address: " + clientDTO.getEmail());
+
+                client = clientService.add(clientDTO);
+            }
+        } else {
+            if (clientService.emailExist(clientDTO.getEmail()))
+                throw new WrongParameterException("There is an account with that email address: " + clientDTO.getEmail());
+
+            client = clientService.add(clientDTO);
+        }
+
         Order order = new Order();
 
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         order.setDate(format.format(new Date()));
-        order.setClient(clientDAO.findByMail(client.getEmail()));
+        order.setClient(client);
         order.setPayment(orderDTO.getPayment());
         order.setShipping(orderDTO.getShipping());
-        order.setStatus("New");
+        order.setStatus(Status.NEW);
 
         orderDAO.addOrder(order);
 
@@ -61,7 +98,8 @@ public class OrderServiceImpl implements OrderService {
             orderDAO.addProductOrdered(productOrdered);
         }
 
-        cart.deleteAll();
+        cartService.removeAll(cart, principal);
+
         return order.getId();
     }
 
@@ -86,8 +124,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public int getTotalPages() {
-        return orderDAO.getTotalPages();
+    public long getTotalPagesToAdmin() {
+        return orderDAO.getTotalPagesToAdmin();
     }
 
     @Override
@@ -112,9 +150,55 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void updateStatus(OrderDTO orderDTO, String status) {
-        Order order= orderDAO.getById(orderDTO.getId());
-        order.setStatus(status);
-        orderDAO.update(order);
+    public void updateStatus(int idOrder, String status) {
+        Order order = orderDAO.getById(idOrder);
+        if ((order.getStatus() != Status.CANCELED) && (order.getStatus() != Status.COMPLETED)) {
+            order.setStatus(Status.valueOf(status));
+            orderDAO.update(order);
+
+            if (order.getStatus() == Status.CANCELED) {
+                returnProduct(order);
+            }
+
+        }
+    }
+
+    @Override
+    public List<OrderDTO> allByClientAndPage(Principal principal, int page) {
+        return orderDAO.allByClientAndPage(principal.getName(), page).stream().map(this::mapToOrderDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public long getTotalPagesToUser(Principal principal) {
+        return orderDAO.getTotalPagesToUser(principal.getName());
+    }
+
+    @Override
+    public CartDTO repeatOrder(int id, Principal principal, CartDTO cartDTO) {
+        cartService.removeAll(cartDTO, principal);
+        OrderDTO orderDTO = getById(id);
+
+
+        if (orderDTO.getClient().getEmail().equals(principal.getName())) {
+            for (ProductOrderedDTO productOrderedDTO : orderDTO.getProductOrderedList()) {
+                CartItemDTO item = new CartItemDTO();
+                item.setProduct(productOrderedDTO.getProduct());
+                item.setQuantity(productOrderedDTO.getQuantity());
+                cartDTO.addCartItem(item);
+            }
+            cartService.mergeCart(cartDTO, principal);
+        }
+
+        return cartDTO;
+    }
+
+    @Override
+    public void returnProduct(Order order) {
+        for (ProductOrdered productOrdered : order.getProductOrderedList()
+        ) {
+            Product product = productOrdered.getProduct();
+            product.setQuantity(product.getQuantity() + productOrdered.getQuantity());
+            productDAO.update(product);
+        }
     }
 }

@@ -10,23 +10,26 @@ import javax.persistence.*;
 @Data
 public class Client extends AbstractTable {
 
+    @Column(name = "username")
+    private String userName;
+
     @Column(name = "lastname")
     private String lastname;
 
     @Column(name = "password")
     private String password;
 
-    @Column(name ="email")
+    @Column(name = "email")
     private String email;
 
     @Column(name = "telephone")
     private String phone;
 
-    @ManyToOne
-    @JoinColumn(name = "role_id")
+    @Column(name = "role")
+    @Enumerated(value = EnumType.STRING)
     private Role role;
 
     @OneToOne
-    @JoinColumn(name="address_id")
+    @JoinColumn(name = "address_id")
     private Address address;
 }

@@ -26,6 +26,9 @@
             <th scope="col">Product</th>
             <th scope="col">Price, RUB</th>
             <th scope="col">Quantity</th>
+            <c:if test="${cart.isMissQuantity}">
+                <th scope="col">Miss Quantity</th>
+            </c:if>
             <th scope="col">Total, RUB</th>
             <th scope="col">Action</th>
         </tr>
@@ -42,17 +45,28 @@
                     <td rowspan="2">
 
 
-                        <input class="form-control form-control-plaintext text-center" type="number" min="1" name="quantity"
+                        <input class="form-control form-control-plaintext text-center" type="number" min="1"
+                               name="quantity"
                                value="${cartItem.quantity}">
 
 
                     </td>
+                    <c:if test="${cart.isMissQuantity}">
+                        <c:if test="${cartItem.missQuantity>0}">
+                            <td rowspan="2">${cartItem.missQuantity}</td>
+                        </c:if>
+                        <c:if test="${cartItem.missQuantity==0}">
+                            <td rowspan="2"></td>
+                        </c:if>
+                    </c:if>
                     <td rowspan="2">${cartItem.amount}</td>
-                    <td> <button type="submit" class="btn btn-success">Update</button></td>
+                    <td>
+                        <button type="submit" class="btn btn-success">Update</button>
+                    </td>
 
                 </tr>
                 <tr>
-                    <td> <a href="/deleteCartItem?id=${cartItem.product.id}" class="btn btn-outline-danger" >
+                    <td><a href="/deleteCartItem?id=${cartItem.product.id}" class="btn btn-outline-danger">
                         <span>Delete</span>
                     </a></td>
                 </tr>
@@ -71,14 +85,20 @@
         </tbody>
 
     </table>
-        <div class="row justify-content-md-center"><div class="col-sm-1"><a href="/order" class="btn btn-primary btn-lg">
+
+    <div class="row justify-content-md-center ">
+        <c:if test="${cart.isMissQuantity}">
+            <div class="text-center text-danger" >Unfortunately, some of the products are not available for order, please reduce their quantity</div>
+
+        </c:if>
+        <div class="col-sm-1"><a href="/orderConfirm" class="btn btn-primary btn-lg ${cart.isMissQuantity ? 'disabled' : ''}">
             <span>Continue</span>
-        </a></div></div>
+        </a></div>
+    </div>
 
     <c:if test="${empty cart.cartItems}">
         <c:redirect url="/"/>
     </c:if>
-
 
 
 </div>

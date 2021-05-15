@@ -1,13 +1,37 @@
 package com.tsystems.javaschool.dto;
 
+import com.tsystems.javaschool.validatition.PasswordMatches;
+import com.tsystems.javaschool.validatition.ValidEmail;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
+
 @Data
+@PasswordMatches
 public class ClientDTO {
+    @NotBlank(message = "Name should not be empty")
+    @Size(min = 2, max = 30, message = "Name should be between 2 and 30 characters")
     private String name;
+
+    @NotBlank(message = "Name should not be empty")
+    @Size(min = 2, max = 30, message = "Name should be between 2 and 30 characters")
     private String lastname;
+
+    @ValidEmail
+    @NotEmpty(message = "Email should not be empty")
     private String email;
+
+    @NotBlank(message = "Phone should not be empty")
+    @Size(min = 5, max = 15, message = "Phone should be valid")
     private String phone;
+
+    @Size(min = 5, max = 16, message = "Password should be between 5 and 16 characters")
+    @NotEmpty(message = "Password should not be empty")
+    private String password;
+    private String matchingPassword;
+
     private String zip;
     private String country;
     private String city;
