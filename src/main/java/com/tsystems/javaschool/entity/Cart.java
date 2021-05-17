@@ -23,6 +23,6 @@ public class Cart{
     private Product product;
 
     @Column(name = "quantity")
-    private int quantity;
+    private long quantity;
 
 }

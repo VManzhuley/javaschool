@@ -32,4 +32,8 @@ public class Client extends AbstractTable {
     @OneToOne
     @JoinColumn(name = "address_id")
     private Address address;
+
+    @ManyToOne
+    @JoinColumn(name = "client_parent_id")
+    private Client clientParent;
 }

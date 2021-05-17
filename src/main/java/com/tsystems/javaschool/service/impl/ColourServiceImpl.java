@@ -1,11 +1,17 @@
 package com.tsystems.javaschool.service.impl;
 
+import com.tsystems.javaschool.dao.ParametersDAO;
 import com.tsystems.javaschool.dao.PhotoDAO;
 import com.tsystems.javaschool.dto.ColourDTO;
+import com.tsystems.javaschool.entity.product.Colour;
 import com.tsystems.javaschool.entity.product.Photo;
+import com.tsystems.javaschool.entity.product.ProductAbs;
 import com.tsystems.javaschool.service.ColourService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -13,15 +19,43 @@ import org.springframework.transaction.annotation.Transactional;
 public class ColourServiceImpl implements ColourService {
 
     private final PhotoDAO photoDAO;
+    private final ParametersDAO parametersDAO;
 
-    public ColourServiceImpl(PhotoDAO photoDAO) {
+    public ColourServiceImpl(PhotoDAO photoDAO, ParametersDAO parametersDAO) {
         this.photoDAO = photoDAO;
+        this.parametersDAO = parametersDAO;
     }
 
     @Override
     public ColourDTO getColourByIdProduct(int id) {
-        ColourDTO colourDTO = new ColourDTO();
+
         Photo photo = photoDAO.getPhotoLink(id);
+
+        return mapToColourDTO(photo);
+    }
+
+    @Override
+    public void addPhotoLink(ColourDTO colourDTO, int idProductAbs) {
+        Photo photo = new Photo();
+        ProductAbs productAbs = new ProductAbs();
+        productAbs.setId(idProductAbs);
+        Colour colourMain = parametersDAO.getColourByName(colourDTO.getColourMain());
+
+        if (!colourDTO.getColourSec().isEmpty()){
+            Colour colourSec = parametersDAO.getColourByName(colourDTO.getColourSec());
+            photo.setColourSec(colourSec);
+        }
+
+        photo.setProductAbs(productAbs);
+        photo.setColourMain(colourMain);
+        photo.setPhotoLink(colourDTO.getPhotoLink());
+
+        photoDAO.add(photo);
+    }
+
+    @Override
+    public ColourDTO mapToColourDTO(Photo photo) {
+        ColourDTO colourDTO = new ColourDTO();
 
         colourDTO.setIdColourMain(photo.getColourMain().getId());
         colourDTO.setPhotoLink(photo.getPhotoLink());
@@ -37,6 +71,11 @@ public class ColourServiceImpl implements ColourService {
         }
 
         return colourDTO;
+    }
+
+    @Override
+    public List<ColourDTO> allByProductAbs(int idProductAbs) {
+        return photoDAO.getAllByProductAbs(idProductAbs).stream().map(this::mapToColourDTO).collect(Collectors.toList());
     }
 
 

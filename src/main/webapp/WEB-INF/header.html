@@ -1,5 +1,6 @@
 <link href="../assets/css/bootstrap.min.css" rel="stylesheet">
 <script src="../assets/js/bootstrap.min.js"></script>
+<script src="../assets/js/popper.min.js"></script>
 
 
 <body>
@@ -32,108 +33,55 @@
             </button>
         </div>
     </header>
+    <div class="container d-flex flex-wrap justify-content-center bg-light">
+        <ul class="nav nav">
+            <li><a href="/admin/orders" class="nav-link px-2 link-dark">Orders</a></li>
+            <li><a href="/admin/statistic" class="nav-link px-2 link-dark">Statistic</a></li>
+            <li><a href="/admin/productAdd" class="nav-link px-2 link-secondary">Add product</a></li>
+        </ul>
+    </div>
     <div class="border-bottom mb-3"></div>
 
-    <div class="row g-1 justify-content-center">
-        <div class="col-md-6">
-            <div class="row g-3">
+    <div class="row g-5 justify-content-center">
 
-                <div class="col-md-4 col-lg-6">
-                    <div class="row g-1">
-                        <h4 class="mb-0">Details</h4>
-                        <small class="text-muted">required</small>
-                        <div class="col-md-12">
-                            <label class="form-label">Name</label>
+        <div class="col-md-6 text-center py-3 mb-4">
 
-                            <input type="text" class="form-control">
 
-                        </div>
-                        <div class="col-md-12">
-                            <label class="form-label">Lastname</label>
 
-                            <input type="text" class="form-control">
+                <p class="h2">Step 1: Choose category or create new</p>
+                <div class="input-group mb-3">
+                    <select class="form-select">
+                        <option>
+                            hfgdshfdhdf
+                        </option>
+                    </select>
+                    <input type="text" class="form-control">
+                    <button type="" class="btn btn-sm btn-primary">create new</button>
+                </div>
+                <hr/>
+                <p class="h2">Step 2: Choose child or product</p>
+                <div class="input-group mb-3">
+                <select class="form-select">
+                    <option>
 
-                        </div>
-                        <div class="col-md-12">
-                            <label class="form-label">Phone</label>
-                            <div class="input-group has-validation">
-                                <span class="input-group-text">+7</span>
-                                <input type="text" class="form-control">
-                            </div>
+                    </option>
+                </select>
+                </div>
+                <hr/>
+                <p class="h2">Step 3: Choose new parent</p>
+                <div class="input-group mb-3">
+                    <select class="form-select">
+                        <option>
 
-                        </div>
-                        <div class="col-md-12">
-                            <label class="form-label">Email</label>
-                            <div class="input-group has-validation">
-                                <span class="input-group-text">@</span>
-                                <input type="text" class="form-control">
-                            </div>
-                        </div>
-                        <div class="col-md-12">
-                            <label class="form-label">Password</label>
-
-                            <input type="password" class="form-control">
-
-                        </div>
-                        <div class="col-md-12">
-                            <label class="form-label">Repeat password</label>
-
-                            <input type="password" class="form-control">
-
-                        </div>
-
-                    </div>
+                        </option>
+                    </select>
                 </div>
 
-                <div class="col-md-4 col-lg-6">
-                    <div class="row g-1">
-                        <h4 class="mb-0">Address</h4>
-                        <small class="text-muted">optional</small>
-                        <div class="col-md-12">
-                            <label class="form-label">Zip</label>
-
-                            <input type="text" class="form-control">
-
-                        </div>
-                        <div class="col-md-12">
-                            <label class="form-label">Country</label>
-
-                            <input type="text" class="form-control">
-
-                        </div>
-                        <div class="col-md-12">
-                            <label class="form-label">City</label>
-
-                            <input type="text" class="form-control">
-
-                        </div>
-                        <div class="col-md-12">
-                            <label class="form-label">Street</label>
-
-                            <input type="text" class="form-control">
-
-                        </div>
-                        <div class="col-md-12">
-                            <label class="form-label">Building</label>
-
-                            <input type="text" class="form-control">
-
-                        </div>
-                        <div class="col-md-12">
-                            <label class="form-label">Apartment</label>
-
-                            <input type="text" class="form-control">
-
-                        </div>
-                    </div>
-
-                </div>
-                <hr class="my-4">
-
-            </div>
-            <button type="submit" class="w-100 btn btn-primary">Confirm</button>
         </div>
+
+
     </div>
+
 
 </div>
 

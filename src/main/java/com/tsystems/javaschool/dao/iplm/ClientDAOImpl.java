@@ -34,4 +34,9 @@ public class ClientDAOImpl implements ClientDAO {
     public void add(Client client) {
         entityManager.persist(client);
     }
+
+    @Override
+    public void update(Client client) {
+        entityManager.merge(client);
+    }
 }

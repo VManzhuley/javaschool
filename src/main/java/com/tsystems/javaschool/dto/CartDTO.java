@@ -39,11 +39,6 @@ public class CartDTO {
         return total;
     }
 
-    public void removeAll() {
-        cartItems = new ArrayList<>();
-        userName = null;
-    }
-
     public boolean getIsMissQuantity() {
         for (CartItemDTO item : this.cartItems
         ) {

@@ -15,6 +15,12 @@ public interface ProductAbsService {
     ProductAbsDTO addParams(ProductAbsDTO productAbsDTO);
     int getTotalPages();
 
+    int add(ProductAbsDTO productAbsDTO);
+
+    List<ProductAbsDTO> allByCategory(int idCategory);
+
+    void updateCategory(int idProductAbs, int idCategory);
+
 
 }
 

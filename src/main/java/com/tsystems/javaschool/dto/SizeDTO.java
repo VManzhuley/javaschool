@@ -7,5 +7,4 @@ public class SizeDTO {
     private String size;
     private float weight;
     private float volume;
-    private int idSize;
 }

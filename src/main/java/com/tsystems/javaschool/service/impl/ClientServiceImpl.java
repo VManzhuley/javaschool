@@ -12,6 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Principal;
+
 @Service
 @Transactional
 public class ClientServiceImpl implements ClientService {
@@ -38,17 +40,15 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public Client add(ClientDTO clientDTO) {
 
-        Client client = new Client();
+        Client client = mapMainFieldsToClient(clientDTO);
 
         if (!clientDTO.addressIsEmpty()) {
             client.setAddress(addAddress(clientDTO));
         }
 
-        client.setName(clientDTO.getName());
-        client.setLastname(clientDTO.getLastname());
-        client.setEmail(clientDTO.getEmail());
-        client.setPhone(clientDTO.getPhone());
-
+        if (clientDTO.getUserNameParent() != null) {
+            client.setClientParent(clientDAO.findByUserName(clientDTO.getUserNameParent()));
+        }
 
         clientDAO.add(client);
 
@@ -76,6 +76,10 @@ public class ClientServiceImpl implements ClientService {
             clientDTO.setApartment(client.getAddress().getApartment());
         }
 
+        if (client.getClientParent() != null) {
+            clientDTO.setUserNameParent(client.getClientParent().getUserName());
+        }
+
         return clientDTO;
     }
 
@@ -85,15 +89,11 @@ public class ClientServiceImpl implements ClientService {
             throw new WrongParameterException("There is an account with that email address: " + clientDTO.getEmail());
         }
 
-        Client client = new Client();
+        Client client = mapMainFieldsToClient(clientDTO);
 
         client.setAddress(addAddress(clientDTO));
 
         client.setUserName(clientDTO.getEmail());
-        client.setName(clientDTO.getName());
-        client.setLastname(clientDTO.getLastname());
-        client.setEmail(clientDTO.getEmail());
-        client.setPhone(clientDTO.getPhone());
         client.setPassword(passwordEncoder.encode(clientDTO.getPassword()));
         client.setRole(Role.USER);
 
@@ -110,6 +110,42 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public Address addAddress(ClientDTO clientDTO) {
 
+        Address address = mapToAddress(clientDTO);
+        addressDAO.add(address);
+
+        return address;
+    }
+
+    @Override
+    public void update(ClientDTO clientDTO, Principal principal) {
+        if (emailExist(clientDTO.getEmail()) && (!clientDTO.getEmail().equals(principal.getName()))) {
+            throw new WrongParameterException("There is an account with that email address: " + clientDTO.getEmail());
+        }
+        Client client = clientDAO.findByUserName(principal.getName());
+
+        Address address = mapToAddress(clientDTO);
+        address.setId(client.getAddress().getId());
+
+        addressDAO.update(address);
+
+        client.setName(clientDTO.getName());
+        client.setLastname(clientDTO.getLastname());
+        client.setEmail(clientDTO.getEmail());
+        client.setPhone(clientDTO.getPhone());
+        client.setUserName(clientDTO.getEmail());
+
+        if (!clientDTO.getPassword().equals("")) {
+            client.setPassword(passwordEncoder.encode(clientDTO.getPassword()));
+        }
+        System.out.println("update");
+
+        clientDAO.update(client);
+
+
+    }
+
+    @Override
+    public Address mapToAddress(ClientDTO clientDTO) {
         Address address = new Address();
         address.setZip(clientDTO.getZip());
         address.setCountry(clientDTO.getCountry());
@@ -117,9 +153,20 @@ public class ClientServiceImpl implements ClientService {
         address.setStreet(clientDTO.getStreet());
         address.setBuilding(clientDTO.getBuilding());
         address.setApartment(clientDTO.getApartment());
-        addressDAO.add(address);
 
         return address;
+    }
+
+    @Override
+    public Client mapMainFieldsToClient(ClientDTO clientDTO) {
+        Client client = new Client();
+
+        client.setName(clientDTO.getName());
+        client.setLastname(clientDTO.getLastname());
+        client.setEmail(clientDTO.getEmail());
+        client.setPhone(clientDTO.getPhone());
+
+        return client;
     }
 
 }

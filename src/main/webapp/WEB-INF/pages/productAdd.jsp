@@ -29,16 +29,16 @@
                     <div class="input-group mb-3">
                         <spring:bind path="productAbs.photoLink">
                             <input type="text" class="form-control" value="${productAbs.photoLink}"
-                                   name="${status.expression}">
-                            <button class="btn btn-outline-primary" type="button">Choose</button>
+                                   name="${status.expression}"
+                                   onchange="document.getElementById('photoLink').setAttribute('src',this.value);">
                         </spring:bind>
                     </div>
-                    <c:set value="${productAbs.photoLink}" var="productFoto"/>
+                    <c:set value="${productAbs.photoLink}" var="productPhoto"/>
                     <c:if test="${productAbs.photoLink.length()<1}">
-                        <c:set value="/product-foto.png" var="productFoto"/>
+                        <c:set value="https://res.cloudinary.com/dwkkqpsi0/image/upload/v1621269387/product-foto_k0ilyl.png" var="productPhoto"/>
                     </c:if>
-                    <img src="/assets/img/product${productFoto}" class="rounded mx-auto d-block"
-                         style="width: 17rem;" alt="${productAbs.name}">
+                    <img src="${productPhoto}" class="rounded mx-auto d-block"
+                         style="width: 17rem;" alt="${productAbs.name}" id="photoLink">
                 </div>
             </div>
             <div class="col-md-4 col-lg-4">
@@ -159,7 +159,7 @@
                     <div class="col-md-6">
                         <spring:bind path="colour.colourMain">
                             <select class="form-select" name="${status.expression}">
-                                <option value="">---</option>
+                                <option value="" selected>---</option>
                                 <c:forEach var="colours" items="${colours}">
                                     <option value="${colours.name}">${colours.name}</option>
                                 </c:forEach>
@@ -169,7 +169,7 @@
                     <div class="col-md-6">
                         <spring:bind path="colour.colourSec">
                             <select class="form-select" name="${status.expression}">
-                                <option value="">---</option>
+                                <option value="" selected>---</option>
                                 <c:forEach var="colours" items="${colours}">
                                     <option value="${colours.name}">${colours.name}</option>
                                 </c:forEach>
@@ -203,7 +203,7 @@
                     <spring:bind path="size.size">
                         <div class="col-md-12">
                             <select class="form-select" name="${status.expression}">
-                                <option value="">---</option>
+                                <option value="" selected>---</option>
                                 <c:forEach var="size" items="${sizes}">
                                     <option value="${size.name}">${size.name}</option>
                                 </c:forEach>
@@ -225,67 +225,13 @@
 
         </div>
     </form>
+
     <hr class="my-4">
-    <form method="post">
-        <table class="table align-middle text-center">
-            <thead>
-            <tr>
-                <th scope="col">Colour</th>
-                <c:forEach var="sizeTable" items="${productAbs.sizes}" varStatus="i">
-                    <th scope="col">${sizeTable.size}</th>
-                    <c:set var="ss" value="${i.index}"/>
-                </c:forEach>
-                <th scope="col">PhotoLink</th>
-            </tr>
-            </thead>
-            <tbody>
 
-            <c:forEach var="colourTable" items="${productAbs.colours}" varStatus="i">
-                <tr>
-                    <th>${colourTable.colourMain}<br>${colourTable.colourSec}</th>
+    <a href="/admin/product-add-confirm"
+       class="w-100 btn btn-primary ${empty productAbs.colours ? 'disabled' : ''} ${empty productAbs.sizes ? 'disabled' : ''}">Create
+        Product</a>
 
-
-                    <c:forEach var="sizeTable" items="${productAbs.sizes}" varStatus="j">
-                        <spring:bind path="productAbs.products[${i.index*(ss+1)+j.index}].quantity">
-                            <td><input class="form-control form-control-plaintext text-center" type="number" min="0"
-                                       value="0" name="${status.expression}">
-                            </td>
-                        </spring:bind>
-                    </c:forEach>
-
-                    <td>
-                        <div class="input-group mb-1">
-                            <input type="text" class="form-control">
-                            <button class="btn btn-outline-primary" type="button">Choose</button>
-                        </div>
-                        <img src="/assets/img/product" class="rounded mx-auto d-block"
-                             style="width: 5rem;" alt="...">
-                    </td>
-                </tr>
-            </c:forEach>
-            </tbody>
-            <tfoot>
-
-            <tr>
-                <th>Weight</th>
-                <c:forEach var="sizeTable" items="${productAbs.sizes}">
-                    <td><input class="form-control form-control-plaintext text-center" type="number" min="0" value="0">
-                    </td>
-                </c:forEach>
-
-            </tr>
-            <tr>
-                <th>Volume</th>
-                <c:forEach var="sizeTable" items="${productAbs.sizes}">
-                    <td><input class="form-control form-control-plaintext text-center" type="number" min="0" value="0">
-                    </td>
-                </c:forEach>
-            </tr>
-            </tfoot>
-
-        </table>
-        <input type="submit">
-    </form>
 
 </div>
 

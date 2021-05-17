@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import java.util.List;
 
 @Repository
 public class PhotoDAOImpl implements PhotoDAO {
@@ -22,5 +23,17 @@ public class PhotoDAOImpl implements PhotoDAO {
                         "and p.colourMain=pr.colourMain where pr.id=:id", Photo.class);
 
         return query.setParameter("id", idProduct).getSingleResult();
+    }
+
+    @Override
+    public void add(Photo photo) {
+        entityManager.persist(photo);
+    }
+
+    @Override
+    public List<Photo> getAllByProductAbs(int idProductAbs) {
+        TypedQuery<Photo> query = entityManager.createQuery("select p from Photo p where p.productAbs.id=:id",Photo.class);
+
+        return query.setParameter("id",idProductAbs).getResultList();
     }
 }

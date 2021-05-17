@@ -45,7 +45,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public int addOrder(CartDTO cart, ClientDTO clientDTO, OrderDTO orderDTO, Principal principal) {
+    public long addOrder(CartDTO cart, ClientDTO clientDTO, OrderDTO orderDTO, Principal principal) {
         cartService.checkAvailability(cart);
         if (cart.getIsMissQuantity()) throw new BusinessLogicException();
 
@@ -58,11 +58,13 @@ public class OrderServiceImpl implements OrderService {
 
         Client client;
         if (principal != null) {
+            clientDTO.setUserNameParent(principal.getName());
             ClientDTO clientPrincipal = clientService.findByUserName(principal.getName());
+
             if (clientPrincipal.equals(clientDTO)) {
                 client = clientDAO.findByUserName(principal.getName());
             } else {
-                if (clientService.emailExist(clientDTO.getEmail()) & !clientPrincipal.getEmail().equals(clientDTO.getEmail()))
+                if (clientService.emailExist(clientDTO.getEmail()) && !clientPrincipal.getEmail().equals(clientDTO.getEmail()))
                     throw new WrongParameterException("There is an account with that email address: " + clientDTO.getEmail());
 
                 client = clientService.add(clientDTO);
@@ -113,7 +115,7 @@ public class OrderServiceImpl implements OrderService {
         orderDTO.setShipping(order.getShipping());
         orderDTO.setStatus(order.getStatus());
         orderDTO.setClient(clientService.mapToClientDTO(order.getClient()));
-        orderDTO.setAmountTotal(orderDAO.getAmount(order.getId()));
+        orderDTO.setAmount(order.getAmount());
 
         return orderDTO;
     }
@@ -165,12 +167,15 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderDTO> allByClientAndPage(Principal principal, int page) {
-        return orderDAO.allByClientAndPage(principal.getName(), page).stream().map(this::mapToOrderDTO).collect(Collectors.toList());
+        Client client = clientDAO.findByUserName(principal.getName());
+
+        return orderDAO.allByClientAndPage(client.getId(), page).stream().map(this::mapToOrderDTO).collect(Collectors.toList());
     }
 
     @Override
     public long getTotalPagesToUser(Principal principal) {
-        return orderDAO.getTotalPagesToUser(principal.getName());
+        Client client = clientDAO.findByUserName(principal.getName());
+        return orderDAO.getTotalPagesToUser(client.getId());
     }
 
     @Override
@@ -179,7 +184,9 @@ public class OrderServiceImpl implements OrderService {
         OrderDTO orderDTO = getById(id);
 
 
-        if (orderDTO.getClient().getEmail().equals(principal.getName())) {
+        if (orderDTO.getClient().getEmail().equals(principal.getName()) ||
+                orderDTO.getClient().getUserNameParent().equals(principal.getName())) {
+
             for (ProductOrderedDTO productOrderedDTO : orderDTO.getProductOrderedList()) {
                 CartItemDTO item = new CartItemDTO();
                 item.setProduct(productOrderedDTO.getProduct());
@@ -201,4 +208,5 @@ public class OrderServiceImpl implements OrderService {
             productDAO.update(product);
         }
     }
+
 }

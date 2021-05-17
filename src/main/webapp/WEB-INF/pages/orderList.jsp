@@ -55,7 +55,7 @@
                 <sec:authorize access="hasRole('ADMIN')">
                     <td>${order.client.lastname} ${order.client.name}</td>
                 </sec:authorize>
-                <td>${order.amountTotal}</td>
+                <td>${order.amount}</td>
                 <td>${order.status.title}</td>
                 <sec:authorize access="hasRole('USER')">
                     <c:set var="urlsec" value="/user/order"/>

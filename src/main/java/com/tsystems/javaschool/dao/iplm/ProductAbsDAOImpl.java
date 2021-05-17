@@ -34,7 +34,7 @@ public class ProductAbsDAOImpl implements ProductAbsDAO {
     }
 
     @Override
-    public ProductAbs getProductAbs(int id) {
+    public ProductAbs getById(int id) {
         return entityManager.find(ProductAbs.class, id);
     }
 
@@ -61,6 +61,23 @@ public class ProductAbsDAOImpl implements ProductAbsDAO {
         typedQuery.setMaxResults(pageSize);
 
         return typedQuery.getResultList();
+    }
+
+    @Override
+    public void add(ProductAbs productAbs) {
+        entityManager.persist(productAbs);
+    }
+
+    @Override
+    public List<ProductAbs> allByCategory(int idCategory) {
+        TypedQuery<ProductAbs> query = entityManager.createQuery("select p from ProductAbs p where p.category.id=:id",ProductAbs.class);
+
+        return query.setParameter("id",idCategory).getResultList();
+    }
+
+    @Override
+    public void update(ProductAbs productAbs) {
+        entityManager.merge(productAbs);
     }
 
 

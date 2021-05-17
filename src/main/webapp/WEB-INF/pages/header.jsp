@@ -43,7 +43,8 @@
         <ul class="nav nav">
             <li><a href="/admin/orders" class="nav-link px-2 link-dark">Orders</a></li>
             <li><a href="/admin/statistic" class="nav-link px-2 link-dark">Statistic</a></li>
-            <li><a href="/admin/productAdd" class="nav-link px-2 link-secondary">Add product</a></li>
+            <li><a href="/admin/product-add" class="nav-link px-2 link-secondary">Add product</a></li>
+            <li><a href="/admin/category" class="nav-link px-2 link-secondary">Category</a></li>
         </ul>
     </div>
 </sec:authorize>
@@ -74,7 +75,7 @@
                         <div class="card mb-3 card-link">
                             <div class="row g-0">
                                 <div class="col-md-4 d-flex align-items-center">
-                                    <img src="../assets/img/product${cartItem.product.colour.photoLink}" alt="..."
+                                    <img src="${cartItem.product.colour.photoLink}" alt="..."
                                          class="img-fluid">
                                 </div>
                                 <div class="col-md-8">

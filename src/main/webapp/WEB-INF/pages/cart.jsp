@@ -38,7 +38,7 @@
             <form method="post">
                 <input type="hidden" name="idProduct" value="${cartItem.product.id}"/>
                 <tr>
-                    <td rowspan="2"><img src="../assets/img/product${cartItem.product.colour.photoLink}" alt="..."
+                    <td rowspan="2"><img src="${cartItem.product.colour.photoLink}" alt="..."
                                          style="width: 10rem;"></td>
                     <td rowspan="2">${cartItem.product.name}</td>
                     <td rowspan="2">${cartItem.product.price}</td>

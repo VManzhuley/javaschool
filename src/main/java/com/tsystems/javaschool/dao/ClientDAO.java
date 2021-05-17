@@ -7,5 +7,6 @@ public interface ClientDAO {
     Client findById(int id);
     Client findByUserName(String userName);
     void add(Client client);
+    void update(Client client);
 
 }

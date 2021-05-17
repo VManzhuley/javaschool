@@ -26,23 +26,22 @@ public class MainController {
 
     private final ProductAbsService productAbsService;
     private final CategoryService categoryService;
-    private final ProductService productService;
     private final OrderService orderService;
     private final ClientService clientService;
     private final CartService cartService;
 
+
     public MainController(ProductAbsService productAbsService,
                           CategoryService categoryService,
-                          ProductService productService,
                           OrderService orderService,
                           ClientService clientService,
                           CartService cartService) {
         this.productAbsService = productAbsService;
         this.categoryService = categoryService;
-        this.productService = productService;
         this.orderService = orderService;
         this.clientService = clientService;
         this.cartService = cartService;
+
     }
 
     @ModelAttribute("cart")
@@ -137,16 +136,22 @@ public class MainController {
         return modelAndView;
     }
 
+    @ModelAttribute("client")
+    public ClientDTO clientDTO(Principal principal) {
+        if (principal != null) {
+            return clientService.findByUserName(principal.getName());
+        } else {
+            return new ClientDTO();
+        }
+
+    }
+
+
     @GetMapping("/orderConfirm")
     public ModelAndView order(@ModelAttribute("client") ClientDTO client,
                               @ModelAttribute("order") OrderDTO order,
-                              Principal principal,
                               String message) {
         ModelAndView modelAndView = new ModelAndView();
-
-        if (principal != null) {
-            client = clientService.findByUserName(principal.getName());
-        }
 
         modelAndView.addObject("shippingType", ShippingType.values());
         modelAndView.addObject("paymentType", PaymentType.values());
@@ -163,24 +168,24 @@ public class MainController {
                                      BindingResult bindingResult,
                                      @ModelAttribute("order") OrderDTO order,
                                      Principal principal) {
-        System.out.println("dfsd");
+
 
         if (bindingResult.hasFieldErrors("name") ||
                 bindingResult.hasFieldErrors("lastname") ||
                 bindingResult.hasFieldErrors("email") ||
                 bindingResult.hasFieldErrors("phone")) {
-            return order(clientDTO, order, principal, null);
+            return order(clientDTO, order, null);
         }
 
         ModelAndView modelAndView = new ModelAndView();
-        int id = 0;
+        long id = 0;
         try {
             id = orderService.addOrder(cart, clientDTO, order, principal);
         } catch (BusinessLogicException businessLogicException) {
             modelAndView.setViewName("redirect:/cart");
             return modelAndView;
         } catch (WrongParameterException wrongParameterException) {
-            return order(clientDTO, order, principal, wrongParameterException.getMessage());
+            return order(clientDTO, order, wrongParameterException.getMessage());
         }
         modelAndView.addObject("client", clientDTO);
         modelAndView.addObject("order", order);
@@ -261,49 +266,5 @@ public class MainController {
 
         return modelAndView;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*    @RequestMapping(method = RequestMethod.GET,value = "/products")
-    @ResponseBody
-    public List<ProductAbs> findAll(@RequestParam(value = "search", required = false) String search){
-        List<SearchCriteria> params = new ArrayList<SearchCriteria>();
-        if (search != null) {
-            Pattern pattern = Pattern.compile("(\\w+?)(:|<|>)(\\w+?),");
-            Matcher matcher = pattern.matcher(search + ",");
-            while (matcher.find()) {
-                params.add(new SearchCriteria(matcher.group(1),
-                        matcher.group(2), matcher.group(3)));
-            }
-        }
-        return iProductDAOBaeldung.searchProduct(params);
-    }*/
 
 }

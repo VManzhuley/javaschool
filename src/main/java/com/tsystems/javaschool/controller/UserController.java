@@ -4,6 +4,7 @@ package com.tsystems.javaschool.controller;
 import com.tsystems.javaschool.dto.ClientDTO;
 import com.tsystems.javaschool.dto.OrderDTO;
 import com.tsystems.javaschool.entity.Status;
+import com.tsystems.javaschool.error.WrongParameterException;
 import com.tsystems.javaschool.service.ClientService;
 import com.tsystems.javaschool.service.OrderService;
 import org.springframework.stereotype.Controller;
@@ -13,6 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -33,6 +35,7 @@ public class UserController {
                                   Principal principal) {
         ModelAndView modelAndView = new ModelAndView();
 
+
         List<OrderDTO> orderDTOList = orderService.allByClientAndPage(principal, page);
         long totalPages = orderService.getTotalPagesToUser(principal);
 
@@ -51,7 +54,8 @@ public class UserController {
         ModelAndView modelAndView = new ModelAndView();
 
         OrderDTO orderDTO = orderService.getById(id);
-        if (orderDTO.getClient().getEmail().equals(principal.getName())) {
+        if (orderDTO.getClient().getEmail().equals(principal.getName()) ||
+                orderDTO.getClient().getUserNameParent().equals(principal.getName())) {
             modelAndView.setViewName("orderDetails");
             modelAndView.addObject("order", orderDTO);
             modelAndView.addObject("status", Status.values());
@@ -67,7 +71,9 @@ public class UserController {
                                            Principal principal) {
         ModelAndView modelAndView = new ModelAndView();
 
-        if (orderService.getById(id).getClient().getEmail().equals(principal.getName())) {
+        OrderDTO orderDTO = orderService.getById(id);
+        if (orderDTO.getClient().getEmail().equals(principal.getName()) ||
+                orderDTO.getClient().getUserNameParent().equals(principal.getName())) {
             orderService.updateStatus(id, Status.CANCELED.name());
         }
 
@@ -82,32 +88,49 @@ public class UserController {
     }
 
     @GetMapping(value = "/account")
-    public ModelAndView account(@ModelAttribute("client") ClientDTO clientDTO) {
+    public ModelAndView account(@ModelAttribute("client") ClientDTO clientDTO,
+                                String message) {
         ModelAndView modelAndView = new ModelAndView();
 
         modelAndView.setViewName("registration");
 
         modelAndView.addObject("client", clientDTO);
+        modelAndView.addObject("message", message);
         return modelAndView;
     }
 
     @PostMapping(value = "/account")
     public ModelAndView updateAccount(@ModelAttribute("client") @Valid ClientDTO clientDTO,
-                                      BindingResult bindingResult) {
+                                      BindingResult bindingResult,
+                                      Principal principal) {
+        ModelAndView modelAndView = new ModelAndView();
+
         if (bindingResult.hasFieldErrors("name") ||
                 bindingResult.hasFieldErrors("lastname") ||
-                bindingResult.hasFieldErrors("phone")) {
-            bindingResult.recordSuppressedField("password");
+                bindingResult.hasFieldErrors("phone") ||
+                bindingResult.hasFieldErrors("email")) {
 
-
-            return account(clientDTO);
+            return account(clientDTO, null);
         }
         if (!clientDTO.getPassword().equals("") && bindingResult.hasErrors()) {
-            return account(clientDTO);
+            return account(clientDTO, null);
+        }
+        try {
+            clientService.update(clientDTO, principal);
+        } catch (WrongParameterException wrongParameterException) {
+            return account(clientDTO, wrongParameterException.getMessage());
+        }
+        List<String> messages = new ArrayList<>();
+        messages.add("Data updated successfully");
+        if (!clientDTO.getEmail().equals(principal.getName())) {
+            modelAndView.setViewName("redirect:/logout");
+            return modelAndView;
         }
 
-        ModelAndView modelAndView = new ModelAndView();
+
+        modelAndView.setViewName("registration");
         modelAndView.addObject("client", clientDTO);
+        modelAndView.addObject("messageUpdate", messages);
         return modelAndView;
     }
 

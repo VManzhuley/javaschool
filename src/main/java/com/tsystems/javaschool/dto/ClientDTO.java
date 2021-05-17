@@ -38,6 +38,7 @@ public class ClientDTO {
     private String street;
     private String building;
     private String apartment;
+    private String userNameParent;
 
     //return true if address is empty
     public boolean addressIsEmpty() {

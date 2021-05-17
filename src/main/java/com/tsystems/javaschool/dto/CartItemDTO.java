@@ -5,10 +5,10 @@ import lombok.Data;
 @Data
 public class CartItemDTO {
     private ProductDTO product;
-    private int quantity;
-    private int missQuantity;
+    private long quantity;
+    private long missQuantity;
 
-    public int getAmount(){
+    public long getAmount(){
         return this.product.getPrice()*this.quantity;
     }
 }

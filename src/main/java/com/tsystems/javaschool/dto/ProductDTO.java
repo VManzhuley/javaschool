@@ -11,7 +11,7 @@ public class ProductDTO {
     private String article;
     private SizeDTO size;
     private ColourDTO colour;
-    private int price;
-    private int quantity;
+    private long price;
+    private long quantity;
 
 }

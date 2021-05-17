@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
+import java.util.ArrayList;
 
 @Service
 @Transactional
@@ -77,15 +78,11 @@ public class CartServiceImpl implements CartService {
                     Integer.parseInt(colourSec),
                     size);
 
-            if (principal != null) {
-                cartDTO.setUserName(principal.getName());
-            }
-
             addCartItem(cartDTO, productDTO, Integer.parseInt(quantity));
         }
     }
 
-    private void addCartItem(CartDTO cartDTO, ProductDTO productDTO, int quantity) {
+    private void addCartItem(CartDTO cartDTO, ProductDTO productDTO, long quantity) {
         CartItemDTO item = cartDTO.findItemByIdProduct(productDTO.getId());
 
         if (item == null) {
@@ -163,7 +160,7 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public void removeAll(CartDTO cartDTO, Principal principal) {
-        cartDTO.removeAll();
+        cartDTO.setCartItems(new ArrayList<>());
 
         if (principal != null) {
             cartDAO.removeAll(clientDAO.findByUserName(principal.getName()).getId());
@@ -174,7 +171,7 @@ public class CartServiceImpl implements CartService {
     public void checkAvailability(CartDTO cartDTO) {
         for (CartItemDTO item : cartDTO.getCartItems()
         ) {
-            int quantityProduct = productDAO.getById(item.getProduct().getId()).getQuantity();
+            long quantityProduct = productDAO.getById(item.getProduct().getId()).getQuantity();
             item.setMissQuantity(0);
             if (item.getQuantity() > quantityProduct) {
                 item.setMissQuantity(item.getQuantity() - quantityProduct);

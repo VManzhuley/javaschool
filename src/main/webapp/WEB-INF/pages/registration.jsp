@@ -27,7 +27,9 @@
                     <div class="col-md-4 col-lg-6">
                         <div class="row g-1">
                             <h4 class="mb-0">Details</h4>
-                            <small class="text-muted">required</small>
+                            <sec:authorize access="!isAuthenticated()">
+                                <small class="text-muted">required</small>
+                            </sec:authorize>
                             <div class="col-md-12">
                                 <label class="form-label">Name</label>
                                 <spring:bind path="client.name">
@@ -108,13 +110,15 @@
                                 <spring:bind path="client.password">
                                     <input type="password" class="form-control" name="${status.expression}">
                                 </spring:bind>
-                                <spring:hasBindErrors name="client">
-                                    <c:forEach var="error" items="${errors.getFieldErrors('password')}">
-                                        <div class="row">
-                                            <small class="text-danger"><spring:message message="${error}"/></small>
-                                        </div>
-                                    </c:forEach>
-                                </spring:hasBindErrors>
+                                <sec:authorize access="!isAuthenticated()">
+                                    <spring:hasBindErrors name="client">
+                                        <c:forEach var="error" items="${errors.getFieldErrors('password')}">
+                                            <div class="row">
+                                                <small class="text-danger"><spring:message message="${error}"/></small>
+                                            </div>
+                                        </c:forEach>
+                                    </spring:hasBindErrors>
+                                </sec:authorize>
 
                             </div>
                             <div class="col-md-12">
@@ -124,11 +128,18 @@
                                     <input type="password" class="form-control" name="${status.expression}">
                                 </spring:bind>
                                 <spring:hasBindErrors name="client">
+                                    <c:if test="${errors.getFieldErrorCount('client.password')>1}">
+                                        <c:forEach var="error" items="${errors.getFieldErrors('password')}">
+                                            <div class="row">
+                                                <small class="text-danger"><spring:message message="${error}"/></small>
+                                            </div>
+                                        </c:forEach>
+                                    </c:if>
                                     <c:forEach var="error" items="${errors.globalErrors}">
-                                    <div class="row">
-                                        <small class="text-danger"><spring:message
-                                                message="${error}"/></small>
-                                    </div>
+                                        <div class="row">
+                                            <small class="text-danger"><spring:message
+                                                    message="${error}"/></small>
+                                        </div>
                                     </c:forEach>
                                 </spring:hasBindErrors>
 
@@ -140,7 +151,9 @@
                     <div class="col-md-4 col-lg-6">
                         <div class="row g-1">
                             <h4 class="mb-0">Address</h4>
-                            <small class="text-muted">optional</small>
+                            <sec:authorize access="!isAuthenticated()">
+                                <small class="text-muted">optional</small>
+                            </sec:authorize>
                             <div class="col-md-12">
                                 <label class="form-label">Zip</label>
 
@@ -207,6 +220,15 @@
 
                 </div>
                 <button type="submit" class="w-100 btn btn-primary">Confirm</button>
+                <sec:authorize access="isAuthenticated()">
+                    <div class="text-center text-primary">In case of changing email you need to re-login to the site
+                    </div>
+                </sec:authorize>
+
+                <c:forEach var="message" items="${messageUpdate}">
+                    <div class="text-center text-primary">${message}</div>
+                </c:forEach>
+
             </div>
         </div>
     </form>

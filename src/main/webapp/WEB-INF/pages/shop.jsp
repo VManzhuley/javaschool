@@ -45,7 +45,7 @@
                 <c:forEach var="productAbs" items="${productAbsList}">
                     <div class="col">
                         <div class="card h-100">
-                            <img src="/assets/img/product${productAbs.photoLink}" class="rounded mx-auto d-block"
+                            <img src="${productAbs.photoLink}" class="rounded mx-auto d-block"
                                  style="width: 18rem;" alt="${productAbs.name}">
                             <div class="card-body">
                                 <c:url value="/product" var="url">

@@ -14,8 +14,13 @@ public class AddressDAOImpl implements AddressDAO {
 
 
     @Override
-    public int add(Address address) {
+    public void add(Address address) {
         entityManager.persist(address);
-        return address.getId();
+
+    }
+
+    @Override
+    public void update(Address address) {
+        entityManager.merge(address);
     }
 }

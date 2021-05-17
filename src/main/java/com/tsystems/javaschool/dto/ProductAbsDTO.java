@@ -7,19 +7,17 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 @Data
 public class ProductAbsDTO {
     private int id;
 
-    @Size(min=3, message = "Article too short")
+    @Size(min = 3, message = "Article too short")
     private String article;
 
-    @Size(min=5, message = "Name too short")
+    @Size(min = 5, message = "Name too short")
     private String name;
 
     private String description;
@@ -29,35 +27,30 @@ public class ProductAbsDTO {
     private int price;
     private String composition;
     @NotEmpty(message = "Please add at least one colour")
-    private Set<ColourDTO> colours=new HashSet<>();
+    private List<ColourDTO> colours = new LinkedList<>();
     @NotEmpty(message = "Please add at least one size")
-    private Set<SizeDTO> sizes=new HashSet<>();
+    private List<SizeDTO> sizes = new LinkedList<>();
     private int idCategory;
     private int idDescription;
     private int idComposition;
-    private List<ProductDTO> products=new ArrayList<>();
+    private List<ProductDTO> products;
 
     private ColourDTO findColoursByNames(String colourMain, String colourSec) {
         for (ColourDTO colour : this.colours
         ) {
-            if ((colour.getColourMain().equals(colourMain)) & (colour.getColourSec().equals(colourSec))) return colour;
+            if ((colour.getColourMain().equals(colourMain)) && (colour.getColourSec().equals(colourSec))) return colour;
         }
         return null;
     }
 
     public void addColour(ColourDTO colourDTO) {
-        ColourDTO colour = this.findColoursByNames(colourDTO.getColourMain(),colourDTO.getColourSec());
+        ColourDTO colour = this.findColoursByNames(colourDTO.getColourMain(), colourDTO.getColourSec());
 
-        if ((colour==null)&(!colourDTO.getColourMain().equals(""))){
+        if ((colour == null) && (colourDTO.getColourMain()!=null) && (!colourDTO.getColourMain().isEmpty())) {
             colour = new ColourDTO();
             colour.setColourMain(colourDTO.getColourMain());
             colour.setColourSec(colourDTO.getColourSec());
             this.colours.add(colour);
-
-            for (int i=0;i<this.getSizes().size();i++)
-            {
-                    products.add(new ProductDTO());
-            }
         }
     }
 
@@ -72,14 +65,25 @@ public class ProductAbsDTO {
     public void addSize(SizeDTO sizeDTO) {
         SizeDTO size = this.findSizeByName(sizeDTO.getSize());
 
-        if ((size == null) & (!sizeDTO.getSize().equals(""))) {
+        if ((size == null) && (sizeDTO.getSize() != null) && (!sizeDTO.getSize().isEmpty())) {
             size = new SizeDTO();
             size.setSize(sizeDTO.getSize());
             this.sizes.add(size);
+        }
+    }
 
-            for (int j=0;j<this.getColours().size();j++){
-                products.add(new ProductDTO());
+    public void addProducts() {
+        this.products = new LinkedList<>();
+        for (ColourDTO colourDTO : this.colours
+        ) {
+            for (SizeDTO sizeDTO : this.sizes
+            ) {
+                ProductDTO productDTO = new ProductDTO();
+                productDTO.setColour(colourDTO);
+                productDTO.setSize(sizeDTO);
+                products.add(productDTO);
             }
         }
+
     }
 }

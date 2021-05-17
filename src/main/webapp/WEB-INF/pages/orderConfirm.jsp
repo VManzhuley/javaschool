@@ -163,7 +163,7 @@
                         <input type="tel" hidden name="${status.expression}">
                     </spring:bind>
 
-                    <div class="row g-3" id="Shipping" style="display: ${order.shipping.name() == 'SELF' ? 'none' : ''}">
+                    <div class="row g-3" id="Shipping" style="display: ${order.shipping.name() != 'SELF' ? '' : 'none'}">
                         <hr class="my-4">
                         <h4 class="mb-3">Shipping address</h4>
 

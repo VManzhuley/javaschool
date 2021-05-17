@@ -1,20 +1,27 @@
 package com.tsystems.javaschool.service.impl;
 
+import com.tsystems.javaschool.dao.CategoryDAO;
 import com.tsystems.javaschool.dao.ParametersDAO;
-import com.tsystems.javaschool.dto.CategoryDTO;
-import com.tsystems.javaschool.entity.product.*;
+import com.tsystems.javaschool.entity.product.Colour;
+import com.tsystems.javaschool.entity.product.Composition;
+import com.tsystems.javaschool.entity.product.Description;
+import com.tsystems.javaschool.entity.product.Size;
+import com.tsystems.javaschool.service.CategoryService;
 import com.tsystems.javaschool.service.ParametersService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ParametersServiceImpl implements ParametersService {
     private final ParametersDAO parametersDAO;
+    private final CategoryService categoryService;
+    private final CategoryDAO categoryDAO;
 
-    public ParametersServiceImpl(ParametersDAO parametersDAO) {
+    public ParametersServiceImpl(ParametersDAO parametersDAO, CategoryService categoryService, CategoryDAO categoryDAO) {
         this.parametersDAO = parametersDAO;
+        this.categoryService = categoryService;
+        this.categoryDAO = categoryDAO;
     }
 
     @Override
@@ -37,32 +44,6 @@ public class ParametersServiceImpl implements ParametersService {
         return parametersDAO.getAllColour();
     }
 
-    @Override
-    public List<CategoryDTO> getAllCategoryWithoutChild() {
-        return parametersDAO.getAllCategoryWithoutChild().stream().map(this::mapToCategoryDTO).collect(Collectors.toList());
-    }
-
-    @Override
-    public CategoryDTO mapToCategoryDTO(Category category) {
-        CategoryDTO categoryDTO = new CategoryDTO();
-        categoryDTO.setIdCategory(category.getId());
-        if (category.getCategoryParent() == null) {
-            categoryDTO.setName(category.getName());
-        } else {
-            categoryDTO.setName(category.getCategoryParent().getName() + "/" + category.getName());
-        }
-        return categoryDTO;
-    }
-
-    @Override
-    public Colour getColourById(int id) {
-        return parametersDAO.getColourById(id);
-    }
-
-    @Override
-    public Size getSizeById(int id) {
-        return parametersDAO.getSizeById(id);
-    }
 
 
 }

@@ -10,9 +10,8 @@ public interface OrderDAO {
     void addProductOrdered(ProductOrdered productOrdered);
     List<Order> allByPage(int page);
     long getTotalPagesToAdmin();
-    long getAmount(int idOrder);
-    Order getById(int id);
+    Order getById(long id);
     void update(Order order);
-    List<Order> allByClientAndPage(String email, int page);
-    long getTotalPagesToUser(String email);
+    List<Order> allByClientAndPage(int idClient, int page);
+    long getTotalPagesToUser(int idClient);
 }

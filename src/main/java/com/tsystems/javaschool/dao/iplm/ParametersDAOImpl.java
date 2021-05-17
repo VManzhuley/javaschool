@@ -1,11 +1,15 @@
 package com.tsystems.javaschool.dao.iplm;
 
 import com.tsystems.javaschool.dao.ParametersDAO;
-import com.tsystems.javaschool.entity.product.*;
+import com.tsystems.javaschool.entity.product.Colour;
+import com.tsystems.javaschool.entity.product.Composition;
+import com.tsystems.javaschool.entity.product.Description;
+import com.tsystems.javaschool.entity.product.Size;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import java.util.List;
 
 @Repository
@@ -32,19 +36,20 @@ public class ParametersDAOImpl implements ParametersDAO {
     public List<Colour> getAllColour() {
         return entityManager.createQuery("select c from Colour c",Colour.class).getResultList();
     }
+
+
     @Override
-    public List<Category> getAllCategoryWithoutChild() {
-         return entityManager.createQuery("select c from Category c where c.categoriesChild is empty", Category.class).getResultList();
+    public Colour getColourByName(String name) {
+        TypedQuery<Colour> query = entityManager.createQuery("select c from Colour c where c.name=:name",Colour.class);
+
+        return query.setParameter("name",name).getSingleResult();
     }
 
     @Override
-    public Colour getColourById(int id) {
-        return entityManager.find(Colour.class,id);
-    }
+    public Size getSizeByName(String name) {
+        TypedQuery<Size> query = entityManager.createQuery("select s from Size s where s.name=:name",Size.class);
 
-    @Override
-    public Size getSizeById(int id) {
-        return entityManager.find(Size.class,id);
+        return query.setParameter("name",name).getSingleResult();
     }
 
 }

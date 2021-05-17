@@ -1,7 +1,9 @@
 package com.tsystems.javaschool.service;
 
-import com.tsystems.javaschool.dto.CategoryDTO;
-import com.tsystems.javaschool.entity.product.*;
+import com.tsystems.javaschool.entity.product.Colour;
+import com.tsystems.javaschool.entity.product.Composition;
+import com.tsystems.javaschool.entity.product.Description;
+import com.tsystems.javaschool.entity.product.Size;
 
 import java.util.List;
 
@@ -10,9 +12,6 @@ public interface ParametersService {
     List<Description> getAllDescription();
     List<Size> getAllSize();
     List<Colour> getAllColour();
-    List<CategoryDTO> getAllCategoryWithoutChild();
 
-    CategoryDTO mapToCategoryDTO(Category category);
-    Colour getColourById(int id);
-    Size getSizeById(int id);
+
 }

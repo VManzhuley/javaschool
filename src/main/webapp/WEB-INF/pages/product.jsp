@@ -43,12 +43,12 @@
                         <div class="carousel-inner">
                             <c:forEach var="photo" items="${productAbs.colours}" begin="0" end="0">
                                 <div class="carousel-item active">
-                                    <img src="/assets/img/product${photo.photoLink}">
+                                    <img src="${photo.photoLink}">
                                 </div>
                             </c:forEach>
                             <c:forEach var="photo" items="${productAbs.colours}" begin="1">
                                 <div class="carousel-item">
-                                    <img src="/assets/img/product${photo.photoLink}">
+                                    <img src="${photo.photoLink}">
                                 </div>
                             </c:forEach>
                         </div>
@@ -71,7 +71,7 @@
                                                varStatus="i">
                                         <div data-bs-target="#carousel" data-bs-slide-to="${i.index}"
                                              class="img-thumbnail">
-                                            <img src="/assets/img/product${photo.photoLink}">
+                                            <img src="${photo.photoLink}">
                                         </div>
                                     </c:forEach>
                                 </div>
@@ -82,7 +82,7 @@
                                                        end="${i.index+3}" varStatus="j">
                                                 <div data-bs-target="#carousel" data-bs-slide-to="${j.index}"
                                                      class="img-thumbnail">
-                                                    <img src="/assets/img/product${photo.photoLink}">
+                                                    <img src="${photo.photoLink}">
                                                 </div>
                                             </c:forEach>
                                         </div>

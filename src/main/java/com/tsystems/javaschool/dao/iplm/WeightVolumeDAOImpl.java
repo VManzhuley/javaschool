@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import java.util.List;
 
 @Repository
 public class WeightVolumeDAOImpl implements WeightVolumeDAO {
@@ -23,5 +24,17 @@ public class WeightVolumeDAOImpl implements WeightVolumeDAO {
 
         return query.setParameter("id", idProduct).getSingleResult();
 
+    }
+
+    @Override
+    public void add(WeightVolume weightVolume) {
+        entityManager.persist(weightVolume);
+    }
+
+    @Override
+    public List<WeightVolume> getAllByProductAbs(int idProductAbs) {
+        TypedQuery<WeightVolume> query = entityManager.createQuery("select w from WeightVolume w where w.productAbs.id=:id",WeightVolume.class);
+
+        return query.setParameter("id",idProductAbs).getResultList();
     }
 }

@@ -10,13 +10,13 @@ import java.util.List;
 
 @Data
 public class OrderDTO {
-    private int id;
+    private long id;
     private ClientDTO client;
     private String date;
     private PaymentType payment;
     private ShippingType shipping;
     private Status status;
-    private long amountTotal;
+    private double amount;
     private List<ProductOrderedDTO> productOrderedList;
 }
 

@@ -12,7 +12,7 @@ import java.util.List;
 
 
 public interface OrderService {
-    int addOrder(CartDTO cart, ClientDTO clientDTO, OrderDTO order, Principal principal);
+    long addOrder(CartDTO cart, ClientDTO clientDTO, OrderDTO order, Principal principal);
     OrderDTO mapToOrderDTO(Order order);
     List<OrderDTO> allByPage(int page);
     long getTotalPagesToAdmin();
@@ -23,4 +23,6 @@ public interface OrderService {
     long getTotalPagesToUser(Principal principal);
     CartDTO repeatOrder(int id, Principal principal, CartDTO cartDTO);
     void returnProduct(Order order);
+
+
 }

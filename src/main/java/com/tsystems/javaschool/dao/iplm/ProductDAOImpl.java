@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import java.util.List;
 
 @Repository
 public class ProductDAOImpl implements ProductDAO {
@@ -20,13 +19,6 @@ public class ProductDAOImpl implements ProductDAO {
         return entityManager.find(Product.class, id);
     }
 
-    @Override
-    public List<Product> allProducts(int idProductAbs) {
-        TypedQuery<Product> query = entityManager.createQuery("select p from Product p where p.productAbs.id=:id",
-                Product.class);
-
-        return query.setParameter("id", idProductAbs).getResultList();
-    }
 
     @Override
     public Product getProductByProductABSColourMainColourSecSize(int idProductAbs, int idColourMain, int idColourSec, String size) {
@@ -42,6 +34,11 @@ public class ProductDAOImpl implements ProductDAO {
     @Override
     public void update(Product product) {
         entityManager.merge(product);
+    }
+
+    @Override
+    public void add(Product product) {
+        entityManager.persist(product);
     }
 
 
