@@ -40,7 +40,7 @@ public class SizeServiceImpl implements SizeService {
         Size size = parametersDAO.getSizeByName(sizeDTO.getSize());
 
         weightVolume.setVolume(sizeDTO.getVolume());
-        weightVolume.setWeight(sizeDTO.getVolume());
+        weightVolume.setWeight(sizeDTO.getWeight());
         weightVolume.setSize(size);
         weightVolume.setProductAbs(productAbs);
 

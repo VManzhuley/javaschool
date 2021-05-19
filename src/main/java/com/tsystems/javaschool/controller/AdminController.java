@@ -89,11 +89,17 @@ public class AdminController {
     @RequestMapping(value = "/product-add", method = {RequestMethod.GET, RequestMethod.POST})
     public ModelAndView productAbsAdd(@ModelAttribute("productAbs") ProductAbsDTO productAbsDTO,
                                       @ModelAttribute("colour") ColourDTO colourDTO,
-                                      @ModelAttribute("size") SizeDTO sizeDTO) {
+                                      @ModelAttribute("size") SizeDTO sizeDTO,
+                                      HttpServletRequest request) {
         ModelAndView modelAndView = new ModelAndView();
 
         productAbsDTO.addSize(sizeDTO);
         productAbsDTO.addColour(colourDTO);
+
+        if (request.getParameter("submit") != null) {
+            modelAndView.setViewName("redirect:/admin/product-add-confirm");
+            return modelAndView;
+        }
 
         List<CategoryDTO> categories = categoryService.getAllWithoutChild();
         List<Description> descriptions = parametersService.getAllDescription();
@@ -308,7 +314,7 @@ public class AdminController {
 
         if (request.getParameter("new") != null) {
             categoryService.add(request.getParameter("categoryNew"));
-            modelAndView.setViewName("redirect:/category");
+            modelAndView.setViewName("redirect:/admin/category");
             return modelAndView;
         }
         if (categoryService.checkChild(step1)) {

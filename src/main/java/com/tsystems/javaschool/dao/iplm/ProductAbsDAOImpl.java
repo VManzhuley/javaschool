@@ -9,7 +9,6 @@ import lombok.Getter;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -20,7 +19,7 @@ import java.util.List;
 
 @Repository
 public class ProductAbsDAOImpl implements ProductAbsDAO {
-    private final EntityManagerFactory entityManagerFactory;
+
     private final int pageSize=6;
     @Getter
     private int totalPages;
@@ -29,10 +28,6 @@ public class ProductAbsDAOImpl implements ProductAbsDAO {
     EntityManager entityManager;
 
 
-    public ProductAbsDAOImpl(EntityManagerFactory entityManagerFactory) {
-        this.entityManagerFactory = entityManagerFactory;
-    }
-
     @Override
     public ProductAbs getById(int id) {
         return entityManager.find(ProductAbs.class, id);
@@ -40,9 +35,8 @@ public class ProductAbsDAOImpl implements ProductAbsDAO {
 
     @Override
     public List<ProductAbs> allProductsByCategoryWithFSP(int idCategory, int page, String sort) {
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
-        CriteriaBuilder criteriaBuilder = entityManagerFactory.getCriteriaBuilder();
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<ProductAbs> criteriaQuery = criteriaBuilder.createQuery(ProductAbs.class);
 
         Root<ProductAbs> productAbsRoot = criteriaQuery.from(ProductAbs.class);

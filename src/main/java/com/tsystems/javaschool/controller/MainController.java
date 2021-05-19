@@ -178,7 +178,7 @@ public class MainController {
         }
 
         ModelAndView modelAndView = new ModelAndView();
-        long id = 0;
+        long id;
         try {
             id = orderService.addOrder(cart, clientDTO, order, principal);
         } catch (BusinessLogicException businessLogicException) {
@@ -264,6 +264,15 @@ public class MainController {
         modelAndView.setViewName("redirect:/");
 
 
+        return modelAndView;
+    }
+
+
+    @GetMapping(value = "/error403")
+    public ModelAndView error403() {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("error");
+        modelAndView.addObject("errorCode", 403);
         return modelAndView;
     }
 

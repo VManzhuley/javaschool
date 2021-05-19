@@ -8,6 +8,7 @@ import lombok.Getter;
 public enum Status {
     NEW ("New"),
     WAITING_FOR_PAYMENT ("Waiting for payment"),
+    PAID ("Paid"),
     TRANSPORT_COMPANY ("Transferred to TC"),
     COMPLETED ("Completed"),
     CANCELED ("Canceled");

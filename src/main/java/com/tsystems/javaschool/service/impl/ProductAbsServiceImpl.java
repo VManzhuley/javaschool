@@ -115,7 +115,7 @@ public class ProductAbsServiceImpl implements ProductAbsService {
         for (ProductDTO productDTO : productAbsDTO.getProducts()) {
             productService.add(productDTO, idProductAbs);
         }
-
+        productAbsDTO.clearSizesAndColours();
         return productAbs.getId();
     }
 

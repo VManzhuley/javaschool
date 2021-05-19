@@ -46,11 +46,12 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public long addOrder(CartDTO cart, ClientDTO clientDTO, OrderDTO orderDTO, Principal principal) {
-        cartService.checkAvailability(cart);
-        if (cart.getIsMissQuantity()) throw new BusinessLogicException();
 
-        for (CartItemDTO item : cart.getCartItems()
-        ) {
+        cartService.checkAvailability(cart);
+
+        if (cart.getIsMissQuantity()) throw new BusinessLogicException("Some products in cart are missing on warehouse");
+
+        for (CartItemDTO item : cart.getCartItems()) {
             Product product = productDAO.getById(item.getProduct().getId());
             product.setQuantity(product.getQuantity() - item.getQuantity());
             productDAO.update(product);
@@ -84,12 +85,12 @@ public class OrderServiceImpl implements OrderService {
         order.setPayment(orderDTO.getPayment());
         order.setShipping(orderDTO.getShipping());
         order.setStatus(Status.NEW);
+        order.setAmount(cart.getAmountTotal());
 
         orderDAO.addOrder(order);
 
 
-        for (CartItemDTO item : cart.getCartItems()
-        ) {
+        for (CartItemDTO item : cart.getCartItems()) {
             ProductOrdered productOrdered = new ProductOrdered();
 
             productOrdered.setOrder(order);

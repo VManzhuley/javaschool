@@ -8,11 +8,13 @@ import java.util.List;
 public interface ProductAbsService {
 
     ProductAbsDTO getProductAbsDTO(int id);
+
     List<ProductAbsDTO> allProductsByCategoryWithFSP(int idCategory, int page, String sort);
 
-
     ProductAbsDTO mapToProductAbsDTO(ProductAbs productAbs);
+
     ProductAbsDTO addParams(ProductAbsDTO productAbsDTO);
+
     int getTotalPages();
 
     int add(ProductAbsDTO productAbsDTO);

@@ -86,4 +86,8 @@ public class ProductAbsDTO {
         }
 
     }
+    public void clearSizesAndColours(){
+        this.sizes=new LinkedList<>();
+        this.colours=new LinkedList<>();
+    }
 }

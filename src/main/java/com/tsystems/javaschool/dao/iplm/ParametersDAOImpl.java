@@ -29,7 +29,7 @@ public class ParametersDAOImpl implements ParametersDAO {
 
     @Override
     public List<Size> getAllSize() {
-        return entityManager.createQuery("select s from Size s", Size.class).getResultList();
+        return entityManager.createQuery("select s from Size s order by s.id", Size.class).getResultList();
     }
 
     @Override

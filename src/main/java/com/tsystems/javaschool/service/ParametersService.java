@@ -8,9 +8,13 @@ import com.tsystems.javaschool.entity.product.Size;
 import java.util.List;
 
 public interface ParametersService {
+
     List<Composition> gelAllComposition();
+
     List<Description> getAllDescription();
+
     List<Size> getAllSize();
+
     List<Colour> getAllColour();
 
 

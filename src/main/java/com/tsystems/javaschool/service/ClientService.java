@@ -7,6 +7,7 @@ import com.tsystems.javaschool.entity.Client;
 import java.security.Principal;
 
 public interface ClientService {
+
     ClientDTO findById(int id);
 
     ClientDTO findByUserName (String userName);

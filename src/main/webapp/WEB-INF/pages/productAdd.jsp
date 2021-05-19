@@ -1,5 +1,6 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
 <%--
   Created by IntelliJ IDEA.
@@ -35,7 +36,8 @@
                     </div>
                     <c:set value="${productAbs.photoLink}" var="productPhoto"/>
                     <c:if test="${productAbs.photoLink.length()<1}">
-                        <c:set value="https://res.cloudinary.com/dwkkqpsi0/image/upload/v1621269387/product-foto_k0ilyl.png" var="productPhoto"/>
+                        <c:set value="https://res.cloudinary.com/dwkkqpsi0/image/upload/v1621269387/product-foto_k0ilyl.png"
+                               var="productPhoto"/>
                     </c:if>
                     <img src="${productPhoto}" class="rounded mx-auto d-block"
                          style="width: 17rem;" alt="${productAbs.name}" id="photoLink">
@@ -161,7 +163,7 @@
                             <select class="form-select" name="${status.expression}">
                                 <option value="" selected>---</option>
                                 <c:forEach var="colours" items="${colours}">
-                                    <option value="${colours.name}">${colours.name}</option>
+                                    <option value="${colours.name}">${colours.id}/${colours.name}</option>
                                 </c:forEach>
                             </select>
                         </spring:bind>
@@ -224,14 +226,14 @@
             </div>
 
         </div>
+
+
+        <hr class="my-4">
+
+        <input type="submit"
+               class="w-100 btn btn-primary ${empty productAbs.colours ? 'disabled' : ''} ${empty productAbs.sizes ? 'disabled' : ''}"
+               name="submit" value="Create Product"/>
     </form>
-
-    <hr class="my-4">
-
-    <a href="/admin/product-add-confirm"
-       class="w-100 btn btn-primary ${empty productAbs.colours ? 'disabled' : ''} ${empty productAbs.sizes ? 'disabled' : ''}">Create
-        Product</a>
-
 
 </div>
 
