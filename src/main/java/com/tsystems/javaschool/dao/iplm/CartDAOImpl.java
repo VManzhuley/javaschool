@@ -24,12 +24,12 @@ public class CartDAOImpl implements CartDAO {
     }
 
     @Override
-    public void add(Cart cart) {
+    public void create(Cart cart) {
         entityManager.persist(cart);
     }
 
     @Override
-    public Cart getByClientAndProduct(String userName, int idProduct) {
+    public Cart getByClientAndProduct(String userName, long idProduct) {
         TypedQuery<Cart> query = entityManager.createQuery("select c from Cart c where c.client.userName=:userName and c.product.id=:id",
                 Cart.class);
         return query.setParameter("userName", userName)
@@ -48,7 +48,7 @@ public class CartDAOImpl implements CartDAO {
     }
 
     @Override
-    public void removeAll(int idClient) {
+    public void removeAll(long idClient) {
         entityManager.createQuery("delete from Cart c where c.client.id=:id").setParameter("id", idClient).executeUpdate();
     }
 

@@ -10,26 +10,19 @@ import java.util.List;
 
 @Repository
 public class CategoryDAOImpl implements CategoryDAO {
-
-
     @PersistenceContext
     EntityManager entityManager;
 
-
     @Override
-    public List<Category> findAll() {
-        return entityManager.createQuery("select c from Category c").getResultList();
-    }
-
-    @Override
-    public void add(Category category) {
+    public void create(Category category) {
         entityManager.persist(category);
     }
 
     @Override
-    public Category getById(int id) {
+    public Category getById(long id) {
         return entityManager.find(Category.class, id);
     }
+
     @Override
     public List<Category> getAllWithoutChild() {
         return entityManager.createQuery("select c from Category c where c.categoriesChild is empty", Category.class).getResultList();
@@ -44,6 +37,8 @@ public class CategoryDAOImpl implements CategoryDAO {
     public void update(Category category) {
         entityManager.merge(category);
     }
+
+
 
 
 }

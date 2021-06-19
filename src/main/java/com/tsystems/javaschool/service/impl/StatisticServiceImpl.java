@@ -31,7 +31,6 @@ public class StatisticServiceImpl implements StatisticService {
 
     @Override
     public List<ProductOrderedDTO> topProductOrdered(String status, String sort, int pageSize) {
-
         return statisticDAO.topProductOrdered(status, sort, pageSize).stream().map(orderService::mapToProductOrderedDTO).collect(Collectors.toList());
     }
 

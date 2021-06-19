@@ -3,12 +3,13 @@ package com.tsystems.javaschool.dao;
 import com.tsystems.javaschool.entity.product.Product;
 
 public interface ProductDAO {
-    Product getById(int id);
+    Product getById(long id);
 
-    Product getProductByProductABSColourMainColourSecSize(int idProductAbs, int idColourMain, int idColourSec, String size);
+    Product getProductByProductABSColourMainColourSecSize(long idProductAbs, long idColourMain, long idColourSec, long idSize);
 
     void update(Product product);
 
-    void add(Product product);
+    void create(Product product);
+
 
 }

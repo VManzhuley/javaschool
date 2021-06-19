@@ -29,6 +29,10 @@ public class UserController {
         this.clientService = clientService;
     }
 
+    @ModelAttribute("client")
+    public ClientDTO clientDTO(Principal principal) {
+        return clientService.getByUserName(principal.getName());
+    }
 
     @GetMapping(value = "/orders")
     public ModelAndView orderList(@RequestParam(defaultValue = "1") int page,
@@ -36,7 +40,7 @@ public class UserController {
         ModelAndView modelAndView = new ModelAndView();
 
 
-        List<OrderDTO> orderDTOList = orderService.allByClientAndPage(principal, page);
+        List<OrderDTO> orderDTOList = orderService.getAllByClientAndPage(principal, page);
         long totalPages = orderService.getTotalPagesToUser(principal);
 
         modelAndView.setViewName("orderList");
@@ -49,7 +53,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/order")
-    public ModelAndView orderDetails(@RequestParam int id,
+    public ModelAndView orderDetails(@RequestParam long id,
                                      Principal principal) {
         ModelAndView modelAndView = new ModelAndView();
 
@@ -66,33 +70,26 @@ public class UserController {
         return modelAndView;
     }
 
-    @GetMapping(value = "/orderCancel")
-    public ModelAndView updateOrderDetails(@RequestParam int id,
+    @GetMapping(value = "/order/cancel")
+    public ModelAndView updateOrderDetails(@RequestParam long id,
                                            Principal principal) {
-        ModelAndView modelAndView = new ModelAndView();
 
         OrderDTO orderDTO = orderService.getById(id);
+
         if (orderDTO.getClient().getEmail().equals(principal.getName()) ||
                 orderDTO.getClient().getUserNameParent().equals(principal.getName())) {
             orderService.updateStatus(id, Status.CANCELED.name());
         }
 
-        modelAndView.setViewName("redirect:/user/orders");
 
-        return modelAndView;
-    }
 
-    @ModelAttribute("client")
-    public ClientDTO clientDTO(Principal principal) {
-        return clientService.findByUserName(principal.getName());
+        return new ModelAndView("redirect:/user/orders");
     }
 
     @GetMapping(value = "/account")
     public ModelAndView account(@ModelAttribute("client") ClientDTO clientDTO,
                                 String message) {
-        ModelAndView modelAndView = new ModelAndView();
-
-        modelAndView.setViewName("registration");
+        ModelAndView modelAndView = new ModelAndView("registration");
 
         modelAndView.addObject("client", clientDTO);
         modelAndView.addObject("message", message);
@@ -103,7 +100,7 @@ public class UserController {
     public ModelAndView updateAccount(@ModelAttribute("client") @Valid ClientDTO clientDTO,
                                       BindingResult bindingResult,
                                       Principal principal) {
-        ModelAndView modelAndView = new ModelAndView();
+
 
         if (bindingResult.hasFieldErrors("name") ||
                 bindingResult.hasFieldErrors("lastname") ||
@@ -123,14 +120,14 @@ public class UserController {
         List<String> messages = new ArrayList<>();
         messages.add("Data updated successfully");
         if (!clientDTO.getEmail().equals(principal.getName())) {
-            modelAndView.setViewName("redirect:/logout");
-            return modelAndView;
+
+            return new ModelAndView("redirect:/logout");
         }
 
-
-        modelAndView.setViewName("registration");
+        ModelAndView modelAndView = new ModelAndView("registration");
         modelAndView.addObject("client", clientDTO);
         modelAndView.addObject("messageUpdate", messages);
+
         return modelAndView;
     }
 

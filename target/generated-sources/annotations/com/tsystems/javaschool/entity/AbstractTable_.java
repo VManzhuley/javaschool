@@ -9,7 +9,7 @@ import javax.persistence.metamodel.StaticMetamodel;
 public abstract class AbstractTable_ {
 
 	public static volatile SingularAttribute<AbstractTable, String> name;
-	public static volatile SingularAttribute<AbstractTable, Integer> id;
+	public static volatile SingularAttribute<AbstractTable, Long> id;
 
 	public static final String NAME = "name";
 	public static final String ID = "id";

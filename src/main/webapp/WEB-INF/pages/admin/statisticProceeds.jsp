@@ -11,15 +11,17 @@
 <head>
     <title>Title</title>
     <link href="/assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/css/dashboard.css" rel="stylesheet">
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/popper.min.js"></script>
 </head>
 <body>
-<div class="container">
-
-    <jsp:include page="header.jsp"/>
+<jsp:include page="headerAdmin.jsp"/>
+<div class="container-fluid">
 
     <div class="row g-5">
 
-        <div class="col-md-5 col-lg-3 py-5">
+        <div class="col-md-5 col-lg-2 py-3 mx-3">
 
             <form method="post">
                 <p class="h5">Period</p>
@@ -28,32 +30,32 @@
 
                         <input class="form-check-input" type="radio" name="period" value="month" checked>
                         <p class="h6"> By month </p>
-                        <input class="form-control" type="month" name="month" value="${pMonth}">
+                        <input class="form-control" type="month" name="month" value="${param.get("month")}">
                         <div class="mb-3"></div>
 
                         <input class="form-check-input" type="radio" name="period"
-                               value="week" ${pPeriod=='week' ? 'checked' : ''}>
+                               value="week" ${param.get("period")=='week' ? 'checked' : ''}>
                         <p class="h6"> By week </p>
-                        <input class="form-control" type="week" name="week" value="${pWeek}">
+                        <input class="form-control" type="week" name="week" value="${param.get("week")}">
                         <div class="mb-3"></div>
 
                         <input class="form-check-input" type="radio" name="period"
-                               value="custom" ${pPeriod=='custom' ? 'checked' : ''}>
+                               value="custom" ${param.get("period")=='custom' ? 'checked' : ''}>
                         <p class="h6"> Custom </p>
 
 
                         <label class="form-check-label"> from </label>
 
-                        <input class="form-control" type="date" name="dateFrom" value="${pDateFrom}">
+                        <input class="form-control" type="date" name="dateFrom" value="${param.get("dateFrom")}">
 
                         <label class="form-check-label"> to </label>
 
-                        <input class="form-control" type="date" name="dateTo" value="${pDateTo}">
+                        <input class="form-control" type="date" name="dateTo" value="${param.get("dateTo")}">
                     </div>
 
 
                 </div>
-                <button type="submit" class="btn btn-primary">Confirm</button>
+                <button type="submit" class="w-100 btn btn-dark">Confirm</button>
 
 
             </form>
@@ -95,7 +97,6 @@
     </div>
 
 </div>
-<script src="/assets/js/bootstrap.min.js"></script>
 </body>
 </html>
 

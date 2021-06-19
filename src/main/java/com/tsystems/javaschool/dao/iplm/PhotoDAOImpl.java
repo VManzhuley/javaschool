@@ -15,7 +15,7 @@ public class PhotoDAOImpl implements PhotoDAO {
     EntityManager entityManager;
 
     @Override
-    public Photo getPhotoLink(int idProduct) {
+    public Photo getPhotoLink(long idProduct) {
 
         TypedQuery<Photo> query = entityManager.createQuery(
                 "select p from Photo p join Product pr " +
@@ -26,14 +26,24 @@ public class PhotoDAOImpl implements PhotoDAO {
     }
 
     @Override
-    public void add(Photo photo) {
+    public void create(Photo photo) {
         entityManager.persist(photo);
     }
 
     @Override
-    public List<Photo> getAllByProductAbs(int idProductAbs) {
-        TypedQuery<Photo> query = entityManager.createQuery("select p from Photo p where p.productAbs.id=:id",Photo.class);
+    public List<Photo> getAllByProductAbs(long idProductAbs) {
+        TypedQuery<Photo> query = entityManager.createQuery("select p from Photo p where p.productAbs.id=:id", Photo.class);
 
-        return query.setParameter("id",idProductAbs).getResultList();
+        return query.setParameter("id", idProductAbs).getResultList();
+    }
+
+    @Override
+    public void update(Photo photo) {
+        entityManager.merge(photo);
+    }
+
+    @Override
+    public Photo getById(long id) {
+        return entityManager.find(Photo.class, id);
     }
 }

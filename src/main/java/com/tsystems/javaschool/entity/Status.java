@@ -13,6 +13,6 @@ public enum Status {
     COMPLETED ("Completed"),
     CANCELED ("Canceled");
 
-    private String title;
+    private final String title;
 
 }

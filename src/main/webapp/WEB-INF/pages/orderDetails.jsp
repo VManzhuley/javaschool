@@ -12,12 +12,24 @@
 <head>
     <title>Title</title>
     <link href="/assets/css/bootstrap.min.css" rel="stylesheet">
+    <sec:authorize access="hasRole('ADMIN')">
+        <link href="/assets/css/dashboard.css" rel="stylesheet">
+    </sec:authorize>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/popper.min.js"></script>
 </head>
 <body>
 
 
+<sec:authorize access="hasRole('USER')">
 <div class="container">
-    <jsp:include page="header.jsp"/>
+        <jsp:include page="header.jsp"/>
+    </sec:authorize>
+    <sec:authorize access="hasRole('ADMIN')">
+        <jsp:include page="admin/headerAdmin.jsp"/>
+    <div class="container-fluid">
+
+        </sec:authorize>
 
     <div class="row g-3">
         <div class="col-md-4 col-lg-4">
@@ -52,17 +64,17 @@
                                 </select>
                             </div>
                             <div class="col-sm-4">
-                                <button type="submit" class="form-control btn btn-outline-primary">Update</button>
+                                <button type="submit" class="form-control btn btn-outline-dark">Update</button>
                             </div>
                         </div>
                     </form>
                 </sec:authorize>
-                <sec:authorize access="hasRole('USER')">
 
+                <sec:authorize access="hasRole('USER')">
                     <label class="form-label">Status</label>
                     <div class="col-sm-6">
 
-                        <c:url value="/user/orderCancel" var="urlCancel">
+                        <c:url value="/user/order/cancel" var="urlCancel">
                             <c:param name="id" value="${order.id}"/>
                         </c:url>
                         <a href="${urlCancel}"
@@ -72,7 +84,7 @@
                         </a>
                     </div>
                     <div class="col-sm-6">
-                        <c:url value="/user/repeatOrder" var="urlRepeat">
+                        <c:url value="/user/order/repeat" var="urlRepeat">
                             <c:param name="id" value="${order.id}"/>
                         </c:url>
                         <a href="${urlRepeat}" class="form-control btn btn-outline-primary">Repeat order</a>
@@ -174,6 +186,6 @@
         </table>
     </div>
 </div>
-<script src="/assets/js/bootstrap.min.js"></script>
+
 </body>
 </html>

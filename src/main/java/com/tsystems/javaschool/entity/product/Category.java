@@ -11,10 +11,13 @@ import java.util.List;
 @Data
 public class Category extends AbstractTable {
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category categoryParent;
 
     @OneToMany(mappedBy = "categoryParent", fetch = FetchType.EAGER)
     private List<Category> categoriesChild;
+
+    @OneToMany(mappedBy = "category", fetch = FetchType.EAGER)
+    private List<ProductAbs> productAbsList;
 }

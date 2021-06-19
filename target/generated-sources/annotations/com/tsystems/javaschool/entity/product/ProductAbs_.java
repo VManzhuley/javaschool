@@ -10,7 +10,7 @@ public abstract class ProductAbs_ extends com.tsystems.javaschool.entity.Abstrac
 
 	public static volatile SingularAttribute<ProductAbs, Boolean> outdated;
 	public static volatile SingularAttribute<ProductAbs, Composition> composition;
-	public static volatile SingularAttribute<ProductAbs, Integer> price;
+	public static volatile SingularAttribute<ProductAbs, Double> price;
 	public static volatile SingularAttribute<ProductAbs, Description> description;
 	public static volatile SingularAttribute<ProductAbs, String> photo;
 	public static volatile SingularAttribute<ProductAbs, Category> category;

@@ -11,14 +11,8 @@ import java.util.List;
 
 @Repository
 public class ClientDAOImpl implements ClientDAO {
-
     @PersistenceContext
     EntityManager entityManager;
-
-    @Override
-    public Client findById(int id) {
-        return entityManager.find(Client.class,id);
-    }
 
     @Override
     public Client findByUserName(String userName) {
@@ -31,7 +25,7 @@ public class ClientDAOImpl implements ClientDAO {
     }
 
     @Override
-    public void add(Client client) {
+    public void create(Client client) {
         entityManager.persist(client);
     }
 

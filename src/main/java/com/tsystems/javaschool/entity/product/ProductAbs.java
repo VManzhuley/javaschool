@@ -26,7 +26,7 @@ public class ProductAbs extends AbstractTable {
     private String photo;
 
     @Column(name = "price")
-    private int price;
+    private double price;
 
     @ManyToOne
     @JoinColumn(name = "composition_id")

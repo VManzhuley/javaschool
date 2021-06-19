@@ -8,26 +8,21 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 
 
 @ControllerAdvice
-public class GlobalDefaultExceptionHandler {
+public class MyExceptionHandler {
 
 
     @ExceptionHandler(value = NoHandlerFoundException.class)
-    public ModelAndView handle(Exception ex) {
-        ModelAndView modelAndView = new ModelAndView();
-
+    public ModelAndView handler404() {
+        ModelAndView modelAndView = new ModelAndView("error");
         modelAndView.addObject("errorCode", 404);
-        modelAndView.setViewName("error");
 
         return modelAndView;
     }
 
 
-    @ExceptionHandler(value = Exception.class)
-    public ModelAndView defaultErrorHandler(Exception ex) {
-        ModelAndView modelAndView = new ModelAndView();
-
-        modelAndView.setViewName("error");
-
-        return modelAndView;
-    }
+/*    @ExceptionHandler(value = Exception.class)
+    public ModelAndView handlerGlobal(Exeption e) {
+    lo
+        return new ModelAndView("error");
+    }*/
 }

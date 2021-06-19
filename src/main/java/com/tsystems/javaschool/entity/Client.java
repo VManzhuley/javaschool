@@ -1,13 +1,17 @@
 package com.tsystems.javaschool.entity;
 
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "client")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Client extends AbstractTable {
 
     @Column(name = "username")

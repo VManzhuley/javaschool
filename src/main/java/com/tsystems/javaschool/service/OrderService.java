@@ -13,25 +13,25 @@ import java.util.List;
 
 public interface OrderService {
 
-    long addOrder(CartDTO cart, ClientDTO clientDTO, OrderDTO order, Principal principal);
+    long createOrder(CartDTO cart, ClientDTO clientDTO, OrderDTO order);
 
     OrderDTO mapToOrderDTO(Order order);
 
-    List<OrderDTO> allByPage(int page);
+    List<OrderDTO> getAllByPage(int page);
 
     long getTotalPagesToAdmin();
 
-    OrderDTO getById(int id);
+    OrderDTO getById(long id);
 
     ProductOrderedDTO mapToProductOrderedDTO(ProductOrdered productOrdered);
 
-    void updateStatus(int idOrder, String status);
+    void updateStatus(long idOrder, String status);
 
-    List<OrderDTO> allByClientAndPage(Principal principal, int page);
+    List<OrderDTO> getAllByClientAndPage(Principal principal, int page);
 
     long getTotalPagesToUser(Principal principal);
 
-    CartDTO repeatOrder(int id, Principal principal, CartDTO cartDTO);
+    void repeatOrder(long idOrder, Principal principal, CartDTO cartDTO);
 
     void returnProduct(Order order);
 

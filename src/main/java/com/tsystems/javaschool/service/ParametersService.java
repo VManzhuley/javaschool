@@ -17,5 +17,12 @@ public interface ParametersService {
 
     List<Colour> getAllColour();
 
+    void createDescription(String name);
+
+    void createComposition(String name);
+
+    List<Composition> gelAllCompositionByCategory(long id);
+
+    List<Description> getAllDescriptionByCategory(long id);
 
 }

@@ -14,27 +14,35 @@ public class WeightVolumeDAOImpl implements WeightVolumeDAO {
     @PersistenceContext
     EntityManager entityManager;
 
-
     @Override
-    public WeightVolume getWVByIdProduct(int idProduct) {
+    public WeightVolume getWVByIdProduct(long idProduct) {
         TypedQuery<WeightVolume> query = entityManager.createQuery(
                 "select w from WeightVolume w join Product p " +
                         "on p.productAbs=w.productAbs and p.size=w.size " +
                         "where p.id=:id", WeightVolume.class);
 
         return query.setParameter("id", idProduct).getSingleResult();
-
     }
 
     @Override
-    public void add(WeightVolume weightVolume) {
+    public void create(WeightVolume weightVolume) {
         entityManager.persist(weightVolume);
     }
 
     @Override
-    public List<WeightVolume> getAllByProductAbs(int idProductAbs) {
-        TypedQuery<WeightVolume> query = entityManager.createQuery("select w from WeightVolume w where w.productAbs.id=:id",WeightVolume.class);
+    public List<WeightVolume> getAllByProductAbs(long idProductAbs) {
+        TypedQuery<WeightVolume> query = entityManager.createQuery("select w from WeightVolume w where w.productAbs.id=:id", WeightVolume.class);
 
-        return query.setParameter("id",idProductAbs).getResultList();
+        return query.setParameter("id", idProductAbs).getResultList();
+    }
+
+    @Override
+    public void update(WeightVolume weightVolume) {
+        entityManager.merge(weightVolume);
+    }
+
+    @Override
+    public WeightVolume getById(long id) {
+        return entityManager.find(WeightVolume.class, id);
     }
 }

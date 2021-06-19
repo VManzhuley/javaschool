@@ -19,12 +19,12 @@ public class ParametersDAOImpl implements ParametersDAO {
 
     @Override
     public List<Composition> gelAllComposition() {
-        return entityManager.createQuery("select c from Composition c",Composition.class).getResultList();
+        return entityManager.createQuery("select c from Composition c", Composition.class).getResultList();
     }
 
     @Override
     public List<Description> getAllDescription() {
-        return entityManager.createQuery("select d from Description d",Description.class).getResultList();
+        return entityManager.createQuery("select d from Description d", Description.class).getResultList();
     }
 
     @Override
@@ -34,22 +34,46 @@ public class ParametersDAOImpl implements ParametersDAO {
 
     @Override
     public List<Colour> getAllColour() {
-        return entityManager.createQuery("select c from Colour c",Colour.class).getResultList();
+        return entityManager.createQuery("select c from Colour c", Colour.class).getResultList();
     }
 
 
     @Override
     public Colour getColourByName(String name) {
-        TypedQuery<Colour> query = entityManager.createQuery("select c from Colour c where c.name=:name",Colour.class);
+        TypedQuery<Colour> query = entityManager.createQuery("select c from Colour c where c.name=:name", Colour.class);
 
-        return query.setParameter("name",name).getSingleResult();
+        return query.setParameter("name", name).getSingleResult();
     }
 
     @Override
     public Size getSizeByName(String name) {
-        TypedQuery<Size> query = entityManager.createQuery("select s from Size s where s.name=:name",Size.class);
+        TypedQuery<Size> query = entityManager.createQuery("select s from Size s where s.name=:name", Size.class);
 
-        return query.setParameter("name",name).getSingleResult();
+        return query.setParameter("name", name).getSingleResult();
+    }
+
+    @Override
+    public void createComposition(Composition composition) {
+        entityManager.persist(composition);
+    }
+
+    @Override
+    public void createDescription(Description description) {
+        entityManager.persist(description);
+    }
+
+    @Override
+    public List<Composition> getAllCompositionByCategory(long id) {
+        TypedQuery<Composition> query = entityManager.createQuery("select p.composition from ProductAbs p " +
+                "where p.category.id=:id group by p.composition", Composition.class);
+        return query.setParameter("id", id).getResultList();
+    }
+
+    @Override
+    public List<Description> getAllDescriptionByCategory(long id) {
+        TypedQuery<Description> query = entityManager.createQuery("select p.description from ProductAbs p " +
+                "where p.category.id=:id group by p.description", Description.class);
+        return query.setParameter("id", id).getResultList();
     }
 
 }

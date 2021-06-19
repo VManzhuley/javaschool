@@ -1,24 +1,23 @@
 package com.tsystems.javaschool.controller;
 
+
 import com.tsystems.javaschool.dto.CartDTO;
 import com.tsystems.javaschool.dto.ClientDTO;
 import com.tsystems.javaschool.dto.OrderDTO;
-import com.tsystems.javaschool.dto.ProductAbsDTO;
 import com.tsystems.javaschool.entity.PaymentType;
 import com.tsystems.javaschool.entity.ShippingType;
-import com.tsystems.javaschool.entity.product.Category;
 import com.tsystems.javaschool.error.BusinessLogicException;
 import com.tsystems.javaschool.error.WrongParameterException;
 import com.tsystems.javaschool.service.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
-import java.util.List;
 
 @Controller
 @SessionAttributes("cart")
@@ -30,78 +29,78 @@ public class MainController {
     private final ClientService clientService;
     private final CartService cartService;
 
+    private final ParametersService parametersService;
+
 
     public MainController(ProductAbsService productAbsService,
                           CategoryService categoryService,
                           OrderService orderService,
                           ClientService clientService,
-                          CartService cartService) {
+                          CartService cartService,
+                          ParametersService parametersService) {
         this.productAbsService = productAbsService;
         this.categoryService = categoryService;
         this.orderService = orderService;
         this.clientService = clientService;
         this.cartService = cartService;
 
+        this.parametersService = parametersService;
     }
 
+
     @ModelAttribute("cart")
-    public CartDTO cartDTO() {
+    public CartDTO cartDTO(Principal principal) {
+        if (principal != null) {
+            CartDTO cartDTO = new CartDTO();
+            cartDTO.setUserName(principal.getName());
+
+            return cartDTO;
+        }
         return new CartDTO();
     }
 
 
     @RequestMapping(value = "/")
     public ModelAndView mainPage() {
-        List<Category> categoryList = categoryService.findAll();
-        ModelAndView modelAndView = new ModelAndView();
 
-
-        modelAndView.setViewName("index");
-        modelAndView.addObject("categoryList", categoryList);
-
-
-        return modelAndView;
+        return new ModelAndView("index");
     }
 
     @GetMapping(value = "/shop")
-    public ModelAndView shop(@RequestParam int category,
+    public ModelAndView shop(@RequestParam long category,
                              @RequestParam(defaultValue = "1") int page,
-                             @RequestParam(defaultValue = "id") String sort) {
-        List<Category> categoryList = categoryService.findAll();
-        List<ProductAbsDTO> productAbsList = productAbsService.allProductsByCategoryWithFSP(category, page, sort);
-        int totalPages = productAbsService.getTotalPages();
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("shop");
-        modelAndView.addObject("categoryList", categoryList);
-        modelAndView.addObject("totalPages", totalPages);
-        modelAndView.addObject("productAbsList", productAbsList);
+                             @RequestParam(defaultValue = "id") String sort,
+                             @RequestParam(defaultValue = "0") long composition,
+                             @RequestParam(defaultValue = "0") long description) {
+        ModelAndView modelAndView = new ModelAndView("shop");
+
+
+        modelAndView.addObject("descriptions", parametersService.getAllDescriptionByCategory(category));
+        modelAndView.addObject("compositions", parametersService.gelAllCompositionByCategory(category));
+        modelAndView.addObject("categoryList", categoryService.getAllWithoutParent());
+        modelAndView.addObject("productAbsList", productAbsService.getAllByCategoryWithFSP(category, page, sort, composition, description));
+        modelAndView.addObject("totalPages", productAbsService.getTotalPages());
 
         return modelAndView;
     }
 
     @GetMapping(value = "/product")
-    public ModelAndView product(@RequestParam int id) {
-        ProductAbsDTO productAbs = productAbsService.getProductAbsDTO(id);
-        ModelAndView modelAndView = new ModelAndView();
+    public ModelAndView product(@RequestParam long id) {
+        ModelAndView modelAndView = new ModelAndView("product");
 
-        modelAndView.setViewName("product");
-
-        modelAndView.addObject("productAbs", productAbs);
+        modelAndView.addObject("productAbs", productAbsService.getProductAbsDTO(id));
 
         return modelAndView;
     }
 
     @PostMapping(value = "/product")
     public ModelAndView addToCart(@ModelAttribute("cart") CartDTO cart,
-                                  @RequestParam int id,
-                                  HttpServletRequest request,
-                                  Principal principal) {
-        ProductAbsDTO productAbs = productAbsService.getProductAbsDTO(id);
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("product");
-        modelAndView.addObject("productAbs", productAbs);
+                                  @RequestParam long id,
+                                  HttpServletRequest request) {
+        cartService.addCartItem(cart, id, request);
 
-        cartService.addCartItem(cart, id, request, principal);
+        ModelAndView modelAndView = new ModelAndView("product");
+        modelAndView.addObject("productAbs", productAbsService.getProductAbsDTO(id));
 
         return modelAndView;
     }
@@ -115,22 +114,20 @@ public class MainController {
 
     @PostMapping("/cart")
     public ModelAndView updateCartItem(@ModelAttribute("cart") CartDTO cart,
-                                       HttpServletRequest request,
-                                       Principal principal) {
+                                       HttpServletRequest request) {
 
-        cartService.updateCartItem(cart, request, principal);
+        cartService.updateCartItem(cart, request);
         cartService.checkAvailability(cart);
 
         return new ModelAndView();
     }
 
-    @RequestMapping("/deleteCartItem")
+    @RequestMapping("/cart/delete")
     public ModelAndView deleteCartItem(@ModelAttribute("cart") CartDTO cart,
-                                       @RequestParam int id,
-                                       Principal principal) {
+                                       @RequestParam long id) {
         ModelAndView modelAndView = new ModelAndView();
 
-        cartService.removeCartItem(cart, id, principal);
+        cartService.removeCartItem(cart, id);
 
         modelAndView.setViewName("redirect:/cart");
         return modelAndView;
@@ -139,7 +136,7 @@ public class MainController {
     @ModelAttribute("client")
     public ClientDTO clientDTO(Principal principal) {
         if (principal != null) {
-            return clientService.findByUserName(principal.getName());
+            return clientService.getByUserName(principal.getName());
         } else {
             return new ClientDTO();
         }
@@ -147,11 +144,11 @@ public class MainController {
     }
 
 
-    @GetMapping("/orderConfirm")
+    @GetMapping("/order/add")
     public ModelAndView order(@ModelAttribute("client") ClientDTO client,
                               @ModelAttribute("order") OrderDTO order,
                               String message) {
-        ModelAndView modelAndView = new ModelAndView();
+        ModelAndView modelAndView = new ModelAndView("orderConfirm");
 
         modelAndView.addObject("shippingType", ShippingType.values());
         modelAndView.addObject("paymentType", PaymentType.values());
@@ -162,44 +159,38 @@ public class MainController {
     }
 
 
-    @PostMapping("/orderConfirm")
-    public ModelAndView orderConfirm(@ModelAttribute("cart") CartDTO cart,
+    @PostMapping("/order/add")
+    public ModelAndView orderConfirm(@ModelAttribute("cart") CartDTO cartDTO,
                                      @ModelAttribute("client") @Valid ClientDTO clientDTO,
                                      BindingResult bindingResult,
-                                     @ModelAttribute("order") OrderDTO order,
-                                     Principal principal) {
+                                     @ModelAttribute("order") OrderDTO orderDTO) {
 
 
         if (bindingResult.hasFieldErrors("name") ||
                 bindingResult.hasFieldErrors("lastname") ||
                 bindingResult.hasFieldErrors("email") ||
                 bindingResult.hasFieldErrors("phone")) {
-            return order(clientDTO, order, null);
+            return order(clientDTO, orderDTO, null);
         }
 
-        ModelAndView modelAndView = new ModelAndView();
         long id;
         try {
-            id = orderService.addOrder(cart, clientDTO, order, principal);
+            id = orderService.createOrder(cartDTO, clientDTO, orderDTO);
         } catch (BusinessLogicException businessLogicException) {
-            modelAndView.setViewName("redirect:/cart");
-            return modelAndView;
+            return new ModelAndView("redirect:/cart");
         } catch (WrongParameterException wrongParameterException) {
-            return order(clientDTO, order, wrongParameterException.getMessage());
+            return order(clientDTO, orderDTO, wrongParameterException.getMessage());
         }
-        modelAndView.addObject("client", clientDTO);
-        modelAndView.addObject("order", order);
-        modelAndView.setViewName("redirect:/orderFinish?id=" + id);
 
-        return modelAndView;
+        return new ModelAndView("redirect:/order?id=" + id);
     }
 
-    @GetMapping("/orderFinish")
-    public ModelAndView orderFinish(@RequestParam int id) {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("id", id);
+    @GetMapping("/order")
+    public ModelAndView orderFinish(@RequestParam long id,
+                                    SessionStatus status) {
+        status.setComplete();
 
-        return modelAndView;
+        return new ModelAndView("orderFinish");
     }
 
 
@@ -208,36 +199,37 @@ public class MainController {
         return new ModelAndView();
     }
 
-    @GetMapping("/loginSuccess")
-    public ModelAndView login(@ModelAttribute("cart") CartDTO cart,
+    @GetMapping("/login/admin")
+    public ModelAndView loginAdmin(@ModelAttribute("cart") CartDTO cart,
                               Principal principal) {
 
         cartService.mergeCart(cart, principal);
 
-        ModelAndView modelAndView = new ModelAndView();
+        return new ModelAndView("redirect:/admin/orders");
+    }
+    @GetMapping("/login/user")
+    public ModelAndView loginUser(@ModelAttribute("cart") CartDTO cart,
+                              Principal principal) {
 
-        modelAndView.setViewName("redirect:/");
+        cartService.mergeCart(cart, principal);
 
-        return modelAndView;
+        return new ModelAndView("redirect:/cart");
     }
 
-    @GetMapping(value = "/user/repeatOrder")
-    public ModelAndView repeatOrder(@RequestParam int id,
+    @GetMapping(value = "/user/order/repeat")
+    public ModelAndView repeatOrder(@RequestParam long id,
                                     @ModelAttribute("cart") CartDTO cart,
                                     Principal principal) {
-        ModelAndView modelAndView = new ModelAndView();
+
         orderService.repeatOrder(id, principal, cart);
 
-        modelAndView.setViewName("redirect:/cart");
-
-        return modelAndView;
+        return new ModelAndView("redirect:/cart");
     }
 
     @GetMapping(value = "/registration")
     public ModelAndView registration(@ModelAttribute("client") ClientDTO client,
                                      String message) {
         ModelAndView modelAndView = new ModelAndView();
-
 
         modelAndView.addObject("client", client);
         modelAndView.addObject("message", message);
@@ -248,32 +240,26 @@ public class MainController {
     @PostMapping(value = "/registration")
     public ModelAndView registrationConfirm(@ModelAttribute("client") @Valid ClientDTO client,
                                             BindingResult bindingResult) {
-        ModelAndView modelAndView = new ModelAndView();
-
 
         if (bindingResult.hasErrors()) {
             return registration(client, null);
         }
-
         try {
-            clientService.registerNewClient(client);
+            clientService.createClientRoleUser(client);
         } catch (WrongParameterException wrongParameterException) {
             return registration(client, wrongParameterException.getMessage());
         }
 
-        modelAndView.setViewName("redirect:/");
-
-
-        return modelAndView;
+        return new ModelAndView("redirect:/");
     }
 
 
     @GetMapping(value = "/error403")
     public ModelAndView error403() {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("error");
+        ModelAndView modelAndView = new ModelAndView("error");
+
         modelAndView.addObject("errorCode", 403);
+
         return modelAndView;
     }
-
 }

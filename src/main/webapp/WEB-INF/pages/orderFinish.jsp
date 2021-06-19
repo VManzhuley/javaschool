@@ -19,7 +19,7 @@
 
     <div class="text-center">
         <p class="h3">Thank you!</p>
-        <p class="h4">Your order number is ${id}</p>
+        <p class="h4">Your order number is ${param.get("id")}</p>
         <p class="h5">Our managers are fighting for your order and will contact you by mail shortly.</p>
     </div>
 

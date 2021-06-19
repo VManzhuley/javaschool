@@ -13,7 +13,7 @@ public abstract class Product_ {
 	public static volatile SingularAttribute<Product, Colour> colourMain;
 	public static volatile SingularAttribute<Product, Long> quantity;
 	public static volatile SingularAttribute<Product, Size> size;
-	public static volatile SingularAttribute<Product, Integer> id;
+	public static volatile SingularAttribute<Product, Long> id;
 	public static volatile ListAttribute<Product, ProductOrdered> productOrderedList;
 	public static volatile SingularAttribute<Product, ProductAbs> productAbs;
 	public static volatile SingularAttribute<Product, Colour> colourSec;

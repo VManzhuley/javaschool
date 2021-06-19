@@ -5,8 +5,14 @@ import com.tsystems.javaschool.entity.product.WeightVolume;
 import java.util.List;
 
 public interface WeightVolumeDAO {
-    WeightVolume getWVByIdProduct(int idProduct);
-    void add(WeightVolume weightVolume);
-    List<WeightVolume> getAllByProductAbs(int idProductAbs);
+    WeightVolume getWVByIdProduct(long idProduct);
+
+    void create(WeightVolume weightVolume);
+
+    List<WeightVolume> getAllByProductAbs(long idProductAbs);
+
+    void update(WeightVolume weightVolume);
+
+    WeightVolume getById(long id);
 
 }

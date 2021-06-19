@@ -8,7 +8,7 @@ public class CartItemDTO {
     private long quantity;
     private long missQuantity;
 
-    public long getAmount(){
-        return this.product.getPrice()*this.quantity;
+    public double getAmount() {
+        return this.product.getPrice() * (double) this.quantity;
     }
 }

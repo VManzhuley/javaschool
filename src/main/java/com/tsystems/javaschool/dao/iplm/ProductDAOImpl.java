@@ -15,19 +15,26 @@ public class ProductDAOImpl implements ProductDAO {
     EntityManager entityManager;
 
     @Override
-    public Product getById(int id) {
+    public Product getById(long id) {
         return entityManager.find(Product.class, id);
     }
 
 
     @Override
-    public Product getProductByProductABSColourMainColourSecSize(int idProductAbs, int idColourMain, int idColourSec, String size) {
-        TypedQuery<Product> query = entityManager.createQuery("select p from Product p where p.productAbs.id=:id1 and p.colourMain.id=:id2 and (p.colourSec.id = :id3 or p.colourSec is null) and p.size.name=:size",
-                Product.class);
-        query.setParameter("id1", idProductAbs)
-                .setParameter("id2", idColourMain)
-                .setParameter("id3", idColourSec)
-                .setParameter("size", size);
+    public Product getProductByProductABSColourMainColourSecSize(long idProductAbs,
+                                                                 long idColourMain,
+                                                                 long idColourSec,
+                                                                 long idSize) {
+        TypedQuery<Product> query = entityManager.createQuery("select p from Product p " +
+                "where p.productAbs.id=:idProductAbs " +
+                "and p.colourMain.id=:idColourMain " +
+                "and (p.colourSec.id = :idColourSec or p.colourSec is null) " +
+                "and p.size.id=:idSize", Product.class);
+
+        query.setParameter("idProductAbs", idProductAbs)
+                .setParameter("idColourMain", idColourMain)
+                .setParameter("idColourSec", idColourSec)
+                .setParameter("idSize", idSize);
         return query.getSingleResult();
     }
 
@@ -37,7 +44,7 @@ public class ProductDAOImpl implements ProductDAO {
     }
 
     @Override
-    public void add(Product product) {
+    public void create(Product product) {
         entityManager.persist(product);
     }
 

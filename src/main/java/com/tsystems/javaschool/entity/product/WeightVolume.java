@@ -12,7 +12,7 @@ public class WeightVolume {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private long id;
 
     @ManyToOne
     @JoinColumn(name = "product_abs_id")
@@ -23,9 +23,9 @@ public class WeightVolume {
     private Size size;
 
     @Column(name="weight")
-    private float weight;
+    private double weight;
 
     @Column(name="volume")
-    private float volume;
+    private double volume;
 
 }

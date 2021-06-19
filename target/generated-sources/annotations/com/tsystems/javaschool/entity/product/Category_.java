@@ -9,9 +9,11 @@ import javax.persistence.metamodel.StaticMetamodel;
 @StaticMetamodel(Category.class)
 public abstract class Category_ extends com.tsystems.javaschool.entity.AbstractTable_ {
 
+	public static volatile ListAttribute<Category, ProductAbs> productAbsList;
 	public static volatile SingularAttribute<Category, Category> categoryParent;
 	public static volatile ListAttribute<Category, Category> categoriesChild;
 
+	public static final String PRODUCT_ABS_LIST = "productAbsList";
 	public static final String CATEGORY_PARENT = "categoryParent";
 	public static final String CATEGORIES_CHILD = "categoriesChild";
 

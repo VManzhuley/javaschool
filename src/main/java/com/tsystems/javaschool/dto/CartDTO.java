@@ -14,7 +14,7 @@ public class CartDTO {
     private List<CartItemDTO> cartItems = new ArrayList<>();
     private boolean isMissQuantity;
 
-    public CartItemDTO findItemByIdProduct(int idProduct) {
+    public CartItemDTO findItemByIdProduct(long idProduct) {
         for (CartItemDTO item : this.cartItems
         ) {
             if (item.getProduct().getId() == idProduct) return item;
@@ -31,10 +31,26 @@ public class CartDTO {
     }
 
 
-    public int getAmountTotal() {
-        int total = 0;
+    public double getAmountTotal() {
+        double total = 0;
         for (CartItemDTO item : this.cartItems) {
             total += item.getAmount();
+        }
+        return total;
+    }
+
+    public double getWeightTotal() {
+        double total = 0;
+        for (CartItemDTO item : this.cartItems) {
+            total += item.getProduct().getSize().getWeight() * item.getQuantity();
+        }
+        return total;
+    }
+
+    public double getVolumeTotal() {
+        double total = 0;
+        for (CartItemDTO item : this.cartItems) {
+            total += item.getProduct().getSize().getVolume() * item.getQuantity();
         }
         return total;
     }

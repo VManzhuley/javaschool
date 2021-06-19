@@ -9,10 +9,22 @@ import java.util.List;
 
 public interface ParametersDAO {
     List<Composition> gelAllComposition();
+
     List<Description> getAllDescription();
+
     List<Size> getAllSize();
+
     List<Colour> getAllColour();
 
     Colour getColourByName(String name);
+
     Size getSizeByName(String name);
+
+    void createComposition(Composition composition);
+
+    void createDescription(Description description);
+
+    List<Composition> getAllCompositionByCategory(long id);
+
+    List<Description> getAllDescriptionByCategory(long id);
 }

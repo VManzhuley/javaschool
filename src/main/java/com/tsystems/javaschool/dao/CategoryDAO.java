@@ -5,11 +5,15 @@ import com.tsystems.javaschool.entity.product.Category;
 import java.util.List;
 
 public interface CategoryDAO {
-    List<Category> findAll();
-    void add(Category category);
-    Category getById(int id);
+
+    void create(Category category);
+
+    Category getById(long id);
+
     List<Category> getAllWithoutChild();
+
     List<Category> getAllWithoutParent();
+
     void update(Category category);
 
 }

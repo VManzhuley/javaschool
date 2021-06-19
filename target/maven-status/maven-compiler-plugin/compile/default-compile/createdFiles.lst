@@ -1,10 +1,13 @@
 com\tsystems\javaschool\dao\iplm\StatisticDAOImpl.class
+com\tsystems\javaschool\controller\MyExceptionHandler.class
 com\tsystems\javaschool\entity\product\ProductAbs_.class
+com\tsystems\javaschool\security\MyAuthenticationSuccessHandler.class
 com\tsystems\javaschool\entity\Order_.class
 com\tsystems\javaschool\dao\ProductDAO.class
 com\tsystems\javaschool\controller\UserController.class
 com\tsystems\javaschool\dao\iplm\CartDAOImpl.class
 com\tsystems\javaschool\entity\product\Size_.class
+com\tsystems\javaschool\security\ClientDetailsService.class
 com\tsystems\javaschool\service\ParametersService.class
 com\tsystems\javaschool\service\ProductService.class
 com\tsystems\javaschool\controller\AdminController.class
@@ -25,11 +28,11 @@ com\tsystems\javaschool\dto\OrderDTO.class
 com\tsystems\javaschool\validatition\EmailValidator.class
 com\tsystems\javaschool\entity\Cart_.class
 com\tsystems\javaschool\service\ProductAbsService.class
-com\tsystems\javaschool\service\impl\ClientDetailsService.class
 com\tsystems\javaschool\entity\Role.class
 com\tsystems\javaschool\service\OrderService.class
 com\tsystems\javaschool\service\StatisticService.class
 com\tsystems\javaschool\config\SecurityWebApplicationInitializer.class
+com\tsystems\javaschool\controller\ApiController.class
 com\tsystems\javaschool\service\ColourService.class
 com\tsystems\javaschool\dao\CartDAO.class
 com\tsystems\javaschool\dao\OrderDAO.class
@@ -70,7 +73,6 @@ com\tsystems\javaschool\entity\product\WeightVolume_.class
 com\tsystems\javaschool\service\impl\ProductServiceImpl.class
 com\tsystems\javaschool\service\impl\StatisticServiceImpl.class
 com\tsystems\javaschool\dao\iplm\ClientDAOImpl.class
-com\tsystems\javaschool\controller\GlobalDefaultExceptionHandler.class
 com\tsystems\javaschool\entity\Order.class
 com\tsystems\javaschool\service\impl\ClientServiceImpl.class
 com\tsystems\javaschool\validatition\ValidEmail.class

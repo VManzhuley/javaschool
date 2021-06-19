@@ -11,15 +11,17 @@
 <head>
     <title>Title</title>
     <link href="/assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/css/dashboard.css" rel="stylesheet">
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/popper.min.js"></script>
 </head>
 <body>
-<div class="container">
-
-    <jsp:include page="header.jsp"/>
+<jsp:include page="headerAdmin.jsp"/>
+<div class="container-fluid">
 
     <div class="row g-5">
 
-        <div class="col-md-5 col-lg-3 py-5">
+        <div class="col-md-5 col-lg-2 py-3 mx-3">
 
             <form method="post">
                 <p class="h5">Order status:</p>
@@ -31,12 +33,12 @@
                         </label>
                     </div>
                     <c:forEach var="status" items="${status}">
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="status" value="${status.name()}" ${pStatus==status.name() ? 'checked' : ''}>
-                            <label class="form-check-label">
-                                    ${status.title}
-                            </label>
-                        </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="status" value="${status.name()}" ${param.get("status")==status.name() ? 'checked' : ''}>
+                        <label class="form-check-label">
+                            ${status.title}
+                        </label>
+                    </div>
                     </c:forEach>
 
                 </div>
@@ -44,24 +46,18 @@
                 <p class="h5">Sort by:</p>
                 <div class="mb-5">
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="sort" value="total"
+                        <input class="form-check-input" type="radio" name="sort" value="quantity"
                                checked>
                         <label class="form-check-label">
-                            Total
+                            Quantity
                         </label>
                     </div>
 
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="sort" value="average" ${pSort=='average' ? 'checked' : ''}>
-                        <label class="form-check-label">
-                            Average order
-                        </label>
-                    </div>
 
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="sort" value="count" ${pSort=='count' ? 'checked' : ''}>
+                        <input class="form-check-input" type="radio" name="sort" value="price" ${param.get("sort")=='price' ? 'checked' : ''}>
                         <label class="form-check-label">
-                            Order count
+                            Price
                         </label>
                     </div>
                 </div>
@@ -78,47 +74,46 @@
 
 
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="pageSize" value="20" ${pPageSize==20 ? 'checked' : ''}>
+                        <input class="form-check-input" type="radio" name="pageSize" value="20" ${param.get("pageSize")==20 ? 'checked' : ''}>
                         <label class="form-check-label">
                             20
                         </label>
                     </div>
 
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="pageSize" value="0" ${pPageSize==0 ? 'checked' : ''}>
+                        <input class="form-check-input" type="radio" name="pageSize" value="0" ${param.get("pageSize")==0 ? 'checked' : ''}>
                         <label class="form-check-label">
                             All
                         </label>
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary">Confirm</button>
+                <button type="submit" class="w-100 btn btn-dark">Confirm</button>
 
             </form>
         </div>
 
 
-        <div class="col-md-5 col-lg-9">
-            <h4 class="mb-3 text-center">Top</h4>
+        <div class="col-md-5 col-lg-9 py-3">
+
             <table class="table">
                 <thead>
                 <tr>
                     <th scope="col">#</th>
-                    <th scope="col">Client</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">${pSort == 'average' ? 'Average order' : 'Total sum'}</th>
-                    <th scope="col">Order count</th>
+                    <th scope="col">Article</th>
+                    <th scope="col">Product</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Total Amount</th>
                 </tr>
                 </thead>
                 <tbody>
-                <c:forEach var="order" items="${orders}" varStatus="i">
+                <c:forEach var="product" items="${products}" varStatus="i">
                 <tr>
                     <th scope="row">${i.index+1}</th>
-                    <td>${order.client.lastname} ${order.client.name}</td>
-                    <td>${order.client.email}</td>
-                    <td>${order.amount}</td>
-                    <td>${order.id}</td>
-
+                    <td>${product.product.article}</td>
+                    <td>${product.product.name}</td>
+                    <td>${product.quantity}</td>
+                    <td>${product.amount}</td>
                 </tr>
                 </c:forEach>
 
@@ -130,7 +125,6 @@
     </div>
 
 </div>
-<script src="/assets/js/bootstrap.min.js"></script>
 </body>
 </html>
 

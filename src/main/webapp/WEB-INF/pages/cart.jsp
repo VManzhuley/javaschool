@@ -66,7 +66,7 @@
 
                 </tr>
                 <tr>
-                    <td><a href="/deleteCartItem?id=${cartItem.product.id}" class="btn btn-outline-danger">
+                    <td><a href="/cart/delete?id=${cartItem.product.id}" class="btn btn-outline-danger">
                         <span>Delete</span>
                     </a></td>
                 </tr>
@@ -91,7 +91,7 @@
             <div class="text-center text-danger" >Unfortunately, some of the products are not available for order, please reduce their quantity</div>
 
         </c:if>
-        <div class="col-sm-1"><a href="/orderConfirm" class="btn btn-primary btn-lg ${cart.isMissQuantity ? 'disabled' : ''}">
+        <div class="col-sm-1"><a href="/order/add" class="btn btn-primary btn-lg ${cart.isMissQuantity ? 'disabled' : ''}">
             <span>Continue</span>
         </a></div>
     </div>

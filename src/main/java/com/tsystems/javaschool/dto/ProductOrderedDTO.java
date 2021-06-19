@@ -7,9 +7,9 @@ public class ProductOrderedDTO {
 
     private ProductDTO product;
     private long quantity;
-    private long amount;
+    private double amount;
 
-    public long getPrice(){
+    public double getPrice(){
         return amount/quantity;
     }
 

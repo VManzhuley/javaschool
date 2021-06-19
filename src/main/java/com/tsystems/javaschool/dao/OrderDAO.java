@@ -6,12 +6,19 @@ import com.tsystems.javaschool.entity.ProductOrdered;
 import java.util.List;
 
 public interface OrderDAO {
-    void addOrder(Order order);
-    void addProductOrdered(ProductOrdered productOrdered);
-    List<Order> allByPage(int page);
+    void createOrder(Order order);
+
+    void createProductOrdered(ProductOrdered productOrdered);
+
+    List<Order> getAllByPage(int page);
+
     long getTotalPagesToAdmin();
+
     Order getById(long id);
+
     void update(Order order);
-    List<Order> allByClientAndPage(int idClient, int page);
-    long getTotalPagesToUser(int idClient);
+
+    List<Order> getAllByClientAndPage(long idClient, int page);
+
+    long getTotalPagesToUser(long idClient);
 }

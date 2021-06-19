@@ -8,19 +8,17 @@ import java.security.Principal;
 
 public interface ClientService {
 
-    ClientDTO findById(int id);
+    ClientDTO getByUserName(String userName);
 
-    ClientDTO findByUserName (String userName);
-
-    Client add(ClientDTO clientDTO);
+    Client createClient(ClientDTO clientDTO);
 
     ClientDTO mapToClientDTO(Client client);
 
-    Client registerNewClient(ClientDTO clientDTO);
+    void createClientRoleUser(ClientDTO clientDTO);
 
     boolean emailExist(String email);
 
-    Address addAddress(ClientDTO clientDTO);
+    Address createAddress(ClientDTO clientDTO);
 
     void update(ClientDTO clientDTO, Principal principal);
 

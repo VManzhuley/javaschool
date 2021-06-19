@@ -13,36 +13,34 @@ import java.util.List;
 
 @Repository
 public class OrderDAOImpl implements OrderDAO {
+    private static final int PAGE_SIZE = 10;
     @PersistenceContext
     EntityManager entityManager;
 
-    private final int pageSize = 10;
-
-
     @Override
-    public void addOrder(Order order) {
+    public void createOrder(Order order) {
         entityManager.persist(order);
     }
 
     @Override
-    public void addProductOrdered(ProductOrdered productOrdered) {
+    public void createProductOrdered(ProductOrdered productOrdered) {
         entityManager.persist(productOrdered);
     }
 
     @Override
-    public List<Order> allByPage(int page) {
+    public List<Order> getAllByPage(int page) {
         Query query = entityManager.createQuery("select o from Order o order by o.date desc")
-                .setFirstResult((page - 1) * pageSize)
-                .setMaxResults(pageSize);
+                .setFirstResult((page - 1) * PAGE_SIZE)
+                .setMaxResults(PAGE_SIZE);
 
         return query.getResultList();
     }
 
     @Override
     public long getTotalPagesToAdmin() {
-        long totalCount = (long) entityManager.createQuery("select count(o) from Order o").getSingleResult();
+        long totalCount = entityManager.createQuery("select count(o) from Order o", Long.class).getSingleResult();
 
-        return (totalCount + pageSize - 1) / pageSize;
+        return (totalCount + PAGE_SIZE - 1) / PAGE_SIZE;
     }
 
     @Override
@@ -56,30 +54,29 @@ public class OrderDAOImpl implements OrderDAO {
     }
 
     @Override
-    public List<Order> allByClientAndPage(int idClient, int page) {
+    public List<Order> getAllByClientAndPage(long idClient, int page) {
 
         Query query1 = entityManager.createNativeQuery("select * from orders o where o.client_id in (SELECT c.id FROM client as m\n" +
-                "join client as c on m.id=c.client_parent_id where m.id=?1) or o.client_id=?2 order by o.date desc",Order.class)
-                .setParameter(1,idClient)
-                .setParameter(2,idClient)
-                .setFirstResult((page - 1) * pageSize)
-                .setMaxResults(pageSize);
-
+                "join client as c on m.id=c.client_parent_id where m.id=?1) or o.client_id=?2 order by o.date desc", Order.class)
+                .setParameter(1, idClient)
+                .setParameter(2, idClient)
+                .setFirstResult((page - 1) * PAGE_SIZE)
+                .setMaxResults(PAGE_SIZE);
 
 
         return query1.getResultList();
     }
 
     @Override
-    public long getTotalPagesToUser(int idClient) {
+    public long getTotalPagesToUser(long idClient) {
         Query query = entityManager.createNativeQuery("select count(*) from orders o where o.client_id in (SELECT c.id FROM client as m\n" +
                 "join client as c on m.id=c.client_parent_id where m.id=?1) or o.client_id=?2 order by o.date desc")
-                .setParameter(1,idClient)
-                .setParameter(2,idClient);
+                .setParameter(1, idClient)
+                .setParameter(2, idClient);
 
         BigInteger bigInteger = (BigInteger) query.getSingleResult();
         long totalCount = bigInteger.longValue();
 
-        return (totalCount + pageSize - 1) / pageSize;
+        return (totalCount + PAGE_SIZE - 1) / PAGE_SIZE;
     }
 }

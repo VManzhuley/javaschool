@@ -17,7 +17,7 @@ public class ProductOrdered {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private long id;
 
     @ManyToOne
     @JoinColumn(name = "product_id")
@@ -31,6 +31,6 @@ public class ProductOrdered {
     private long quantity;
     @Column(name = "price")
 
-    private long price;
+    private double price;
 
 }

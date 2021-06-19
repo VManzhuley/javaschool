@@ -14,6 +14,7 @@
     <link href="/assets/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
+
 <c:if test="${empty cart.cartItems}">
     <c:redirect url="/"/>
 </c:if>
@@ -25,7 +26,7 @@
     <div class="row g-5">
         <div class="col-md-5 col-lg-4 order-md-last">
             <h4 class="d-flex justify-content-between align-items-center mb-3">
-                <span class="text-primary">Your cart</span>
+                Your cart
 
             </h4>
             <ul class="list-group mb-3">
@@ -47,7 +48,15 @@
             <a href="/cart" class="btn btn-outline-primary">
                 <span>Back to cart</span>
             </a>
-
+            <div class="py-3">
+                <iframe
+                        src="https://widgets.dellin.ru/calculator?group1=hide&group3=hide&group4=hide&group5=hide&derival_point=7800000000000000000000000&derival_to_door=off&arrival_to_door=off&sized_weight=${cart.weightTotal/1000}&sized_volume=${cart.volumeTotal/10000000}&disabled_calculation=on&insurance=0&package=1"
+                        width="332"
+                        height="167"
+                        scrolling="no"
+                        frameborder="0">
+                </iframe>
+            </div>
 
         </div>
         <div class="col-md-7 col-lg-8">
@@ -136,7 +145,8 @@
                                             else {document.getElementById('ANOTHER').removeAttribute('disabled');}">
 
                                 <c:forEach var="payment" items="${paymentType}">
-                                    <option value="${payment}" id="${payment}" ${order.payment == payment ? 'selected' : ''}>${payment.title}</option>
+                                    <option value="${payment}"
+                                            id="${payment}" ${order.payment == payment ? 'selected' : ''}>${payment.title}</option>
                                 </c:forEach>
                             </select>
                         </spring:bind>
@@ -151,7 +161,8 @@
                                             else{document.getElementById('Shipping').removeAttribute('style');}">
 
                                 <c:forEach var="shipping" items="${shippingType}">
-                                    <option value="${shipping}" id="${shipping}" ${order.shipping == shipping ? 'selected' : ''}>${shipping.title}</option>
+                                    <option value="${shipping}"
+                                            id="${shipping}" ${order.shipping == shipping ? 'selected' : ''}>${shipping.title}</option>
                                 </c:forEach>
                             </select>
                         </spring:bind>
@@ -163,7 +174,8 @@
                         <input type="tel" hidden name="${status.expression}">
                     </spring:bind>
 
-                    <div class="row g-3" id="Shipping" style="display: ${order.shipping.name() != 'SELF' ? '' : 'none'}">
+                    <div class="row g-3" id="Shipping"
+                         style="display: ${order.shipping.name() != 'SELF' ? '' : 'none'}">
                         <hr class="my-4">
                         <h4 class="mb-3">Shipping address</h4>
 

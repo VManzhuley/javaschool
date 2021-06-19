@@ -9,8 +9,8 @@ import com.tsystems.javaschool.dto.ProductDTO;
 import com.tsystems.javaschool.entity.Cart;
 import com.tsystems.javaschool.entity.product.Product;
 import com.tsystems.javaschool.service.CartService;
-import com.tsystems.javaschool.service.ClientService;
 import com.tsystems.javaschool.service.ProductService;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,17 +20,20 @@ import java.util.ArrayList;
 
 @Service
 @Transactional
+@Log4j2
 public class CartServiceImpl implements CartService {
+
     private final CartDAO cartDAO;
     private final ProductService productService;
-    private final ClientService clientService;
     private final ProductDAO productDAO;
     private final ClientDAO clientDAO;
 
-    public CartServiceImpl(CartDAO cartDAO, ProductService productService, ClientService clientService, ProductDAO productDAO, ClientDAO clientDAO) {
+    public CartServiceImpl(CartDAO cartDAO,
+                           ProductService productService,
+                           ProductDAO productDAO,
+                           ClientDAO clientDAO) {
         this.cartDAO = cartDAO;
         this.productService = productService;
-        this.clientService = clientService;
         this.productDAO = productDAO;
         this.clientDAO = clientDAO;
     }
@@ -45,7 +48,9 @@ public class CartServiceImpl implements CartService {
             addCartItem(cartDTO, productService.mapToProductDTO(cart.getProduct()), cart.getQuantity());
         }
 
+        log.info("Client: {} delete all products from cart", cartDTO.getUserName());
         cartDAO.removeAll(clientDAO.findByUserName(principal.getName()).getId());
+
 
         for (CartItemDTO item : cartDTO.getCartItems()
         ) {
@@ -57,26 +62,28 @@ public class CartServiceImpl implements CartService {
             product.setId(item.getProduct().getId());
             cart.setProduct(product);
 
-            cartDAO.add(cart);
+            log.info("Client: {} add product {} to base", cartDTO.getUserName(), item.getProduct().getName());
+            cartDAO.create(cart);
+
+
         }
 
 
     }
 
     @Override
-    public void addCartItem(CartDTO cartDTO, int idProductAbs, HttpServletRequest request, Principal principal) {
+    public void addCartItem(CartDTO cartDTO, long idProductAbs, HttpServletRequest request) {
         String size = request.getParameter("size");
         String colourMain = request.getParameter("colourMain");
         String colourSec = request.getParameter("colourSec");
         String quantity = request.getParameter("quantity");
 
         if (!(colourMain.isEmpty() || size.isEmpty() || quantity.isEmpty())) {
-
             ProductDTO productDTO = productService.getProductByProductABSColourMainColourSecSize(
                     idProductAbs,
                     Integer.parseInt(colourMain),
                     Integer.parseInt(colourSec),
-                    size);
+                    Integer.parseInt(size));
 
             addCartItem(cartDTO, productDTO, Integer.parseInt(quantity));
         }
@@ -92,6 +99,7 @@ public class CartServiceImpl implements CartService {
 
             cartDTO.addCartItem(item);
 
+
             if (cartDTO.getUserName() != null) {
                 Cart cart = new Cart();
                 cart.setQuantity(quantity);
@@ -101,7 +109,9 @@ public class CartServiceImpl implements CartService {
                 product.setId(productDTO.getId());
                 cart.setProduct(product);
 
-                cartDAO.add(cart);
+                log.info("Client: {} add product: {} to cart",cartDTO.getUserName(),productDTO.getName());
+                cartDAO.create(cart);
+
             }
         } else {
 
@@ -111,14 +121,17 @@ public class CartServiceImpl implements CartService {
                 Cart cart = cartDAO.getByClientAndProduct(cartDTO.getUserName(), productDTO.getId());
                 cart.setQuantity(cart.getQuantity() + quantity);
 
+                log.info("Client: {} update quantity of product: {} cart to {}",
+                        cartDTO.getUserName(),productDTO.getName(),item.getQuantity());
                 cartDAO.update(cart);
+
             }
         }
     }
 
 
     @Override
-    public void updateCartItem(CartDTO cartDTO, HttpServletRequest request, Principal principal) {
+    public void updateCartItem(CartDTO cartDTO, HttpServletRequest request) {
 
         int idProduct = Integer.parseInt(request.getParameter("idProduct"));
         int quantity = Integer.parseInt(request.getParameter("quantity"));
@@ -128,16 +141,23 @@ public class CartServiceImpl implements CartService {
         if (quantity <= 0) {
             cartDTO.removeCartItem(item);
 
-            if (principal != null) {
-                Cart cart = cartDAO.getByClientAndProduct(principal.getName(), idProduct);
+
+            if (cartDTO.getUserName() != null) {
+                Cart cart = cartDAO.getByClientAndProduct(cartDTO.getUserName(), idProduct);
+
+                log.info("Client: {} remove product {} from base",cartDTO.getUserName(),item.getProduct().getName());
                 cartDAO.remove(cart);
+
             }
         } else {
             item.setQuantity(quantity);
 
-            if (principal != null) {
-                Cart cart = cartDAO.getByClientAndProduct(principal.getName(), idProduct);
+
+            if (cartDTO.getUserName() != null) {
+                Cart cart = cartDAO.getByClientAndProduct(cartDTO.getUserName(), idProduct);
                 cart.setQuantity(quantity);
+
+                log.info("Client: {} update quantity of product {} in base to {}",cartDTO.getUserName(),item.getProduct().getName(),quantity);
                 cartDAO.update(cart);
             }
         }
@@ -145,25 +165,29 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public void removeCartItem(CartDTO cartDTO, int idProduct, Principal principal) {
+    public void removeCartItem(CartDTO cartDTO, long idProduct) {
         CartItemDTO item = cartDTO.findItemByIdProduct(idProduct);
 
         if (item != null) {
             cartDTO.removeCartItem(item);
 
-            if (principal != null) {
-                Cart cart = cartDAO.getByClientAndProduct(principal.getName(), idProduct);
+
+            if (cartDTO.getUserName() != null) {
+                Cart cart = cartDAO.getByClientAndProduct(cartDTO.getUserName(), idProduct);
+
+                log.info("Client: {} remove product {} from base",cartDTO.getUserName(),item.getProduct().getName());
                 cartDAO.remove(cart);
             }
         }
     }
 
     @Override
-    public void removeAll(CartDTO cartDTO, Principal principal) {
+    public void removeAll(CartDTO cartDTO) {
         cartDTO.setCartItems(new ArrayList<>());
 
-        if (principal != null) {
-            cartDAO.removeAll(clientDAO.findByUserName(principal.getName()).getId());
+        if (cartDTO.getUserName() != null) {
+            log.info("Client: {} delete all products from base",cartDTO.getUserName());
+            cartDAO.removeAll(clientDAO.findByUserName(cartDTO.getUserName()).getId());
         }
     }
 

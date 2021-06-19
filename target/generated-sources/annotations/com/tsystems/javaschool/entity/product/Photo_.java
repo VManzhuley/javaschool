@@ -9,7 +9,7 @@ import javax.persistence.metamodel.StaticMetamodel;
 public abstract class Photo_ {
 
 	public static volatile SingularAttribute<Photo, Colour> colourMain;
-	public static volatile SingularAttribute<Photo, Integer> id;
+	public static volatile SingularAttribute<Photo, Long> id;
 	public static volatile SingularAttribute<Photo, String> photoLink;
 	public static volatile SingularAttribute<Photo, ProductAbs> productAbs;
 	public static volatile SingularAttribute<Photo, Colour> colourSec;

@@ -1,4 +1,4 @@
-package com.tsystems.javaschool.service.impl;
+package com.tsystems.javaschool.security;
 
 import com.tsystems.javaschool.dao.ClientDAO;
 import com.tsystems.javaschool.entity.Client;
@@ -25,12 +25,10 @@ public class ClientDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("Unknown user: " + userName);
         }
 
-        UserDetails user = User.builder()
+        return User.builder()
                 .username(client.getUserName())
                 .password(client.getPassword())
                 .roles(client.getRole().name())
                 .build();
-
-        return user;
     }
 }

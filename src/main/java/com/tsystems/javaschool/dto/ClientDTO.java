@@ -2,13 +2,17 @@ package com.tsystems.javaschool.dto;
 
 import com.tsystems.javaschool.validatition.PasswordMatches;
 import com.tsystems.javaschool.validatition.ValidEmail;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @PasswordMatches
 public class ClientDTO {
     @NotBlank(message = "Name should not be empty")
@@ -39,6 +43,8 @@ public class ClientDTO {
     private String building;
     private String apartment;
     private String userNameParent;
+
+
 
     //return true if address is empty
     public boolean addressIsEmpty() {

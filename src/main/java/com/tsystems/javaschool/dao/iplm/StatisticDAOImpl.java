@@ -36,7 +36,6 @@ public class StatisticDAOImpl implements StatisticDAO {
                 criteriaBuilder.sum(productOrderedRoot.get(ProductOrdered_.PRICE))));
 
         if (!status.equals("ALL")) {
-
             productOrderedCriteriaQuery.where(criteriaBuilder.equal(productOrderedRoot.get(ProductOrdered_.ORDER).get(Order_.STATUS), Status.valueOf(status)));
         }
 

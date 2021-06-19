@@ -7,11 +7,13 @@ import java.util.List;
 
 public interface SizeService {
 
-    SizeDTO getSize(int idProduct);
+    SizeDTO getSize(long idProduct);
 
-    void addWeightVolume(SizeDTO sizeDTO, int idProductAbs);
+    void createWeightVolume(SizeDTO sizeDTO, long idProductAbs);
 
     SizeDTO mapToSizeDTO(WeightVolume weightVolume);
 
-    List<SizeDTO> allByProductAbs(int idProductAbs);
+    List<SizeDTO> getAllByProductAbs(long idProductAbs);
+
+    void updateWeightVolume(SizeDTO sizeDTO);
 }

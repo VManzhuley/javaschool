@@ -9,7 +9,8 @@
     </a>
 
     <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
-        <li><a href="/" class="nav-link px-2 link-secondary">Home</a></li>
+        <li><a href="/" class="nav-link px-2 link-dark">Home</a></li>
+        <li><a href="/shop?category=17" class="nav-link px-2 link-dark">Shop</a></li>
         <li><a href="#" class="nav-link px-2 link-dark">Delivery Terms </a></li>
         <li><a href="#" class="nav-link px-2 link-dark">Payment methods</a></li>
         <li><a href="#" class="nav-link px-2 link-dark">FAQs</a></li>
@@ -26,7 +27,6 @@
         </sec:authorize>
 
         <sec:authorize access="isAuthenticated()">
-
             <a href="/logout" class="btn btn-outline-primary me-2">
                 <span>Logout</span>
             </a>
@@ -38,16 +38,6 @@
         </button>
     </div>
 </header>
-<sec:authorize access="hasRole('ADMIN')">
-    <div class="container d-flex flex-wrap justify-content-center bg-light">
-        <ul class="nav nav">
-            <li><a href="/admin/orders" class="nav-link px-2 link-dark">Orders</a></li>
-            <li><a href="/admin/statistic" class="nav-link px-2 link-dark">Statistic</a></li>
-            <li><a href="/admin/product-add" class="nav-link px-2 link-secondary">Add product</a></li>
-            <li><a href="/admin/category" class="nav-link px-2 link-secondary">Category</a></li>
-        </ul>
-    </div>
-</sec:authorize>
 
 <sec:authorize access="hasRole('USER')">
     <div class="container d-flex flex-wrap justify-content-center bg-light">
@@ -72,7 +62,7 @@
             <div class="modal-body">
                 <c:if test="${not empty cart.cartItems}">
                     <c:forEach var="cartItem" items="${cart.cartItems}">
-                        <div class="card mb-3 card-link">
+                        <div class="card mb-3">
                             <div class="row g-0">
                                 <div class="col-md-4 d-flex align-items-center">
                                     <img src="${cartItem.product.colour.photoLink}" alt="..."
@@ -80,11 +70,7 @@
                                 </div>
                                 <div class="col-md-8">
                                     <div class="card-body">
-                                        <c:url value="/product" var="url">
-                                            <c:param name="id" value="${cartItem.product.productAbs.id}"/>
-                                        </c:url>
-                                        <h3 class="card-title"><a href="${url}">${cartItem.product.productAbs.name}</a>
-                                        </h3>
+                                        <h3 class="card-title">${cartItem.product.productAbsName}</h3>
                                         <p class="h6"><small class="text-muted">${cartItem.product.article}</small></p>
                                         <p class="h6">
                                             <small>Colour: ${cartItem.product.colour.name}<br>Size: ${cartItem.product.size.size}<br>Qty: ${cartItem.quantity}
@@ -101,6 +87,8 @@
                     <h3 class="card-title">It's empty here</h3>
                 </c:if>
             </div>
+
+
             <div class="modal-footer">
                 <c:if test="${not empty cart.cartItems}">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Back to shopping!</button>

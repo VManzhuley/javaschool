@@ -2,13 +2,10 @@ package com.tsystems.javaschool.controller;
 
 import com.tsystems.javaschool.dto.*;
 import com.tsystems.javaschool.entity.Status;
-import com.tsystems.javaschool.entity.product.Colour;
-import com.tsystems.javaschool.entity.product.Composition;
-import com.tsystems.javaschool.entity.product.Description;
-import com.tsystems.javaschool.entity.product.Size;
 import com.tsystems.javaschool.service.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,8 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-@SessionAttributes("productAbs")
 @RequestMapping(value = "/admin")
+@SessionAttributes("productAbs")
 public class AdminController {
     private final OrderService orderService;
     private final ParametersService parametersService;
@@ -28,13 +25,13 @@ public class AdminController {
     private final ProductAbsService productAbsService;
     private final CategoryService categoryService;
 
-
-    public AdminController(OrderService orderService, ParametersService parametersService, StatisticService statisticService, ProductAbsService productAbsService, CategoryService categoryService) {
+    public AdminController(OrderService orderService,
+                           ParametersService parametersService,
+                           StatisticService statisticService,
+                           ProductAbsService productAbsService,
+                           CategoryService categoryService) {
         this.orderService = orderService;
-
         this.parametersService = parametersService;
-
-
         this.statisticService = statisticService;
         this.productAbsService = productAbsService;
         this.categoryService = categoryService;
@@ -42,106 +39,184 @@ public class AdminController {
 
     @GetMapping(value = "/orders")
     public ModelAndView orderList(@RequestParam(defaultValue = "1") int page) {
-        ModelAndView modelAndView = new ModelAndView();
+        ModelAndView modelAndView = new ModelAndView("orderList");
 
-        List<OrderDTO> orderDTOList = orderService.allByPage(page);
-        long totalPages = orderService.getTotalPagesToAdmin();
-
-        modelAndView.setViewName("orderList");
         modelAndView.addObject("page", page);
-        modelAndView.addObject("orderList", orderDTOList);
-        modelAndView.addObject("totalPages", totalPages);
-
+        modelAndView.addObject("orderList", orderService.getAllByPage(page));
+        modelAndView.addObject("totalPages", orderService.getTotalPagesToAdmin());
 
         return modelAndView;
     }
 
     @GetMapping(value = "/order")
-    public ModelAndView orderDetails(@RequestParam int id) {
-        ModelAndView modelAndView = new ModelAndView();
+    public ModelAndView orderDetails(@RequestParam long id) {
+        ModelAndView modelAndView = new ModelAndView("orderDetails");
 
-        OrderDTO orderDTO = orderService.getById(id);
-        modelAndView.setViewName("orderDetails");
-        modelAndView.addObject("order", orderDTO);
+        modelAndView.addObject("order", orderService.getById(id));
         modelAndView.addObject("status", Status.values());
 
         return modelAndView;
     }
 
     @PostMapping(value = "/order")
-    public ModelAndView updateOrderDetails(@RequestParam int id, HttpServletRequest request) {
-        ModelAndView modelAndView = new ModelAndView();
+    public ModelAndView updateOrderDetails(@RequestParam long id,
+                                           HttpServletRequest request) {
+        ModelAndView modelAndView = new ModelAndView("orderDetails");
 
         orderService.updateStatus(id, request.getParameter("statusType"));
-        OrderDTO orderDTO = orderService.getById(id);
-        modelAndView.setViewName("orderDetails");
-        modelAndView.addObject("order", orderDTO);
+
+        modelAndView.addObject("order", orderService.getById(id));
         modelAndView.addObject("status", Status.values());
 
         return modelAndView;
     }
 
     @ModelAttribute("productAbs")
-    public ProductAbsDTO productAbsDTO() {
-        return new ProductAbsDTO();
+    public ProductAbsDTO productAbsDTO(@PathVariable(required = false) Long idProduct) {
+        if (idProduct == null) {
+            return new ProductAbsDTO();
+        } else {
+            return productAbsService.addProducts(productAbsService.getProductAbsDTO(idProduct));
+        }
     }
 
-    @RequestMapping(value = "/product-add", method = {RequestMethod.GET, RequestMethod.POST})
+    public ModelAndView mvForCreateOrUpdateProductAbs(ProductAbsDTO productAbsDTO) {
+        ModelAndView modelAndView = new ModelAndView();
+
+        modelAndView.setViewName("admin/productEdit");
+        modelAndView.addObject("compositions", parametersService.gelAllComposition());
+        modelAndView.addObject("descriptions", parametersService.getAllDescription());
+        modelAndView.addObject("colours", parametersService.getAllColour());
+        modelAndView.addObject("sizes", parametersService.getAllSize());
+        modelAndView.addObject("categories", categoryService.getAllWithoutChild());
+        modelAndView.addObject("categoriesForSidebar", categoryService.getAllWithoutParent());
+        modelAndView.addObject("productAbs", productAbsDTO);
+        modelAndView.addObject("colour", new ColourDTO());
+        modelAndView.addObject("size", new SizeDTO());
+
+        return modelAndView;
+    }
+
+
+    @GetMapping(value = "/products/add")
+    public ModelAndView productAbsAdd(@ModelAttribute("productAbs") ProductAbsDTO productAbsDTO,
+                                      SessionStatus status) {
+        if (productAbsDTO.getId() != 0) {
+            status.setComplete();
+            return new ModelAndView("redirect:/admin/products/add");
+        }
+
+        return mvForCreateOrUpdateProductAbs(productAbsDTO);
+    }
+
+    @PostMapping(value = "/products/add")
     public ModelAndView productAbsAdd(@ModelAttribute("productAbs") ProductAbsDTO productAbsDTO,
                                       @ModelAttribute("colour") ColourDTO colourDTO,
                                       @ModelAttribute("size") SizeDTO sizeDTO,
-                                      HttpServletRequest request) {
-        ModelAndView modelAndView = new ModelAndView();
+                                      HttpServletRequest request,
+                                      SessionStatus status) {
+
+        if (request.getParameter("submit") != null) {
+            long id = productAbsService.createOrUpdate(productAbsDTO);
+            status.setComplete();
+            return new ModelAndView("redirect:/admin/products/" + id + "/details");
+        }
 
         productAbsDTO.addSize(sizeDTO);
         productAbsDTO.addColour(colourDTO);
 
-        if (request.getParameter("submit") != null) {
-            modelAndView.setViewName("redirect:/admin/product-add-confirm");
-            return modelAndView;
+        return mvForCreateOrUpdateProductAbs(productAbsDTO);
+    }
+
+    @GetMapping(value = "/products/deleteColour")
+    public ModelAndView deleteColour(@ModelAttribute("productAbs") ProductAbsDTO productAbsDTO,
+                                     @RequestParam int n) {
+        productAbsDTO.deleteColour(n);
+        if (productAbsDTO.getId() != 0) {
+            return new ModelAndView("redirect:/admin/products/" + productAbsDTO.getId());
+        }
+        return new ModelAndView("redirect:/admin/products/add");
+    }
+
+    @GetMapping(value = "/products/deleteSize")
+    public ModelAndView deleteSize(@ModelAttribute("productAbs") ProductAbsDTO productAbsDTO,
+                                   @RequestParam int n) {
+        productAbsDTO.deleteSize(n);
+        if (productAbsDTO.getId() != 0) {
+            return new ModelAndView("redirect:/admin/products/" + productAbsDTO.getId());
+        }
+        return new ModelAndView("redirect:/admin/products/add");
+    }
+
+    @GetMapping(value = "/products/{idProduct}")
+    public ModelAndView productAbsUpdate(@PathVariable long idProduct,
+                                         @ModelAttribute("productAbs") ProductAbsDTO productAbsDTO,
+                                         SessionStatus status) {
+        if (productAbsDTO.getId() != idProduct) {
+            status.setComplete();
+            return new ModelAndView("redirect:/admin/products/" + idProduct);
         }
 
-        List<CategoryDTO> categories = categoryService.getAllWithoutChild();
-        List<Description> descriptions = parametersService.getAllDescription();
-        List<Colour> colours = parametersService.getAllColour();
-        List<Size> sizes = parametersService.getAllSize();
-        List<Composition> compositions = parametersService.gelAllComposition();
+        return mvForCreateOrUpdateProductAbs(productAbsDTO);
+    }
+
+    @PostMapping(value = "/products/{idProduct}")
+    public ModelAndView productAbsUpdate(@PathVariable long idProduct,
+                                         @ModelAttribute("productAbs") ProductAbsDTO productAbsDTO,
+                                         @ModelAttribute("colour") ColourDTO colourDTO,
+                                         @ModelAttribute("size") SizeDTO sizeDTO,
+                                         HttpServletRequest request,
+                                         SessionStatus status) {
+
+        if (request.getParameter("submit") != null) {
+            productAbsService.createOrUpdate(productAbsDTO);
+            status.setComplete();
+            return new ModelAndView("redirect:/admin/products/" + idProduct + "/details");
+        }
+
+        if (request.getParameter("createCategoryNew") != null) {
+            categoryService.create(request.getParameter("categoryNameNew"));
+        }
+
+        if (request.getParameter("createDescriptionNew") != null) {
+            parametersService.createDescription(request.getParameter("descriptionNameNew"));
+        }
+        if (request.getParameter("createCompositionNew") != null) {
+            parametersService.createComposition(request.getParameter("compositionNameNew"));
+        }
+
+        productAbsDTO.addSize(sizeDTO);
+        productAbsDTO.addColour(colourDTO);
+
+        return mvForCreateOrUpdateProductAbs(productAbsDTO);
+
+    }
 
 
-        modelAndView.setViewName("productAdd");
-        modelAndView.addObject("compositions", compositions);
-        modelAndView.addObject("descriptions", descriptions);
-        modelAndView.addObject("colours", colours);
-        modelAndView.addObject("sizes", sizes);
-        modelAndView.addObject("categories", categories);
+    @GetMapping("/products/{idProduct}/details")
+    public ModelAndView productAddConfirm(@PathVariable long idProduct,
+                                          @ModelAttribute("productAbs") ProductAbsDTO productAbsDTO) {
+        ModelAndView modelAndView = new ModelAndView("admin/productEditDetails");
+
         modelAndView.addObject("productAbs", productAbsDTO);
-        modelAndView.addObject("colour", colourDTO);
-        modelAndView.addObject("size", sizeDTO);
-
+        modelAndView.addObject("categoriesForSidebar", categoryService.getAllWithoutParent());
 
         return modelAndView;
     }
 
+    @PostMapping("/products/{idProduct}/details")
+    public ModelAndView productAddFinish(@PathVariable long idProduct,
+                                         @ModelAttribute("productAbs") ProductAbsDTO productAbsDTO,
+                                         HttpServletRequest request,
+                                         SessionStatus status) {
+        productAbsService.updateProductsPhotoWV(productAbsDTO);
 
-    @GetMapping("/product-add-confirm")
-    public ModelAndView productAddConfirm(@ModelAttribute("productAbs") ProductAbsDTO productAbsDTO) {
-        ModelAndView modelAndView = new ModelAndView();
+        if (request.getParameter("ChangePublish") != null) {
+            productAbsService.inverseOutdated(productAbsDTO);
+        }
+        status.setComplete();
 
-        productAbsDTO.addProducts();
-
-        modelAndView.setViewName("productAddConfirm");
-        modelAndView.addObject("productAbs", productAbsDTO);
-        return modelAndView;
-    }
-
-    @PostMapping("/product-add-confirm")
-    public ModelAndView productAddFinish(@ModelAttribute("productAbs") ProductAbsDTO productAbsDTO) {
-        ModelAndView modelAndView = new ModelAndView();
-        int id = productAbsService.add(productAbsDTO);
-
-        modelAndView.setViewName("redirect:/product?id=" + id);
-
-        return modelAndView;
+        return new ModelAndView("redirect:/product?id=" + idProduct);
     }
 
 
@@ -156,17 +231,11 @@ public class AdminController {
     public ModelAndView productStatistic(@RequestParam(defaultValue = "10") int pageSize,
                                          @RequestParam(defaultValue = "ALL") String status,
                                          @RequestParam(defaultValue = "quantity") String sort) {
-        ModelAndView modelAndView = new ModelAndView();
+        ModelAndView modelAndView = new ModelAndView("admin/statisticProducts");
 
-        List<ProductOrderedDTO> list = statisticService.topProductOrdered(status, sort, pageSize);
-
-
-        modelAndView.setViewName("statisticProducts");
         modelAndView.addObject("status", Status.values());
-        modelAndView.addObject("pPageSize", pageSize);
-        modelAndView.addObject("pStatus", status);
-        modelAndView.addObject("pSort", sort);
-        modelAndView.addObject("products", list);
+        modelAndView.addObject("products", statisticService.topProductOrdered(status, sort, pageSize));
+
         return modelAndView;
 
     }
@@ -175,16 +244,11 @@ public class AdminController {
     public ModelAndView clientStatistic(@RequestParam(defaultValue = "10") int pageSize,
                                         @RequestParam(defaultValue = "ALL") String status,
                                         @RequestParam(defaultValue = "total") String sort) {
-        ModelAndView modelAndView = new ModelAndView();
+        ModelAndView modelAndView = new ModelAndView("admin/statisticClients");
 
-        List<OrderDTO> list = statisticService.topClient(status, sort, pageSize);
-
-        modelAndView.setViewName("statisticClients");
         modelAndView.addObject("status", Status.values());
-        modelAndView.addObject("pStatus", status);
-        modelAndView.addObject("pPageSize", pageSize);
-        modelAndView.addObject("pSort", sort);
-        modelAndView.addObject("orders", list);
+        modelAndView.addObject("orders", statisticService.topClient(status, sort, pageSize));
+
         return modelAndView;
 
     }
@@ -193,7 +257,7 @@ public class AdminController {
     @GetMapping(value = "statistic/proceeds")
     public ModelAndView proceed() {
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("statisticProceeds");
+        modelAndView.setViewName("admin/statisticProceeds");
         return modelAndView;
     }
 
@@ -204,7 +268,7 @@ public class AdminController {
                                          @RequestParam String month,
                                          @RequestParam String dateFrom,
                                          @RequestParam String dateTo) {
-        ModelAndView modelAndView = new ModelAndView();
+        ModelAndView modelAndView = new ModelAndView("admin/statisticProceeds");
         LocalDate fromLD;
         LocalDate toLD;
 
@@ -260,12 +324,7 @@ public class AdminController {
             list = statisticService.ordersCompletedByDate(from, to);
             proceeds = statisticService.getProceeds();
         }
-        modelAndView.setViewName("statisticProceeds");
-        modelAndView.addObject("pPeriod", period);
-        modelAndView.addObject("pWeek", week);
-        modelAndView.addObject("pMonth", month);
-        modelAndView.addObject("pDateFrom", dateFrom);
-        modelAndView.addObject("pDateTo", dateTo);
+
         modelAndView.addObject("orders", list);
         modelAndView.addObject("proceeds", proceeds);
 
@@ -282,69 +341,48 @@ public class AdminController {
         List<ProductDTO> list = statisticService.topProduct(sort, pageSize);
 
 
-        modelAndView.setViewName("statisticWarehouse");
+        modelAndView.setViewName("admin/statisticWarehouse");
         modelAndView.addObject("status", Status.values());
-        modelAndView.addObject("pPageSize", pageSize);
-        modelAndView.addObject("pSort", sort);
         modelAndView.addObject("products", list);
         modelAndView.addObject("productCount", statisticService.getProductCount());
+
         return modelAndView;
 
     }
 
     @GetMapping(value = "/category")
     public ModelAndView category(String message) {
-        ModelAndView modelAndView = new ModelAndView();
+        ModelAndView modelAndView = new ModelAndView("admin/category");
 
-        List<CategoryDTO> listForStep1 = categoryService.findAllDTO();
-
-        modelAndView.setViewName("category");
-        modelAndView.addObject("listStep1", listForStep1);
+        modelAndView.addObject("categories", categoryService.getAllWithoutChild());
+        modelAndView.addObject("categoriesParent", categoryService.getAllWithoutParentAndProducts());
+        modelAndView.addObject("categoriesForSidebar", categoryService.getAllWithoutParent());
         modelAndView.addObject("message", message);
 
         return modelAndView;
     }
 
     @PostMapping(value = "/category")
-    public ModelAndView category(@RequestParam int step1,
-                                 @RequestParam int step2,
-                                 @RequestParam int step3,
+    public ModelAndView category(@RequestParam long category,
+                                 @RequestParam long newParentCategory,
                                  HttpServletRequest request) {
-        ModelAndView modelAndView = new ModelAndView();
+        ModelAndView modelAndView = new ModelAndView("redirect:/admin/category");
 
         if (request.getParameter("new") != null) {
-            categoryService.add(request.getParameter("categoryNew"));
-            modelAndView.setViewName("redirect:/admin/category");
+            categoryService.create(request.getParameter("categoryNew"));
             return modelAndView;
         }
-        if (categoryService.checkChild(step1)) {
-            return category("This category cannot be moved, it has children!");
-        }
-
-        if (step3 != 0) {
-            if (step2 == 0) {
-                categoryService.updateParent(step1, step3);
-            } else {
-                productAbsService.updateCategory(step2, step3);
-            }
-            return category("Success!");
-        }
-
-        List<CategoryDTO> listForStep1 = categoryService.findAllDTO();
-        List<ProductAbsDTO> listForStep2 = productAbsService.allByCategory(step1);
-        List<CategoryDTO> listForStep3 = categoryService.getAllWithoutChild();
-
-        if (listForStep2.isEmpty()) {
-            listForStep3 = categoryService.getAllWithoutParentAndProducts();
-        }
-        modelAndView.setViewName("category");
-        modelAndView.addObject("listStep1", listForStep1);
-        modelAndView.addObject("listStep2", listForStep2);
-        modelAndView.addObject("listStep3", listForStep3);
-        modelAndView.addObject("step1", step1);
+        categoryService.updateParent(category, newParentCategory);
 
         return modelAndView;
     }
 
+    @GetMapping(value = "/products")
+    public ModelAndView products() {
+        ModelAndView modelAndView = new ModelAndView("/admin/productsAdmin");
 
+        modelAndView.addObject("categoriesForSidebar", categoryService.getAllWithoutParent());
+
+        return modelAndView;
+    }
 }

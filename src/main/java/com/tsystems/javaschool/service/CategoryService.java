@@ -7,19 +7,15 @@ import java.util.List;
 
 public interface CategoryService {
 
-    List<Category> findAll();
-
-    List<CategoryDTO> findAllDTO();
-
     CategoryDTO mapToCategoryDTO(Category category);
 
-    void add(String name);
-
-    boolean checkChild(int idCategory);
+    void create(String name);
 
     List<CategoryDTO> getAllWithoutChild();
 
     List<CategoryDTO> getAllWithoutParentAndProducts();
 
-    void updateParent(int idCategory, int idCategoryParent);
+    void updateParent(long idCategory, long idCategoryParent);
+
+    List<CategoryDTO> getAllWithoutParent();
 }

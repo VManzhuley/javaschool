@@ -7,21 +7,25 @@ import java.util.List;
 
 public interface ProductAbsService {
 
-    ProductAbsDTO getProductAbsDTO(int id);
+    ProductAbsDTO getProductAbsDTO(long id);
 
-    List<ProductAbsDTO> allProductsByCategoryWithFSP(int idCategory, int page, String sort);
+    List<ProductAbsDTO> getAllByCategoryWithFSP(long idCategory, int page, String sort, long idComposition, long idDescription);
 
     ProductAbsDTO mapToProductAbsDTO(ProductAbs productAbs);
 
     ProductAbsDTO addParams(ProductAbsDTO productAbsDTO);
 
+    ProductAbsDTO addProducts(ProductAbsDTO productAbsDTO);
+
     int getTotalPages();
 
-    int add(ProductAbsDTO productAbsDTO);
+    long createOrUpdate(ProductAbsDTO productAbsDTO);
 
-    List<ProductAbsDTO> allByCategory(int idCategory);
+    void updateProductsPhotoWV(ProductAbsDTO productAbsDTO);
 
-    void updateCategory(int idProductAbs, int idCategory);
+    void inverseOutdated(ProductAbsDTO productAbsDTO);
+
+    List<ProductAbs> getAllByCategory(long id);
 
 
 }

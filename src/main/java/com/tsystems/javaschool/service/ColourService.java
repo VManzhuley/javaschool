@@ -8,12 +8,14 @@ import java.util.List;
 
 public interface ColourService {
 
-    ColourDTO getColourByIdProduct(int id);
+    ColourDTO getColourByIdProduct(long id);
 
-    void addPhotoLink(ColourDTO colourDTO,int idProductAbs);
+    void createPhotoLink(ColourDTO colourDTO, long idProductAbs);
 
     ColourDTO mapToColourDTO(Photo photo);
 
-    List<ColourDTO> allByProductAbs(int idProductAbs);
+    List<ColourDTO> getAllByProductAbs(long idProductAbs);
+
+    void updatePhoto(ColourDTO colourDTO);
 
 }

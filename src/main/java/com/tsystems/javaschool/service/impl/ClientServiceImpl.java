@@ -8,6 +8,7 @@ import com.tsystems.javaschool.entity.Client;
 import com.tsystems.javaschool.entity.Role;
 import com.tsystems.javaschool.error.WrongParameterException;
 import com.tsystems.javaschool.service.ClientService;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +17,9 @@ import java.security.Principal;
 
 @Service
 @Transactional
+@Log4j2
 public class ClientServiceImpl implements ClientService {
+
     private final ClientDAO clientDAO;
     private final AddressDAO addressDAO;
     private final PasswordEncoder passwordEncoder;
@@ -28,29 +31,25 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public ClientDTO findById(int id) {
-        return mapToClientDTO(clientDAO.findById(id));
-    }
-
-    @Override
-    public ClientDTO findByUserName(String userName) {
+    public ClientDTO getByUserName(String userName) {
         return mapToClientDTO(clientDAO.findByUserName(userName));
     }
 
     @Override
-    public Client add(ClientDTO clientDTO) {
+    public Client createClient(ClientDTO clientDTO) {
 
         Client client = mapMainFieldsToClient(clientDTO);
 
         if (!clientDTO.addressIsEmpty()) {
-            client.setAddress(addAddress(clientDTO));
+            client.setAddress(createAddress(clientDTO));
         }
 
         if (clientDTO.getUserNameParent() != null) {
             client.setClientParent(clientDAO.findByUserName(clientDTO.getUserNameParent()));
         }
 
-        clientDAO.add(client);
+        log.info("User: {} added to base. Parent user: {}", clientDTO.getEmail(), clientDTO.getUserNameParent());
+        clientDAO.create(client);
 
         return client;
 
@@ -84,22 +83,24 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public Client registerNewClient(ClientDTO clientDTO) {
+    public void createClientRoleUser(ClientDTO clientDTO) {
         if (emailExist(clientDTO.getEmail())) {
+            log.warn("Someone trying to register with existing email: {}", clientDTO.getEmail());
             throw new WrongParameterException("There is an account with that email address: " + clientDTO.getEmail());
         }
 
         Client client = mapMainFieldsToClient(clientDTO);
 
-        client.setAddress(addAddress(clientDTO));
+        client.setAddress(createAddress(clientDTO));
+
 
         client.setUserName(clientDTO.getEmail());
         client.setPassword(passwordEncoder.encode(clientDTO.getPassword()));
         client.setRole(Role.USER);
 
-        clientDAO.add(client);
+        log.info("Client: {} register in site", clientDTO.getEmail());
+        clientDAO.create(client);
 
-        return client;
     }
 
     @Override
@@ -108,10 +109,12 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public Address addAddress(ClientDTO clientDTO) {
+    public Address createAddress(ClientDTO clientDTO) {
 
         Address address = mapToAddress(clientDTO);
-        addressDAO.add(address);
+
+        log.info("Address for client: {} added to base", clientDTO.getEmail());
+        addressDAO.create(address);
 
         return address;
     }
@@ -126,6 +129,7 @@ public class ClientServiceImpl implements ClientService {
         Address address = mapToAddress(clientDTO);
         address.setId(client.getAddress().getId());
 
+        log.info("Address for client: {} updated in base", clientDTO.getEmail());
         addressDAO.update(address);
 
         client.setName(clientDTO.getName());
@@ -135,10 +139,11 @@ public class ClientServiceImpl implements ClientService {
         client.setUserName(clientDTO.getEmail());
 
         if (!clientDTO.getPassword().equals("")) {
+            log.info("Client: {} updated his password", clientDTO.getEmail());
             client.setPassword(passwordEncoder.encode(clientDTO.getPassword()));
         }
-        System.out.println("update");
 
+        log.info("Client: {} updated in base", clientDTO.getEmail());
         clientDAO.update(client);
 
 

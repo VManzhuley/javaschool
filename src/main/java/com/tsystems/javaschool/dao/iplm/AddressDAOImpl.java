@@ -12,11 +12,9 @@ public class AddressDAOImpl implements AddressDAO {
     @PersistenceContext
     EntityManager entityManager;
 
-
     @Override
-    public void add(Address address) {
+    public void create(Address address) {
         entityManager.persist(address);
-
     }
 
     @Override

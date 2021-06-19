@@ -110,7 +110,7 @@
                             <p class="h5 py-1 mb-5">${productAbs.composition}</p>
 
 
-                            <form method="post" >
+                            <form method="post">
                                 <input type="hidden" value="${productAbs.id}" name="idProductAbs"/>
 
 
@@ -140,8 +140,8 @@
                                         </div>
                                     </div>
 
-                                    <input  type="hidden" id="colourMain" name="colourMain"/>
-                                    <input  type="hidden" id="colourSec" name="colourSec"/>
+                                    <input type="hidden" id="colourMain" name="colourMain"/>
+                                    <input type="hidden" id="colourSec" name="colourSec"/>
 
 
                                 </div>
@@ -158,7 +158,7 @@
                                                 <c:forEach var="size" items="${productAbs.sizes}">
                                                     <li>
                                                         <button class="dropdown-item" type="button"
-                                                                onclick="document.getElementById('size').setAttribute('value','${size.size}');
+                                                                onclick="document.getElementById('size').setAttribute('value','${size.idSize}');
                                                                         document.getElementById('sizes').textContent='${size.size}';
                                                                         ">${size.size}</button>
                                                     </li>
@@ -167,18 +167,23 @@
                                         </div>
                                     </div>
 
-                                    <input type="hidden" id="size" name="size" />
+                                    <input type="hidden" id="size" name="size"/>
 
 
                                 </div>
                                 <div class="form-floating col-3 mb-5">
 
-                                    <input class="form-control" id="quantity" name="quantity" value="1" type="number" min="1"/>
+                                    <input class="form-control" id="quantity" name="quantity" value="1" type="number"
+                                           min="1"/>
                                     <label for="quantity">Input quantity</label>
                                 </div>
                                 <div class="d-grid">
-                                    <button type="submit" class="btn btn-primary btn-lg" >Add To
-                                        Cart
+                                    <c:if test="${productAbs.outdated}">
+                                        <p class="h4">This product is outdated. You cannot add it to cart</p>
+                                    </c:if>
+                                    <button type="submit"
+                                            class="btn btn-primary btn-lg" ${productAbs.outdated ? 'disabled' : ''}>
+                                        Add To Cart
                                     </button>
                                 </div>
                             </form>

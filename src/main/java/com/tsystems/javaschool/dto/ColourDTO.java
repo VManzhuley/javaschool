@@ -6,11 +6,11 @@ import lombok.Data;
 public class ColourDTO {
     private String article;
     private String name;
-    private int idColourMain;
-    private int idColourSec;
-    private String photoLink;
+    private long idColourMain;
+    private long idColourSec;
     private String colourMain;
     private String colourSec;
-
+    private long idPhoto;
+    private String photoLink;
 }
 

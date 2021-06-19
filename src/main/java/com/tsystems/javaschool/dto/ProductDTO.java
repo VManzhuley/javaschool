@@ -1,17 +1,16 @@
 package com.tsystems.javaschool.dto;
 
-import com.tsystems.javaschool.entity.product.ProductAbs;
 import lombok.Data;
 
 @Data
 public class ProductDTO {
-    private int id;
-    private ProductAbs productAbs;
+    private long id;
+    private String productAbsName;
     private String name;
     private String article;
     private SizeDTO size;
     private ColourDTO colour;
-    private long price;
+    private double price;
     private long quantity;
-
+    private boolean outdated;
 }
