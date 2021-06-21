@@ -245,7 +245,7 @@ public class MainController {
             return registration(client, null);
         }
         try {
-            clientService.createClientRoleUser(client);
+            clientService.registerClient(client);
         } catch (WrongParameterException wrongParameterException) {
             return registration(client, wrongParameterException.getMessage());
         }

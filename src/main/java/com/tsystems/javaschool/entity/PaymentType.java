@@ -6,9 +6,9 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum PaymentType {
-    BANK_TRANSFER ("Bank Transfer"),
-    CREDIT_CARD ("Credit Card"),
-    CASH ("Cash upon receive");
+    BANK_TRANSFER("Bank Transfer"),
+    CREDIT_CARD("Credit Card"),
+    CASH("Cash upon receive");
 
-    private String title;
-    }
+    private final String title;
+}

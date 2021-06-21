@@ -9,15 +9,15 @@ import com.tsystems.javaschool.entity.Client;
 import com.tsystems.javaschool.entity.Order;
 import com.tsystems.javaschool.entity.ProductOrdered;
 import com.tsystems.javaschool.entity.Status;
-import com.tsystems.javaschool.entity.product.Product;
 import com.tsystems.javaschool.error.BusinessLogicException;
 import com.tsystems.javaschool.error.WrongParameterException;
-import com.tsystems.javaschool.messaging.JMSProducer;
 import com.tsystems.javaschool.service.CartService;
 import com.tsystems.javaschool.service.ClientService;
 import com.tsystems.javaschool.service.OrderService;
 import com.tsystems.javaschool.service.ProductService;
+import com.tsystems.javaschool.util.JMSProducer;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -63,19 +63,15 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public long createOrder(CartDTO cart, ClientDTO clientDTO, OrderDTO orderDTO) {
 
-        cartService.checkAvailability(cart);
-
-        if (cart.getIsMissQuantity()) {
-            log.warn("Client: {} trying to make order, but some products are missing", cart.getUserName());
+        try {
+            for (CartItemDTO item : cart.getCartItems()) {
+                productDAO.decreaseQuantity(item.getProduct().getId(), item.getQuantity());
+            }
+        } catch (DataIntegrityViolationException e) {
+            log.error("Client: {} trying to make order, but some products are missing", cart.getUserName());
             throw new BusinessLogicException("Some products in cart are missing on warehouse");
         }
 
-
-        for (CartItemDTO item : cart.getCartItems()) {
-            Product product = productDAO.getById(item.getProduct().getId());
-            product.setQuantity(product.getQuantity() - item.getQuantity());
-            productDAO.update(product);
-        }
 
         Client client;
         if (cart.getUserName() != null) {
@@ -241,13 +237,11 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void returnProduct(Order order) {
+        log.info("Products for order№{} will be returned", order.getId());
         for (ProductOrdered productOrdered : order.getProductOrderedList()
         ) {
-            Product product = productOrdered.getProduct();
-            product.setQuantity(product.getQuantity() + productOrdered.getQuantity());
-
-            log.info("Products for order№{} will be returned", order.getId());
-            productDAO.update(product);
+            log.info("Product {} will be returned", productOrdered.getProduct().getId());
+            productDAO.decreaseQuantity(productOrdered.getProduct().getId(), -productOrdered.getQuantity());
         }
     }
 

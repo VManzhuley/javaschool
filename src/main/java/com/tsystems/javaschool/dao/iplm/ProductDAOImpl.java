@@ -48,5 +48,13 @@ public class ProductDAOImpl implements ProductDAO {
         entityManager.persist(product);
     }
 
+    @Override
+    public void decreaseQuantity(long idProduct, long quantity) {
+        entityManager.createQuery("update Product p set p.quantity=p.quantity-:quantity where p.id=:id")
+                .setParameter("quantity", quantity)
+                .setParameter("id", idProduct)
+                .executeUpdate();
+    }
+
 
 }

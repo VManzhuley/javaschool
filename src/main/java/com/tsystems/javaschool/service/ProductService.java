@@ -15,7 +15,7 @@ public interface ProductService {
 
     Product mapToProduct(ProductDTO productDTO);
 
-    void update(ProductDTO productDTO);
+    void updateQuantity(ProductDTO productDTO);
 
     List<ProductDTO> topProducts();
 }

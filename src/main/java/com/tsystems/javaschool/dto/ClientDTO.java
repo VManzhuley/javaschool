@@ -1,7 +1,7 @@
 package com.tsystems.javaschool.dto;
 
-import com.tsystems.javaschool.validatition.PasswordMatches;
-import com.tsystems.javaschool.validatition.ValidEmail;
+import com.tsystems.javaschool.util.PasswordMatches;
+import com.tsystems.javaschool.util.ValidEmail;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -1,4 +1,4 @@
-package com.tsystems.javaschool.validatition;
+package com.tsystems.javaschool.util;
 
 import com.tsystems.javaschool.dto.ClientDTO;
 

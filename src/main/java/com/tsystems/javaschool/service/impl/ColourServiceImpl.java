@@ -92,8 +92,5 @@ public class ColourServiceImpl implements ColourService {
 
         log.info("Photo link: {} updated in base",colourDTO.getIdPhoto());
         photoDAO.update(photo);
-
     }
-
-
 }

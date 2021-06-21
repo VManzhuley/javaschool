@@ -6,6 +6,7 @@ import lombok.Data;
 public class SizeDTO {
     private long idSize;
     private String size;
+
     private long idWV;
     private double weight;
     private double volume;

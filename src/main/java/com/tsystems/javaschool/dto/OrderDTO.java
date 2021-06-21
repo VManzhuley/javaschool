@@ -17,6 +17,7 @@ public class OrderDTO {
     private ShippingType shipping;
     private Status status;
     private double amount;
+
     private List<ProductOrderedDTO> productOrderedList;
 }
 

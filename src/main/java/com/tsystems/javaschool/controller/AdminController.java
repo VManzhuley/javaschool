@@ -2,6 +2,7 @@ package com.tsystems.javaschool.controller;
 
 import com.tsystems.javaschool.dto.*;
 import com.tsystems.javaschool.entity.Status;
+import com.tsystems.javaschool.error.BusinessLogicException;
 import com.tsystems.javaschool.service.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -177,7 +178,6 @@ public class AdminController {
         if (request.getParameter("createCategoryNew") != null) {
             categoryService.create(request.getParameter("categoryNameNew"));
         }
-
         if (request.getParameter("createDescriptionNew") != null) {
             parametersService.createDescription(request.getParameter("descriptionNameNew"));
         }
@@ -191,7 +191,6 @@ public class AdminController {
         return mvForCreateOrUpdateProductAbs(productAbsDTO);
 
     }
-
 
     @GetMapping("/products/{idProduct}/details")
     public ModelAndView productAddConfirm(@PathVariable long idProduct,
@@ -209,8 +208,13 @@ public class AdminController {
                                          @ModelAttribute("productAbs") ProductAbsDTO productAbsDTO,
                                          HttpServletRequest request,
                                          SessionStatus status) {
-        productAbsService.updateProductsPhotoWV(productAbsDTO);
+        status.setComplete();
 
+        try {
+            productAbsService.updateProductsPhotoWV(productAbsDTO);
+        } catch (BusinessLogicException e) {
+            return new ModelAndView("redirect:/admin/products/" + idProduct + "/details");
+        }
         if (request.getParameter("ChangePublish") != null) {
             productAbsService.inverseOutdated(productAbsDTO);
         }
@@ -219,13 +223,6 @@ public class AdminController {
         return new ModelAndView("redirect:/product?id=" + idProduct);
     }
 
-
-    @GetMapping("/statistic")
-    public ModelAndView statistic() {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("statistic");
-        return modelAndView;
-    }
 
     @RequestMapping(value = "/statistic/products", method = {RequestMethod.GET, RequestMethod.POST})
     public ModelAndView productStatistic(@RequestParam(defaultValue = "10") int pageSize,

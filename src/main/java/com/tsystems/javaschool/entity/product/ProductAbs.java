@@ -3,12 +3,15 @@ package com.tsystems.javaschool.entity.product;
 
 import com.tsystems.javaschool.entity.AbstractTable;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
+
 
 @Entity
 @Table(name = "product_abs")
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class ProductAbs extends AbstractTable {
 
     @Column(name = "article")

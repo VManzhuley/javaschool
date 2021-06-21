@@ -10,6 +10,6 @@ public enum ShippingType {
     SPB ("In St. Petersburg"),
     ANOTHER("To another city");
 
-    private String title;
+    private final String title;
 
 }

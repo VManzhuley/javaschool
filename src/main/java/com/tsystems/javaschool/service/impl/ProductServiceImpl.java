@@ -70,6 +70,7 @@ public class ProductServiceImpl implements ProductService {
                                                                     long idColourMain,
                                                                     long idColourSec,
                                                                     long idSize) {
+
         return mapToProductDTO(productDAO.getProductByProductABSColourMainColourSecSize(
                 idProductAbs,
                 idColourMain,
@@ -107,26 +108,15 @@ public class ProductServiceImpl implements ProductService {
 
         product.setSize(size);
         product.setColourMain(colourMain);
-        product.setQuantity(productDTO.getQuantity());
 
         return product;
     }
 
     @Override
-    public void update(ProductDTO productDTO) {
+    public void updateQuantity(ProductDTO productDTO) {
 
-        Product product = productDAO.getById(productDTO.getId());
-
-        long quantityNew = product.getQuantity() + productDTO.getQuantity();
-
-        if (quantityNew > 0) {
-            product.setQuantity(quantityNew);
-        } else {
-            product.setQuantity(0);
-        }
-
-        log.info("Quantity of product: {} updated to {}", productDTO.getName(), quantityNew);
-        productDAO.update(product);
+        log.info("Quantity of product: {} will be updated by {}", productDTO.getName(), productDTO.getQuantity());
+        productDAO.decreaseQuantity(productDTO.getId(), -productDTO.getQuantity());
 
     }
 

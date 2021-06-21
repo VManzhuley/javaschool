@@ -32,5 +32,4 @@ public class ProductOrdered {
     @Column(name = "price")
 
     private double price;
-
 }

@@ -9,11 +9,13 @@ import com.tsystems.javaschool.entity.product.Category;
 import com.tsystems.javaschool.entity.product.Composition;
 import com.tsystems.javaschool.entity.product.Description;
 import com.tsystems.javaschool.entity.product.ProductAbs;
+import com.tsystems.javaschool.error.BusinessLogicException;
 import com.tsystems.javaschool.service.ColourService;
 import com.tsystems.javaschool.service.ProductAbsService;
 import com.tsystems.javaschool.service.ProductService;
 import com.tsystems.javaschool.service.SizeService;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,6 +59,7 @@ public class ProductAbsServiceImpl implements ProductAbsService {
     @Override
     public ProductAbsDTO mapToProductAbsDTO(ProductAbs productAbs) {
         ProductAbsDTO productAbsDTO = new ProductAbsDTO();
+
         productAbsDTO.setId(productAbs.getId());
         productAbsDTO.setArticle(productAbs.getArticle());
         productAbsDTO.setName(productAbs.getName());
@@ -67,8 +70,8 @@ public class ProductAbsServiceImpl implements ProductAbsService {
         productAbsDTO.setIdCategory(productAbs.getCategory().getId());
         productAbsDTO.setIdComposition(productAbs.getComposition().getId());
         productAbsDTO.setIdDescription(productAbs.getDescription().getId());
-
         productAbsDTO.setOutdated(productAbs.isOutdated());
+
         return productAbsDTO;
     }
 
@@ -181,8 +184,14 @@ public class ProductAbsServiceImpl implements ProductAbsService {
 
         for (ProductDTO productDTO : productAbsDTO.getProducts()
         ) {
-            productService.update(productDTO);
+            try {
+                productService.updateQuantity(productDTO);
+            } catch (DataIntegrityViolationException e) {
+                log.warn("Quantity for product: {} cannot be less by {}",productDTO.getName(),productDTO.getQuantity());
+                throw new BusinessLogicException("Some product was purchased or you input wrong quantity");
+            }
         }
+
     }
 
     @Override

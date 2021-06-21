@@ -118,7 +118,7 @@
 
         <div class="col-md-9">
             <div class="row row-cols-1 row-cols-md-3 g-4">
-                <select class="form-select" onchange="location = this.options[this.selectedIndex].value;" >
+                <select class="form-select" onchange="location = this.options[this.selectedIndex].value;">
                     <option selected disabled hidden>Choose sorting type</option>
                     <c:url value="/shop" var="url">
                         <c:forEach items="${param}" var="entry">
@@ -177,7 +177,9 @@
                                         <c:param name="${entry.key}" value="${entry.value}"/>
                                     </c:if>
                                 </c:forEach>
-                                <c:param name="page" value="${i.index}"/>
+                                <c:if test="${i.index!=1}">
+                                    <c:param name="page" value="${i.index}"/>
+                                </c:if>
                             </c:url>
                             <li class="page-item"><a class="page-link" href="${url}">${i.index}</a></li>
                         </c:forEach>

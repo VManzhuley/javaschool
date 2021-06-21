@@ -1,11 +1,9 @@
 package com.tsystems.javaschool.entity.product;
 
 
-import com.tsystems.javaschool.entity.ProductOrdered;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Table(name = "product")
@@ -36,6 +34,4 @@ public class Product {
     @Column(name = "quantity")
     private long quantity;
 
-    @OneToMany(mappedBy = "product")
-    private List<ProductOrdered> productOrderedList;
 }

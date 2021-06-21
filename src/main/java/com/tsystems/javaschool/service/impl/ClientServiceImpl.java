@@ -83,7 +83,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public void createClientRoleUser(ClientDTO clientDTO) {
+    public void registerClient(ClientDTO clientDTO) {
         if (emailExist(clientDTO.getEmail())) {
             log.warn("Someone trying to register with existing email: {}", clientDTO.getEmail());
             throw new WrongParameterException("There is an account with that email address: " + clientDTO.getEmail());

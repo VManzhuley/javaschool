@@ -1,4 +1,4 @@
-package com.tsystems.javaschool.messaging;
+package com.tsystems.javaschool.util;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
@@ -38,12 +38,8 @@ public class JMSProducer {
                         TextMessage message = session.createTextMessage("Hello from main");
 
                         sender.send(message);
-
-
                     }
-
                 }
-
             }
 
         } catch (JMSException | NamingException e) {

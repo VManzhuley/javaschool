@@ -11,5 +11,7 @@ public interface ProductDAO {
 
     void create(Product product);
 
+    void decreaseQuantity(long idProduct, long quantity);
+
 
 }

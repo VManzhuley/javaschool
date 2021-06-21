@@ -5,10 +5,8 @@ import lombok.Data;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 @Data
@@ -25,12 +23,6 @@ public class ProductAbsDTO {
     @Max(value = 50000, message = "I hope so, but no")
     private double price;
 
-    @NotEmpty(message = "Please add at least one colour")
-    private List<ColourDTO> colours = new LinkedList<>();
-
-    @NotEmpty(message = "Please add at least one size")
-    private List<SizeDTO> sizes = new LinkedList<>();
-
     private String description;
     private String photoLink;
     private String composition;
@@ -39,8 +31,10 @@ public class ProductAbsDTO {
     private long idCategory;
     private long idDescription;
     private long idComposition;
-    private List<ProductDTO> products = new ArrayList<>();
 
+    private List<ProductDTO> products=new ArrayList<>();
+    private List<ColourDTO> colours=new ArrayList<>();
+    private List<SizeDTO> sizes = new ArrayList<>();
 
     private ColourDTO findColoursByNames(String colourMain, String colourSec) {
         for (ColourDTO colour : this.colours

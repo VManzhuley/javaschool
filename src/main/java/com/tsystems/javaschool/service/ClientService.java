@@ -14,7 +14,7 @@ public interface ClientService {
 
     ClientDTO mapToClientDTO(Client client);
 
-    void createClientRoleUser(ClientDTO clientDTO);
+    void registerClient(ClientDTO clientDTO);
 
     boolean emailExist(String email);
 
