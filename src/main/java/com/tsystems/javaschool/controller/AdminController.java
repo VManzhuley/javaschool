@@ -20,6 +20,12 @@ import java.util.List;
 @RequestMapping(value = "/admin")
 @SessionAttributes("productAbs")
 public class AdminController {
+    private static final String URL_REDIRECT_TO_PRODUCTS_ADD = "redirect:/admin/products/add";
+    private static final String URL_REDIRECT_TO_PRODUCTS = "redirect:/admin/products/";
+    private static final String URL_TO_DETAILS = "/details";
+    private static final String ATTRIBUTE_NAME_STATUS = "status";
+    private static final String ATTRIBUTE_NAME_CATEGORIES_FOR_SIDEBAR = "categoriesForSidebar";
+
     private final OrderService orderService;
     private final ParametersService parametersService;
     private final StatisticService statisticService;
@@ -54,7 +60,7 @@ public class AdminController {
         ModelAndView modelAndView = new ModelAndView("orderDetails");
 
         modelAndView.addObject("order", orderService.getById(id));
-        modelAndView.addObject("status", Status.values());
+        modelAndView.addObject(ATTRIBUTE_NAME_STATUS, Status.values());
 
         return modelAndView;
     }
@@ -67,7 +73,7 @@ public class AdminController {
         orderService.updateStatus(id, request.getParameter("statusType"));
 
         modelAndView.addObject("order", orderService.getById(id));
-        modelAndView.addObject("status", Status.values());
+        modelAndView.addObject(ATTRIBUTE_NAME_STATUS, Status.values());
 
         return modelAndView;
     }
@@ -90,7 +96,7 @@ public class AdminController {
         modelAndView.addObject("colours", parametersService.getAllColour());
         modelAndView.addObject("sizes", parametersService.getAllSize());
         modelAndView.addObject("categories", categoryService.getAllWithoutChild());
-        modelAndView.addObject("categoriesForSidebar", categoryService.getAllWithoutParent());
+        modelAndView.addObject(ATTRIBUTE_NAME_CATEGORIES_FOR_SIDEBAR, categoryService.getAllWithoutParent());
         modelAndView.addObject("productAbs", productAbsDTO);
         modelAndView.addObject("colour", new ColourDTO());
         modelAndView.addObject("size", new SizeDTO());
@@ -104,7 +110,7 @@ public class AdminController {
                                       SessionStatus status) {
         if (productAbsDTO.getId() != 0) {
             status.setComplete();
-            return new ModelAndView("redirect:/admin/products/add");
+            return new ModelAndView(URL_REDIRECT_TO_PRODUCTS_ADD);
         }
 
         return mvForCreateOrUpdateProductAbs(productAbsDTO);
@@ -120,7 +126,7 @@ public class AdminController {
         if (request.getParameter("submit") != null) {
             long id = productAbsService.createOrUpdate(productAbsDTO);
             status.setComplete();
-            return new ModelAndView("redirect:/admin/products/" + id + "/details");
+            return new ModelAndView(URL_REDIRECT_TO_PRODUCTS + id + URL_TO_DETAILS);
         }
 
         productAbsDTO.addSize(sizeDTO);
@@ -134,9 +140,9 @@ public class AdminController {
                                      @RequestParam int n) {
         productAbsDTO.deleteColour(n);
         if (productAbsDTO.getId() != 0) {
-            return new ModelAndView("redirect:/admin/products/" + productAbsDTO.getId());
+            return new ModelAndView(URL_REDIRECT_TO_PRODUCTS + productAbsDTO.getId());
         }
-        return new ModelAndView("redirect:/admin/products/add");
+        return new ModelAndView(URL_REDIRECT_TO_PRODUCTS_ADD);
     }
 
     @GetMapping(value = "/products/deleteSize")
@@ -144,9 +150,9 @@ public class AdminController {
                                    @RequestParam int n) {
         productAbsDTO.deleteSize(n);
         if (productAbsDTO.getId() != 0) {
-            return new ModelAndView("redirect:/admin/products/" + productAbsDTO.getId());
+            return new ModelAndView(URL_REDIRECT_TO_PRODUCTS + productAbsDTO.getId());
         }
-        return new ModelAndView("redirect:/admin/products/add");
+        return new ModelAndView(URL_REDIRECT_TO_PRODUCTS_ADD);
     }
 
     @GetMapping(value = "/products/{idProduct}")
@@ -155,7 +161,7 @@ public class AdminController {
                                          SessionStatus status) {
         if (productAbsDTO.getId() != idProduct) {
             status.setComplete();
-            return new ModelAndView("redirect:/admin/products/" + idProduct);
+            return new ModelAndView(URL_REDIRECT_TO_PRODUCTS + idProduct);
         }
 
         return mvForCreateOrUpdateProductAbs(productAbsDTO);
@@ -172,7 +178,7 @@ public class AdminController {
         if (request.getParameter("submit") != null) {
             productAbsService.createOrUpdate(productAbsDTO);
             status.setComplete();
-            return new ModelAndView("redirect:/admin/products/" + idProduct + "/details");
+            return new ModelAndView(URL_REDIRECT_TO_PRODUCTS + idProduct + URL_TO_DETAILS);
         }
 
         if (request.getParameter("createCategoryNew") != null) {
@@ -198,7 +204,7 @@ public class AdminController {
         ModelAndView modelAndView = new ModelAndView("admin/productEditDetails");
 
         modelAndView.addObject("productAbs", productAbsDTO);
-        modelAndView.addObject("categoriesForSidebar", categoryService.getAllWithoutParent());
+        modelAndView.addObject(ATTRIBUTE_NAME_CATEGORIES_FOR_SIDEBAR, categoryService.getAllWithoutParent());
 
         return modelAndView;
     }
@@ -213,7 +219,7 @@ public class AdminController {
         try {
             productAbsService.updateProductsPhotoWV(productAbsDTO);
         } catch (BusinessLogicException e) {
-            return new ModelAndView("redirect:/admin/products/" + idProduct + "/details");
+            return new ModelAndView(URL_REDIRECT_TO_PRODUCTS + idProduct + URL_TO_DETAILS);
         }
         if (request.getParameter("ChangePublish") != null) {
             productAbsService.inverseOutdated(productAbsDTO);
@@ -230,7 +236,7 @@ public class AdminController {
                                          @RequestParam(defaultValue = "quantity") String sort) {
         ModelAndView modelAndView = new ModelAndView("admin/statisticProducts");
 
-        modelAndView.addObject("status", Status.values());
+        modelAndView.addObject(ATTRIBUTE_NAME_STATUS, Status.values());
         modelAndView.addObject("products", statisticService.topProductOrdered(status, sort, pageSize));
 
         return modelAndView;
@@ -243,7 +249,7 @@ public class AdminController {
                                         @RequestParam(defaultValue = "total") String sort) {
         ModelAndView modelAndView = new ModelAndView("admin/statisticClients");
 
-        modelAndView.addObject("status", Status.values());
+        modelAndView.addObject(ATTRIBUTE_NAME_STATUS, Status.values());
         modelAndView.addObject("orders", statisticService.topClient(status, sort, pageSize));
 
         return modelAndView;
@@ -297,7 +303,7 @@ public class AdminController {
                         toLD = LocalDate.from(DateTimeFormatter.ISO_LOCAL_DATE.parse(dateTo));
                         break;
                     }
-                    if (dateFrom.length() > dateTo.length()) {
+                    if (dateTo.equals("")) {
                         fromLD = LocalDate.from(DateTimeFormatter.ISO_LOCAL_DATE.parse(dateFrom));
                         toLD = LocalDate.now();
                         break;
@@ -339,7 +345,7 @@ public class AdminController {
 
 
         modelAndView.setViewName("admin/statisticWarehouse");
-        modelAndView.addObject("status", Status.values());
+        modelAndView.addObject(ATTRIBUTE_NAME_STATUS, Status.values());
         modelAndView.addObject("products", list);
         modelAndView.addObject("productCount", statisticService.getProductCount());
 
@@ -353,7 +359,7 @@ public class AdminController {
 
         modelAndView.addObject("categories", categoryService.getAllWithoutChild());
         modelAndView.addObject("categoriesParent", categoryService.getAllWithoutParentAndProducts());
-        modelAndView.addObject("categoriesForSidebar", categoryService.getAllWithoutParent());
+        modelAndView.addObject(ATTRIBUTE_NAME_CATEGORIES_FOR_SIDEBAR, categoryService.getAllWithoutParent());
         modelAndView.addObject("message", message);
 
         return modelAndView;
@@ -378,7 +384,7 @@ public class AdminController {
     public ModelAndView products() {
         ModelAndView modelAndView = new ModelAndView("/admin/productsAdmin");
 
-        modelAndView.addObject("categoriesForSidebar", categoryService.getAllWithoutParent());
+        modelAndView.addObject(ATTRIBUTE_NAME_CATEGORIES_FOR_SIDEBAR, categoryService.getAllWithoutParent());
 
         return modelAndView;
     }

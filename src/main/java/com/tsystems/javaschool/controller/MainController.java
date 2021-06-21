@@ -22,7 +22,7 @@ import java.security.Principal;
 @Controller
 @SessionAttributes("cart")
 public class MainController {
-
+    private static final String URL_REDIRECT_TO_CART = "redirect:/cart";
     private final ProductAbsService productAbsService;
     private final CategoryService categoryService;
     private final OrderService orderService;
@@ -129,7 +129,7 @@ public class MainController {
 
         cartService.removeCartItem(cart, id);
 
-        modelAndView.setViewName("redirect:/cart");
+        modelAndView.setViewName(URL_REDIRECT_TO_CART);
         return modelAndView;
     }
 
@@ -177,7 +177,7 @@ public class MainController {
         try {
             id = orderService.createOrder(cartDTO, clientDTO, orderDTO);
         } catch (BusinessLogicException businessLogicException) {
-            return new ModelAndView("redirect:/cart");
+            return new ModelAndView(URL_REDIRECT_TO_CART);
         } catch (WrongParameterException wrongParameterException) {
             return order(clientDTO, orderDTO, wrongParameterException.getMessage());
         }
@@ -213,7 +213,7 @@ public class MainController {
 
         cartService.mergeCart(cart, principal);
 
-        return new ModelAndView("redirect:/cart");
+        return new ModelAndView(URL_REDIRECT_TO_CART);
     }
 
     @GetMapping(value = "/user/order/repeat")
@@ -223,7 +223,7 @@ public class MainController {
 
         orderService.repeatOrder(id, principal, cart);
 
-        return new ModelAndView("redirect:/cart");
+        return new ModelAndView(URL_REDIRECT_TO_CART);
     }
 
     @GetMapping(value = "/registration")
